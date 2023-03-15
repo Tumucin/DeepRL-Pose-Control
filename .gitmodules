@@ -1,0 +1,3 @@
+[submodule "envs/kdl_parser"]
+	path = envs/kdl_parser
+	url = https://github.com/ros/kdl_parser.git
