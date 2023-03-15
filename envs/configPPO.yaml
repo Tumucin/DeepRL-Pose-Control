@@ -1,0 +1,23 @@
+expNumber: "9"
+envName: "PandaReach-v2"             
+total_timesteps: !!float 1000
+mode: False                           
+algorithm: "PPO"                    
+policy: "MultiInputPolicy"           
+render: False                        
+gamma: 0.95 
+n_steps: 512
+batch_size: 256
+learning_rate: 0.0003
+n_envs: 1
+pseudoI: False
+save_freq: 10000  
+modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/model'
+logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/log'
+######
+#policy_kwargs= dict(
+#                    log_std_init=-2,
+#                 ortho_init=False,
+#                    activation_fn=th.nn.ReLU,
+#                    net_arch=dict(pi=[128, 128], vf=[128, 128])
+#                  )

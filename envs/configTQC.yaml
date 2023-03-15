@@ -1,0 +1,26 @@
+expNumber: "73"
+envName: "PandaReach-v2"   
+total_timesteps: 500000
+mode: False  
+continueTraining: False                   
+algorithm: "TQC"                    
+policy: "MultiInputPolicy"   
+ent_coef: 'auto'        
+render: False
+gamma: 0.95
+learning_rate: 0.001
+learning_starts: 10000
+normalize: True   
+batch_size: 512       
+#batch_size: 2048
+buffer_size: 1000000
+replay_buffer_kwargs : {'online_sampling' : True,
+             'goal_selection_strategy' : 'future',
+             'n_sampled_goal' : 4}
+
+policy_kwargs : {'net_arch' : [128, 128], 
+                 'n_critics' : 1}
+save_freq: 10000
+modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/model' 
+logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/log'
+pseudoI: False 
