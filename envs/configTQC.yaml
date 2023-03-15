@@ -22,5 +22,7 @@ policy_kwargs : {'net_arch' : [128, 128],
                  'n_critics' : 1}
 save_freq: 10000
 modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/model' 
+#modelSavePath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/model'
 logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/log'
+#logSavePath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/log'
 pseudoI: False 
