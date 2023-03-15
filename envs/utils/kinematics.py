@@ -1,7 +1,8 @@
 import sys
 import PyKDL
 #import kdl_parser.kdl_parser_py.kdl_parser_py.urdf as URDF
-import urdf as URDF
+#import urdf as URDF
+import kdl_parser_py.urdf as URDF
 import numpy as np
 import math
 

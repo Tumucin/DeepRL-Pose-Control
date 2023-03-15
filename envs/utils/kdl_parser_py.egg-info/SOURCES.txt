@@ -1,0 +1,7 @@
+setup.py
+kdl_parser_py/__init__.py
+kdl_parser_py/urdf.py
+kdl_parser_py.egg-info/PKG-INFO
+kdl_parser_py.egg-info/SOURCES.txt
+kdl_parser_py.egg-info/dependency_links.txt
+kdl_parser_py.egg-info/top_level.txt

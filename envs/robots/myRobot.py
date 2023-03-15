@@ -31,7 +31,7 @@ class MYROBOT(PyBulletRobot):
         control_type: str = "joints", 
     ) -> None:
         
-        
+       
         self.kinematic = KINEMATICS('/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf')
         self.block_gripper = block_gripper
         self.control_type = control_type

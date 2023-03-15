@@ -101,8 +101,10 @@ def load_model(parentDir,config,steps, algorithm,env):
         
 def main():
 
-    with open('configPPO.yaml') as f:
-        config = yaml.load(f, Loader=SafeLoader)
+    with open('configPath.yaml') as cfgPath:
+        configPath = yaml.load(cfgPath, Loader=SafeLoader)
+        with open(configPath['configPath']) as cfg:
+            config = yaml.load(cfg, Loader=SafeLoader)
 
     currentDir = os.getcwd()
     if config['algorithm']=="PPO":
@@ -119,7 +121,7 @@ def main():
     env._max_episode_steps = 700
     
     if config['mode'] == True:
-        env = make_vec_env('PandaReach-v2', n_envs=4)
+        env = make_vec_env('PandaReach-v2', n_envs=1)
         start_time = time.time()
         train(config,algorithm, env)
         print("Total time:", time.time()-start_time)
