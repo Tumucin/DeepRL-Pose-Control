@@ -1,15 +1,17 @@
 expNumber: "1"
 envName: "PandaReach-v2"             
-total_timesteps: !!float 1000
+total_timesteps: !!float 100000
 mode: False                           
 algorithm: "PPO"                    
 policy: "MultiInputPolicy"           
 render: False                        
 gamma: 0.95 
-n_steps: 512
-batch_size: 256
+n_steps: 2048
+batch_size: 512
 learning_rate: 0.0003
-n_envs: 1
+n_envs: 24
+testSamples: 10
+verbose: 1
 pseudoI: False
 save_freq: 10000  
 #modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/model'

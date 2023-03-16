@@ -24,11 +24,11 @@
 #
 #SBATCH --job-name=Test
 #SBATCH --nodes=3
-#SBATCH --ntasks-per-node=1
+#SBATCH --ntasks-per-node=8
 #SBATCH --partition=mid
 #SBATCH --time=1-0
 #SBATCH --output=kucpu.out
-#SBATCH --mail-type=ALL
+#SBATCH --mail-type=END
 #SBATCH --mail-user=tbal21@ku.edu.tr
 
 ################################################################################

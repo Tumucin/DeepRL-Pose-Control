@@ -23,7 +23,7 @@ def train(config, algorithm,env):
     if config['algorithm']=="PPO":
         policy_kwargs = dict(activation_fn=th.nn.ReLU, net_arch=[dict(pi=[128, 128], vf=[128,128,])])
 
-        model = algorithm(policy=config['policy'], env=env, n_steps=config['n_steps'],verbose=1, batch_size=config['batch_size'], learning_rate=config['learning_rate'],
+        model = algorithm(policy=config['policy'], env=env, n_steps=config['n_steps'],verbose=config['verbose'], batch_size=config['batch_size'], learning_rate=config['learning_rate'],
                           tensorboard_log=logDir+"/"+config['envName']+"_"+config['algorithm'],policy_kwargs=policy_kwargs)
     
     if config['algorithm']=="DDPG":
@@ -41,10 +41,13 @@ def train(config, algorithm,env):
         else:
             #print("here")
             model = algorithm(policy=config['policy'], env=env, tensorboard_log=logDir+"/"+config['envName']+""+config['algorithm'],
-                            verbose=1, ent_coef=config['ent_coef'], batch_size=config['batch_size'], gamma=config['gamma'],
+                            verbose=config['verbose'], ent_coef=config['ent_coef'], batch_size=config['batch_size'], gamma=config['gamma'],
                             learning_rate=config['learning_rate'], learning_starts=config['learning_starts'],replay_buffer_class=HerReplayBuffer,
                             replay_buffer_kwargs=config['replay_buffer_kwargs'], policy_kwargs=config['policy_kwargs'])
+    
+    start_time = time.time()
     model.learn(total_timesteps=config['total_timesteps'], callback=checkpoint_callback)
+    print("Total time:", time.time()-start_time)
     model.save(modelDir+"/"+config['envName']+""+config['algorithm']+"_"+config['expNumber'])     
 
     del model
@@ -101,10 +104,11 @@ def load_model(parentDir,config,steps, algorithm,env):
         
 def main():
 
-    with open('configPPO.yaml') as f:
+    with open('configTQC.yaml') as f:
         config = yaml.load(f, Loader=SafeLoader)
 
     currentDir = os.getcwd()
+    print("number of env:",config['n_envs'])
     if config['algorithm']=="PPO":
         algorithm = PPO
         
@@ -120,11 +124,20 @@ def main():
     
     if config['mode'] == True:
         env = make_vec_env('PandaReach-v2', n_envs=config['n_envs'])
-        start_time = time.time()
+        
         train(config,algorithm, env)
-        print("Total time:", time.time()-start_time)
+        
     else:
-        load_model(currentDir,config,5, algorithm,env)
+        load_model(currentDir,config,config['testSamples'], algorithm,env)
+    print("DONE!!!")
     
 if __name__=='__main__':
     main()
+    device = th.device('cuda' if th.cuda.is_available() else 'cpu')
+    if device.type=='cuda':
+    	print("number of device",th.cuda.device_count())
+    	print("current device:",th.cuda.current_device())
+    	print("device name:",th.cuda.get_device_name())
+    	print('Allocated:', round(th.cuda.memory_allocated(0)/1024**3,1), 'GB')
+    	print('Cached:   ', round(th.cuda.memory_reserved(0)/1024**3,1), 'GB')
+    
