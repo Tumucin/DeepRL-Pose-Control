@@ -1,1 +1,2 @@
-configPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/configPPO.yaml'
+#configPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/configPPO.yaml'
+configPath: '/kuacc/users/tbal21/panda_gym/envs/configPPO.yaml'

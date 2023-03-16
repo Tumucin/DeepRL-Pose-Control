@@ -126,7 +126,7 @@ def main():
         train(config,algorithm, env)
         print("Total time:", time.time()-start_time)
     else:
-        load_model(currentDir,config,100, algorithm,env)
+        load_model(currentDir,config,5, algorithm,env)
     
 if __name__=='__main__':
     main()
