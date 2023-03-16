@@ -12,12 +12,12 @@ learning_rate: 0.0003
 n_envs: 1
 pseudoI: False
 save_freq: 10000  
-#modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/model'
+modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/model'
 #modelSavePath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/model'
-modelSavePath: '/kuacc/users/tbal21/modeltest'
+#modelSavePath: '/kuacc/users/tbal21/modeltest'
 #logSavePath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/log'
-#logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/log'
-logSavePath: '/kuacc/users/tbal21/logtest'
+logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/log'
+#logSavePath: '/kuacc/users/tbal21/logtest'
 ######
 #policy_kwargs= dict(
 #                    log_std_init=-2,

@@ -101,10 +101,8 @@ def load_model(parentDir,config,steps, algorithm,env):
         
 def main():
 
-    with open('configPath.yaml') as cfgPath:
-        configPath = yaml.load(cfgPath, Loader=SafeLoader)
-        with open(configPath['configPath']) as cfg:
-            config = yaml.load(cfg, Loader=SafeLoader)
+    with open('configPPO.yaml') as f:
+        config = yaml.load(f, Loader=SafeLoader)
 
     currentDir = os.getcwd()
     if config['algorithm']=="PPO":
