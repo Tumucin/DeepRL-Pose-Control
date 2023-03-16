@@ -119,7 +119,7 @@ def main():
     env._max_episode_steps = 700
     
     if config['mode'] == True:
-        env = make_vec_env('PandaReach-v2', n_envs=1)
+        env = make_vec_env('PandaReach-v2', n_envs=config['n_envs'])
         start_time = time.time()
         train(config,algorithm, env)
         print("Total time:", time.time()-start_time)

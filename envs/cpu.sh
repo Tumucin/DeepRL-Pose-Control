@@ -63,7 +63,7 @@ echo "Running Python script..."
 # Put Python script command below
 
 #export PYTHONPATH="/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/utils"
-python3 trainTest2.py
+python3 trainTest.py
 # Command 2 for matrix
 echo "Running G++ compiler..."
 # Put g++ compiler command below

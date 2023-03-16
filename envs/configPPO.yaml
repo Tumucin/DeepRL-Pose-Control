@@ -1,4 +1,4 @@
-expNumber: "8"
+expNumber: "1"
 envName: "PandaReach-v2"             
 total_timesteps: !!float 1000
 mode: False                           
@@ -13,11 +13,14 @@ n_envs: 1
 pseudoI: False
 save_freq: 10000  
 #modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/model'
-#modelSavePath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/model'
-modelSavePath: '/kuacc/users/tbal21/modeltest'
-#logSavePath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/log'
+modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modeltest'
+
+logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/logtest'
 #logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/log'
-logSavePath: '/kuacc/users/tbal21/logtest'
+
+
+
+
 ######
 #policy_kwargs= dict(
 #                    log_std_init=-2,

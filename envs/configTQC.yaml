@@ -11,7 +11,8 @@ gamma: 0.95
 learning_rate: 0.001
 learning_starts: 10000
 normalize: True   
-batch_size: 512       
+batch_size: 512
+n_envs: 1       
 #batch_size: 2048
 buffer_size: 1000000
 replay_buffer_kwargs : {'online_sampling' : True,
@@ -21,8 +22,11 @@ replay_buffer_kwargs : {'online_sampling' : True,
 policy_kwargs : {'net_arch' : [128, 128], 
                  'n_critics' : 1}
 save_freq: 10000
-modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/model' 
-#modelSavePath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/model'
-logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/log'
-#logSavePath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/log'
+
+#modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/model'
+modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modeltest'
+
+logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/logtest'
+
+#logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/log'
 pseudoI: False 

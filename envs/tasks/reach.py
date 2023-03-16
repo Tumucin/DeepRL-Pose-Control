@@ -23,7 +23,7 @@ class Reach(Task):
     ) -> None:
         super().__init__(sim)
         
-        self.kinematic = KINEMATICS('/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf')
+        self.kinematics = KINEMATICS('/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf')
         #self.kinematics = KINEMATICS('/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf')
         self.reward_type = reward_type
         self.distance_threshold = distance_threshold

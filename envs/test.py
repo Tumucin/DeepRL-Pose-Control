@@ -1,9 +1,7 @@
-from panda_gym.pybullet import PyBullet
-from panda_gym.envs.robots.myRobot import MYROBOT
-import numpy as np
-sim = PyBullet(render=True)
-robot = MyRobot(sim)
+from stable_baselines3 import A2C
+from stable_baselines3.common.callbacks import CheckpointCallback
 
-for _ in range(50):
-    robot.set_action(np.array([1.0]))
-    sim.step()
+checkpoint_callback = CheckpointCallback(save_freq=1000,save_path="./a2c",
+                                         name_prefix='test')
+model = A2C("MlpPolicy","CartPole-v1",verbose=1, tensorboard_log="./a2c")
+model.learn(total_timesteps=100, callback=checkpoint_callback)
