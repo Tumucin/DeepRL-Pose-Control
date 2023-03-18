@@ -21,6 +21,7 @@ class KINEMATICS():
         self.ikVelKDL = PyKDL.ChainIkSolverVel_wdls(self.armChain)
         self.ikPoseKDL = PyKDL.ChainIkSolverPos_NR(self.armChain,self.fkPoseKDL,self.ikVelKDL)
 
+        self.jacSolver = PyKDL.ChainJntToJacSolver(self.armChain)
 
     def forwardKinematicsPoseSolv(self, q_in=None):
         endFrame = PyKDL.Frame()
@@ -60,7 +61,6 @@ if __name__ == '__main__':
     q_dot_out = PyKDL.JntArray(kinematics.numbOfJoints)
     kinematics.ikVelKDL.CartToJnt(q_in, v_in, q_dot_out)
     print("q_dot_out:", q_dot_out)
-
     """
 
     #endFrame = PyKDL.Frame(PyKDL.Rotation.RPY(0,0,0), PyKDL.Vector(0.3106,0.0056,0.5864))

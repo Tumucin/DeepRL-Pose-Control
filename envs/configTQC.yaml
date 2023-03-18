@@ -1,34 +1,53 @@
-expNumber: "1"
+modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modeltest'
+logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/logtest'
+urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
+bufferPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/buffertest/'
+#modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modeltest'
+#logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/logtest'
+#urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
+expNumber: "69"
+curriNumber: "70" 
 envName: "PandaReach-v2"   
-total_timesteps: 20000
+total_timesteps: 500
+learning_starts: 100
 mode: True  
-continueTraining: False                   
-algorithm: "TQC"                    
-policy: "MultiInputPolicy"   
-ent_coef: 'auto'        
+algorithm: "TQC" 
+policy: "MultiInputPolicy"
 render: False
 gamma: 0.95
-learning_rate: 0.001
-learning_starts: 10000
-normalize: True   
 batch_size: 512
+learning_rate: 0.001
 n_envs: 1
 testSamples: 10
-verbose: 0       
+max_episode_steps: 700
+verbose: 1 
+pseudoI: False 
+save_freq: 50000
+sampleJointAnglesGoal: False # If this is false, then you should determine goal_range value
+goal_range: 0.3
+randomStart: False # If this is false, then you should determine neutral joint angles.. These values are defined in myrobot.py
+curriLearning: False  
+
+# TODO env = VecNormalize(env, norm_obs=True, norm_reward=True,
+                   #clip_obs=10.)
+
+                                     
+ent_coef: 'auto'        
+
+normalize: True       
 #batch_size: 2048
-buffer_size: 1000000
+buffer_size: 300000
 replay_buffer_kwargs : {'online_sampling' : True,
              'goal_selection_strategy' : 'future',
-             'n_sampled_goal' : 4}
-
+             'n_sampled_goal' : 8}
 policy_kwargs : {'net_arch' : [128, 128], 
                  'n_critics' : 1}
-save_freq: 10000
 
-#modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/model'
-modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modeltest'
 
-logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/logtest'
 
-#logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/log'
-pseudoI: False 
+#c = dict(activation_fn=th.nn.Tanh, net_arch=[dict(pi=[128, 128,128], vf=[128,128, 128])])
+#policy_kwargs = dict(activation_fn=th.nn.LeakyReLU,net_arch=dict(pi=[128, 128], qf=[128, 128]))
+
+
+
+

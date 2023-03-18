@@ -1,7 +1,14 @@
-expNumber: "1"
+modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modeltest'
+logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/logtest'
+urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
+#modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modeltest'
+#logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/logtest'
+#urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
+expNumber: "5"
+curriNumber: "6" 
 envName: "PandaReach-v2"             
-total_timesteps: !!float 100000
-mode: False                           
+total_timesteps: !!float 1000
+mode: True                           
 algorithm: "PPO"                    
 policy: "MultiInputPolicy"           
 render: False                        
@@ -9,19 +16,23 @@ gamma: 0.95
 n_steps: 2048
 batch_size: 512
 learning_rate: 0.0003
-n_envs: 24
+n_envs: 1
 testSamples: 10
+max_episode_steps: 700
 verbose: 1
 pseudoI: False
-save_freq: 10000  
-#modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/model'
-modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modeltest'
-
-logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/logtest'
-#logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/log'
-
+save_freq: 50000 
+sampleJointAnglesGoal: False # If this is false, then you should determine goal_range value
+goal_range: 0.3
+randomStart: False # If this is false, then you should determine neutral joint angles.. These values are defined in myrobot.py
+curriLearning: True  # If this is true, than determine curriNumber
 
 
+
+
+
+# TODO env = VecNormalize(env, norm_obs=True, norm_reward=True,
+                   #clip_obs=10.)
 
 ######
 #policy_kwargs= dict(

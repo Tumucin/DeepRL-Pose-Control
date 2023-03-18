@@ -17,14 +17,17 @@ import torch as th
 
 def train(config, algorithm,env):
     checkpoint_callback = CheckpointCallback(save_freq=config['save_freq'], save_path=config['modelSavePath'],
-                                         name_prefix='PandaReach-v2TQC_'+config['expNumber'])
+                                         name_prefix=config['envName']+"_"+config['algorithm']+"_"+config['expNumber'])
     modelDir = config['modelSavePath']
     logDir = config['logSavePath']
     if config['algorithm']=="PPO":
-        policy_kwargs = dict(activation_fn=th.nn.ReLU, net_arch=[dict(pi=[128, 128], vf=[128,128,])])
+        if config['curriLearning'] ==True:
+            model = algorithm.load(modelDir+"/"+config['envName']+""+config['algorithm']+"_"+config['expNumber'], env=env,tensorboard_log= logDir+"/"+config['envName']+"_"+config['algorithm']+"/PPO_"+config['expNumber'])
+        else:
+            policy_kwargs = dict(activation_fn=th.nn.ReLU, net_arch=[dict(pi=[128, 128], vf=[128,128,])])
 
-        model = algorithm(policy=config['policy'], env=env, n_steps=config['n_steps'],verbose=config['verbose'], batch_size=config['batch_size'], learning_rate=config['learning_rate'],
-                          tensorboard_log=logDir+"/"+config['envName']+"_"+config['algorithm'],policy_kwargs=policy_kwargs)
+            model = algorithm(policy=config['policy'], env=env, n_steps=config['n_steps'],verbose=config['verbose'], batch_size=config['batch_size'], learning_rate=config['learning_rate'],
+                              tensorboard_log=logDir+"/"+config['envName']+"_"+config['algorithm'],policy_kwargs=policy_kwargs)
     
     if config['algorithm']=="DDPG":
         model = algorithm(policy=config['policy'], env=env, replay_buffer_class=HerReplayBuffer, verbose=1, 
@@ -32,29 +35,47 @@ def train(config, algorithm,env):
              policy_kwargs = config['policy_kwargs'], tensorboard_log=logDir+"/"+config['envName']+""+config['algorithm'])
     
     if config['algorithm']=="TQC":
-        #c = dict(activation_fn=th.nn.Tanh, net_arch=[dict(pi=[128, 128,128], vf=[128,128, 128])])
-        #policy_kwargs = dict(activation_fn=th.nn.LeakyReLU,net_arch=dict(pi=[128, 128], qf=[128, 128]))
-        if config['continueTraining'] ==True:
-            #model = algorithm.load(modelDir+"/"+config['envName']+""+config['algorithm']+"_"+config['expNumber'], env=env)
+        
+        if config['curriLearning'] ==True:
+            model = algorithm.load(modelDir+"/"+config['envName']+""+config['algorithm']+"_"+config['expNumber'], env=env)
+            print(f"The loaded_model has {model.replay_buffer.size()} transitions in its buffer")
+            model.load_replay_buffer(config['bufferPath']+config['expNumber'])
             #model.set_env(env)
-            pass
         else:
-            #print("here")
-            model = algorithm(policy=config['policy'], env=env, tensorboard_log=logDir+"/"+config['envName']+""+config['algorithm'],
+            model = algorithm(policy=config['policy'], env=env, tensorboard_log=logDir+"/"+config['envName']+"_"+config['algorithm'],
                             verbose=config['verbose'], ent_coef=config['ent_coef'], batch_size=config['batch_size'], gamma=config['gamma'],
                             learning_rate=config['learning_rate'], learning_starts=config['learning_starts'],replay_buffer_class=HerReplayBuffer,
                             replay_buffer_kwargs=config['replay_buffer_kwargs'], policy_kwargs=config['policy_kwargs'])
     
     start_time = time.time()
-    model.learn(total_timesteps=config['total_timesteps'], callback=checkpoint_callback)
+    #, tb_log_name = logDir+"/"+config['envName']+"_"+config['algorithm']
+    if config['curriLearning'] ==True:
+        model.learn(total_timesteps=config['total_timesteps'], callback=checkpoint_callback, reset_num_timesteps=False, tb_log_name = logDir+"/"+config['envName']+"_"+config['algorithm']+"/"+config['algorithm'] +"_"+config['curriNumber'])
+    else:
+        model.learn(total_timesteps=config['total_timesteps'], callback=checkpoint_callback)
     print("Total time:", time.time()-start_time)
-    model.save(modelDir+"/"+config['envName']+""+config['algorithm']+"_"+config['expNumber'])     
+    if config['curriLearning'] ==True:
+        model.save(modelDir+"/"+config['envName']+""+config['algorithm']+"_"+config['curriNumber'])
+    else:
+        model.save(modelDir+"/"+config['envName']+""+config['algorithm']+"_"+config['expNumber'])
+    
+    if config['algorithm']=='TQC':
+        if config['curriLearning'] ==True:
+            model.save_replay_buffer(config['bufferPath']+config['curriNumber'])   
+        else:
+            model.save_replay_buffer(config['bufferPath']+config['expNumber'])   
 
-    del model
-
+    #del model
+    try:
+        os.rename(config['logSavePath']+"/"+config['envName']+"_"+config['algorithm']+"/"+config['algorithm']+"_"+config['curriNumber']+"_0", config['logSavePath']+"/"+config['envName']+"_"+config['algorithm']+"/"+config['algorithm']+"_"+config['curriNumber'])
+    except FileNotFoundError:
+        pass
 def load_model(parentDir,config,steps, algorithm,env):
     modelDir = config['modelSavePath']
-    model = algorithm.load(modelDir+"/"+config['envName']+""+config['algorithm']+"_"+config['expNumber'], env=env) 
+    if config['curriLearning'] ==True:
+        model = algorithm.load(modelDir+"/"+config['envName']+""+config['algorithm']+"_"+config['curriNumber'], env=env) 
+    else:
+        model = algorithm.load(modelDir+"/"+config['envName']+""+config['algorithm']+"_"+config['expNumber'], env=env) 
     env = model.get_env()
     mae = 0.0
     squaredError = 0.0
@@ -71,14 +92,8 @@ def load_model(parentDir,config,steps, algorithm,env):
             counter+=1
             action, _states = model.predict(obs, deterministic=True)
             obs, reward, done, info = env.step(action)
-            #print("obs['achieved_goal']",obs['achieved_goal'])
-            #print("obs['desired_goal']",obs['desired_goal'])
-            if counter==499:
+            if counter==config['max_episode_steps']-2:
                 error = abs(obs['achieved_goal'] - obs['desired_goal'])
-                #print("error:", error)
-                #print("errorMagnitude:", np.linalg.norm(error))
-                #print("obs['achieved_goal']",obs['achieved_goal'])
-                #print("obs['desired_goal']",obs['desired_goal'])
                 mae = np.linalg.norm(error) + mae
                 squaredError += np.sum(error**2)
                 avgJntVel = np.linalg.norm(action) + avgJntVel
@@ -104,7 +119,7 @@ def load_model(parentDir,config,steps, algorithm,env):
         
 def main():
 
-    with open('configTQC.yaml') as f:
+    with open('configPPO.yaml') as f:
         config = yaml.load(f, Loader=SafeLoader)
 
     currentDir = os.getcwd()
@@ -119,14 +134,15 @@ def main():
         algorithm = TQC
     
     env = gym.make(config['envName'], render=config['render'])
-    
-    env._max_episode_steps = 700
+    env._max_episode_steps = config['max_episode_steps']
     
     if config['mode'] == True:
-        env = make_vec_env('PandaReach-v2', n_envs=config['n_envs'])
-        
+        env = make_vec_env('PandaReach-v2', n_envs=config['n_envs']) 
         train(config,algorithm, env)
-        
+        env = gym.make(config['envName'], render=config['render'])
+        env._max_episode_steps = config['max_episode_steps']
+        time.sleep(10)
+        load_model(currentDir,config,config['testSamples'], algorithm,env)
     else:
         load_model(currentDir,config,config['testSamples'], algorithm,env)
     print("DONE!!!")
@@ -135,9 +151,9 @@ if __name__=='__main__':
     main()
     device = th.device('cuda' if th.cuda.is_available() else 'cpu')
     if device.type=='cuda':
-    	print("number of device",th.cuda.device_count())
-    	print("current device:",th.cuda.current_device())
-    	print("device name:",th.cuda.get_device_name())
-    	print('Allocated:', round(th.cuda.memory_allocated(0)/1024**3,1), 'GB')
-    	print('Cached:   ', round(th.cuda.memory_reserved(0)/1024**3,1), 'GB')
+        print("number of device",th.cuda.device_count())
+        print("current device:",th.cuda.current_device())
+        print("device name:",th.cuda.get_device_name())
+        print('Allocated:', round(th.cuda.memory_allocated(0)/1024**3,1), 'GB')
+        print('Cached:   ', round(th.cuda.memory_reserved(0)/1024**3,1), 'GB')
     

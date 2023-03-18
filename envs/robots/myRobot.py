@@ -28,11 +28,11 @@ class MYROBOT(PyBulletRobot):
         sim: PyBullet,
         block_gripper: bool = False,
         base_position: np.ndarray = np.array([0.0, 0.0, 0.0]),
-        control_type: str = "joints", 
+        control_type: str = "joints",
+        config: dict = None
     ) -> None:
-        
-        self.kinematic = KINEMATICS('/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf')
-        #self.kinematic = KINEMATICS('/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf')
+        self.config = config
+        self.kinematic = KINEMATICS(self.config['urdfPath'])
         self.block_gripper = block_gripper
         self.control_type = control_type
         n_action = 3 if self.control_type == "ee" else 7  # control (x, y z) if "ee", else, control the 7 joints
@@ -41,8 +41,6 @@ class MYROBOT(PyBulletRobot):
         self.networkAction = np.zeros(7)
         action_space = spaces.Box(-1.0, 1.0, shape=(n_action,), dtype=np.float32)
             
-            
-        
         self.jointLimitLow = np.array([-math.pi, 0, -2.9, -math.pi, -2.9, 0, -2.9, 0.00, 0.00])
         #self.jointLimitLow =np.array([0, math.pi/4-0.01, 0.00, 0.00, 0.00, 0, 0.00, 0.00, 0.00])
         self.jointLimitHigh = np.array([math.pi, math.pi/2, 2.9, 0.00, 2.9, 3.8, 2.9, 0.00,0.00])
@@ -83,12 +81,12 @@ class MYROBOT(PyBulletRobot):
 
         ## v_in = v_in*threshold/norm(vi) 
 
-        ## v_in normalize et 
+        ## TODO v_in normalize et 
         q_dot_out = PyKDL.JntArray(self.kinematic.numbOfJoints)
         self.kinematic.ikVelKDL.CartToJnt(q_in, v_in, q_dot_out)
 
         j_kdl = PyKDL.Jacobian(self.kinematic.numbOfJoints)
-        #self.kinematic.jacSolver.JntToJac(q_in, j_kdl)
+        self.kinematic.jacSolver.JntToJac(q_in, j_kdl)
         #print("j_kdl:", j_kdl)
         for i in range(7):
             wdlsAction[i] = q_dot_out[i]
@@ -97,20 +95,14 @@ class MYROBOT(PyBulletRobot):
 
     def set_action(self, action: np.ndarray, obs) -> None:
         action = action.copy()  # ensure action don't change
-        #action = 0*action
-        #self.networkAction = action
-        #print("network Action inmyRobot.py:", self.networkAction)
-        ## network output 10a böl
-        self.wdlsAction = self.calActionWDLS(obs)
-        #print("wdlsAction Action inmyRobot.py:", self.wdlsAction)
-        #action = self.wdlsAction
-        action = self.wdlsAction
+        ## TODO network output 10a böl
+        action = action/5
         #print("action:", action)
-        #print("self.actionspacelow n reach.py:", self.action_space.high)
+        if self.config['pseudoI']==True:
+            action = self.calActionWDLS(obs) + action
+
         action = np.clip(action, self.action_space.low, self.action_space.high)
-        #print("wdlsAction in myrobot.py:", wdlsAction)
-        #print("obs in myRobot.py",obs)
-        
+
         if self.control_type == "ee":
             ee_displacement = action[:3]
             target_arm_angles = self.ee_displacement_to_target_arm_angles(ee_displacement)
@@ -177,10 +169,8 @@ class MYROBOT(PyBulletRobot):
             obs = np.concatenate((currentJointAngles, currentJoinVelocities, [fingers_width]))
         else:
             obs = np.concatenate((currentJointAngles, currentJoinVelocities))
-            #obs = np.concatenate((currentJointAngles, self.wdlsAction))
-            #obs = np.concatenate((obs, self.wdlsAction))
-            #obs = np.concatenate((obs, self.networkAction))
-            #print("obs in panda:", obs)
+
+        #print("obs:", obs)
         return obs
 
     def reset(self) -> None:
@@ -190,11 +180,13 @@ class MYROBOT(PyBulletRobot):
 
     def set_joint_neutral(self) -> None:
         """Set the robot to its neutral pose."""
-        seed=None
-        np_random, seed = gym.utils.seeding.np_random(seed)
-        sampledAngles = np_random.uniform(self.jointLimitLow, self.jointLimitHigh)
-        self.set_joint_angles(sampledAngles)
-        #self.set_joint_angles(self.neutral_joint_values)
+        if self.config['randomStart']==True:
+            seed=None
+            np_random, seed = gym.utils.seeding.np_random(seed)
+            sampledAngles = np_random.uniform(self.jointLimitLow, self.jointLimitHigh)
+            self.set_joint_angles(sampledAngles)
+        else:
+            self.set_joint_angles(self.neutral_joint_values)
 
     def get_fingers_width(self) -> float:
         """Get the distance between the fingers."""

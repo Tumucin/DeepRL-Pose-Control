@@ -4,6 +4,8 @@ from panda_gym.envs.robots.panda import Panda
 from panda_gym.envs.robots.myRobot import MYROBOT
 from panda_gym.envs.tasks.reach import Reach
 from panda_gym.pybullet import PyBullet
+import yaml
+from yaml.loader import SafeLoader
 
 class PandaReachEnv(RobotTaskEnv):
     """Reach task wih Panda robot.
@@ -18,7 +20,9 @@ class PandaReachEnv(RobotTaskEnv):
     def __init__(self, render: bool = False, reward_type: str = "sparse", control_type: str = "joints") -> None:
         control_type = "joints"
         reward_type = "dense"
+        with open('/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/configPPO.yaml') as f:
+            config = yaml.load(f, Loader=SafeLoader)
         sim = PyBullet(render=render)
-        robot = MYROBOT(sim, block_gripper=True, base_position=np.array([-0.6, 0.0, 0.0]), control_type=control_type)
-        task = Reach(sim, reward_type=reward_type, get_ee_position=robot.get_ee_position)
+        robot = MYROBOT(sim, block_gripper=True, base_position=np.array([-0.6, 0.0, 0.0]), control_type=control_type, config=config)
+        task = Reach(sim, reward_type=reward_type, get_ee_position=robot.get_ee_position, goal_range=config['goal_range'],config=config)
         super().__init__(robot, task)
