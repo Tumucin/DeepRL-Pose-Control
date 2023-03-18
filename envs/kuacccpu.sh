@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 #
 # You should only work under the /scratch/users/<username> directory.
 #
@@ -22,14 +22,12 @@
 
 # -= Resources =-
 #
-#SBATCH --job-name=TestGPU
+#SBATCH --job-name=kuacccpuexp4
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --partition=mid
-#SBATCH --gres=gpu:tesla_t4:1
-#SBATCH --mem-per-cpu=8G
 #SBATCH --time=1-0
-#SBATCH --output=kugpu.out
+#SBATCH --output=kuacccpuexp4.out
 #SBATCH --mail-type=END
 #SBATCH --mail-user=tbal21@ku.edu.tr
 
@@ -39,8 +37,8 @@
 
 ## Load Python 3.6.3
 echo "Activating Python 3.6.3..."
-#module load python/3.6.3
-#module load anaconda/3.6
+module load python/3.6.1
+
 ## Load GCC-7.2.1
 echo "Activating GCC-7.2.1..."
 module load gcc/7.2.1
@@ -63,7 +61,8 @@ echo "==========================================================================
 # Command 1 for matrix
 echo "Running Python script..."
 # Put Python script command below
-export PYTHONPATH="/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/utils"
+
+#export PYTHONPATH="/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/utils"
 python3 trainTest.py
 # Command 2 for matrix
 echo "Running G++ compiler..."

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 #
 # You should only work under the /scratch/users/<username> directory.
 #
@@ -19,15 +19,20 @@
 #   - Put this script and all the input file under the same directory.
 #   - Submit this file using:
 #      sbatch examle_submit.sh
-
+#
 # -= Resources =-
 #
-#SBATCH --job-name=Test
-#SBATCH --nodes=3
-#SBATCH --ntasks-per-node=8
-#SBATCH --partition=mid
-#SBATCH --time=1-0
-#SBATCH --output=kucpu.out
+
+#SBATCH --job-name=kutemcpu
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=24
+#SBATCH --nodelist=rk01
+#SBATCH --partition=kutem
+#SBATCH --qos=kutem
+#SBATCH --account=kutem
+##SBATCH --gres=gpu:tesla_a100:1  
+#SBATCH --time=04:00:00
+#SBATCH --output=kutemcpu.out
 #SBATCH --mail-type=END
 #SBATCH --mail-user=tbal21@ku.edu.tr
 
@@ -35,13 +40,16 @@
 ##################### !!! DO NOT EDIT BELOW THIS LINE !!! ######################
 ################################################################################
 
-## Load Python 3.6.3
-echo "Activating Python 3.6.3..."
-module load python/3.6.1
+## Load Python 3.8.6
+echo "Activating Python 3.8.6..."
+#module load python/3.8.6
 
-## Load GCC-7.2.1
-echo "Activating GCC-7.2.1..."
-module load gcc/7.2.1
+module load anaconda/2022.05
+source activate stableBaselines
+
+## Load GCC-9.1.0
+echo "Activating GCC-9.1.0..."
+module load gcc/9.1.0
 
 echo ""
 echo "======================================================================================"
@@ -61,9 +69,10 @@ echo "==========================================================================
 # Command 1 for matrix
 echo "Running Python script..."
 # Put Python script command below
-
-#export PYTHONPATH="/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/utils"
+echo "First Script..."
 python3 trainTest.py
+echo "Second Script..."
+#python3 test.py
 # Command 2 for matrix
 echo "Running G++ compiler..."
 # Put g++ compiler command below

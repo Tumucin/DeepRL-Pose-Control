@@ -23,17 +23,17 @@
 # -= Resources =-
 #
 
-#SBATCH --job-name=testTmcn
+#SBATCH --job-name=tmcnkutemgpu
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=2
+#SBATCH --ntasks-per-node=1
 #SBATCH --nodelist=rk02
 #SBATCH --partition=kutem_gpu
 #SBATCH --qos=kutem
 #SBATCH --account=kutem
-##SBATCH --gres=gpu:tesla_a100:1  
+#SBATCH --gres=gpu:tesla_a100:1  
 #SBATCH --time=02:00:00
 #SBATCH --output=kutemgpu.out
-#SBATCH --mail-type=ALL
+#SBATCH --mail-type=END
 #SBATCH --mail-user=tbal21@ku.edu.tr
 
 ################################################################################
@@ -42,7 +42,9 @@
 
 ## Load Python 3.8.6
 echo "Activating Python 3.8.6..."
-module load python/3.8.6
+#module load python/3.8.6
+module load anaconda/2022.05
+source activate stableBaselines
 
 ## Load GCC-9.1.0
 echo "Activating GCC-9.1.0..."
@@ -67,9 +69,7 @@ echo "==========================================================================
 echo "Running Python script..."
 # Put Python script command below
 echo "First Script..."
-python3 test.py
-echo "Second Script..."
-python3 test.py
+python3 trainTest.py
 # Command 2 for matrix
 echo "Running G++ compiler..."
 # Put g++ compiler command below

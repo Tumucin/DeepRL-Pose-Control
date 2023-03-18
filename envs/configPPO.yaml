@@ -1,31 +1,31 @@
-modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modeltest'
-logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/logtest'
-urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
-#modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modeltest'
-#logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/logtest'
-#urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
+#modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modeltest'
+#logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/logtest'
+#urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
+modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/model'
+logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/log'
+urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
 expNumber: "5"
-curriNumber: "6" 
+curriNumber: "1" 
 envName: "PandaReach-v2"             
-total_timesteps: !!float 1000
-mode: True                           
+total_timesteps: !!float 1000000
+mode: False                           
 algorithm: "PPO"                    
 policy: "MultiInputPolicy"           
 render: False                        
 gamma: 0.95 
-n_steps: 2048
-batch_size: 512
+n_steps: 256
+batch_size: 128
 learning_rate: 0.0003
 n_envs: 1
 testSamples: 10
 max_episode_steps: 700
 verbose: 1
 pseudoI: False
-save_freq: 50000 
+save_freq: 5000000 
 sampleJointAnglesGoal: False # If this is false, then you should determine goal_range value
-goal_range: 0.3
+goal_range: 0.6
 randomStart: False # If this is false, then you should determine neutral joint angles.. These values are defined in myrobot.py
-curriLearning: True  # If this is true, than determine curriNumber
+curriLearning: False  # If this is true, than determine curriNumber
 
 
 
