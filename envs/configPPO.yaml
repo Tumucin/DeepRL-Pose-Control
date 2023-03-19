@@ -1,10 +1,10 @@
-#modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modeltest'
-#logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/logtest'
-#urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
-modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
-logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
-urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
-expNumber: "2"
+modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
+logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
+urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
+#modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
+#logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
+#urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
+expNumber: "1"
 curriNumber: "1" 
 envName: "PandaReach-v2"             
 total_timesteps: !!float 3000

@@ -1,16 +1,17 @@
-#modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/model'
-#logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/log'
-#urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
-#bufferPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/buffertest/'
-modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/model'
-logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/log'
-urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
-expNumber: "69"
-curriNumber: "70" 
+modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
+logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
+urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
+bufferPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/bufferhpc/'
+#modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
+#logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
+#urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
+#bufferPath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/bufferhpc'
+expNumber: "2"
+curriNumber: "3" 
 envName: "PandaReach-v2"   
 total_timesteps: 500
 learning_starts: 100
-mode: False  
+mode: True  
 algorithm: "TQC" 
 policy: "MultiInputPolicy"
 render: False
@@ -18,15 +19,15 @@ gamma: 0.95
 batch_size: 512
 learning_rate: 0.001
 n_envs: 1
-testSamples: 1000
-max_episode_steps: 700
+testSamples: 1
+max_episode_steps: 800
 verbose: 1 
 pseudoI: False 
 save_freq: 50000
 sampleJointAnglesGoal: False # If this is false, then you should determine goal_range value
-goal_range: 0.3
+goal_range: 0.4
 randomStart: False # If this is false, then you should determine neutral joint angles.. These values are defined in myrobot.py
-curriLearning: False  
+curriLearning: True  
 lambdaErr: 20.0
 accelerationConstant: 0.005
 velocityConstant: 0.0
