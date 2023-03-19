@@ -96,10 +96,11 @@ class Reach(Task):
         get_joint_angle = np.array([self.sim.get_joint_angle("panda",joint=i) for i in range(7)])
         currentJointAccelerations = (currentJointVelocities - self.previousJointVelocities)/(self.sim.timestep)
         self.previousJointVelocities = currentJointVelocities
-        lambdaErr = 100.0
-        accelerationConstant = 0.0
-        velocityConst = 7.0
-        velocityThreshold = 0.08
+        lambdaErr = self.config['lambdaErr']
+        accelerationConstant = self.config['accelerationConstant']
+        velocityConst = self.config['velocityConstant']
+        velocityThreshold = self.config['velocityThreshold']
+        thresholdConstant = self.config['thresholdConstant']
         if self.reward_type == "sparse":
             #if type(d)=='float' and d > 0.005:
             #    return np.exp(-(lambdaErr)*(d*d)) - accelerationConstant*np.linalg.norm(currentJointAccelerations)
@@ -114,5 +115,5 @@ class Reach(Task):
              #       np.array(d < self.distance_threshold, dtype=np.float64)*np.array(np.linalg.norm(currentJointVelocities) < 0.2, dtype=np.float64) 
                     #np.array(d < self.distance_threshold, dtype=np.float64) + \
             return np.exp(-(lambdaErr)*(d*d)) - accelerationConstant*np.linalg.norm(currentJointAccelerations) - (velocityConst*np.linalg.norm(currentJointVelocities))/(1+d)+ \
-                   2*np.array(d < self.distance_threshold, dtype=np.float64)*np.array(np.linalg.norm(currentJointVelocities) < velocityThreshold, dtype=np.float64)     
+                   thresholdConstant*np.array(d < self.distance_threshold, dtype=np.float64)*np.array(np.linalg.norm(currentJointVelocities) < velocityThreshold, dtype=np.float64)     
             #return -np.array(d > self.distance_threshold, dtype=np.float64)   

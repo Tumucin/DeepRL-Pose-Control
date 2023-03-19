@@ -1,16 +1,16 @@
-modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modeltest'
-logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/logtest'
-urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
-bufferPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/buffertest/'
-#modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modeltest'
-#logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/logtest'
-#urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
+#modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/model'
+#logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/log'
+#urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
+#bufferPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/buffertest/'
+modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/model'
+logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/log'
+urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
 expNumber: "69"
 curriNumber: "70" 
 envName: "PandaReach-v2"   
 total_timesteps: 500
 learning_starts: 100
-mode: True  
+mode: False  
 algorithm: "TQC" 
 policy: "MultiInputPolicy"
 render: False
@@ -18,7 +18,7 @@ gamma: 0.95
 batch_size: 512
 learning_rate: 0.001
 n_envs: 1
-testSamples: 10
+testSamples: 1000
 max_episode_steps: 700
 verbose: 1 
 pseudoI: False 
@@ -27,7 +27,11 @@ sampleJointAnglesGoal: False # If this is false, then you should determine goal_
 goal_range: 0.3
 randomStart: False # If this is false, then you should determine neutral joint angles.. These values are defined in myrobot.py
 curriLearning: False  
-
+lambdaErr: 20.0
+accelerationConstant: 0.005
+velocityConstant: 0.0
+velocityThreshold: 0.08
+thresholdConstant: 0.0
 # TODO env = VecNormalize(env, norm_obs=True, norm_reward=True,
                    #clip_obs=10.)
 

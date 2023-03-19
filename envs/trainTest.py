@@ -141,7 +141,7 @@ def main():
         train(config,algorithm, env)
         env = gym.make(config['envName'], render=config['render'])
         env._max_episode_steps = config['max_episode_steps']
-        time.sleep(10)
+        time.sleep(5)
         load_model(currentDir,config,config['testSamples'], algorithm,env)
     else:
         load_model(currentDir,config,config['testSamples'], algorithm,env)
