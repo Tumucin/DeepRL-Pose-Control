@@ -22,12 +22,12 @@
 
 # -= Resources =-
 #
-#SBATCH --job-name=PPOexp1
+#SBATCH --job-name=PPOexp12
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --partition=mid
 #SBATCH --time=1-0
-#SBATCH --output=PPOexp1.out
+#SBATCH --output=PPOexp12.out
 #SBATCH --mail-type=END
 #SBATCH --mail-user=tbal21@ku.edu.tr
 
