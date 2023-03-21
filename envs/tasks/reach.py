@@ -101,6 +101,7 @@ class Reach(Task):
         velocityConst = self.config['velocityConstant']
         velocityThreshold = self.config['velocityThreshold']
         thresholdConstant = self.config['thresholdConstant']
+        alpha = self.config['alpha']
         if self.reward_type == "sparse":
             #if type(d)=='float' and d > 0.005:
             #    return np.exp(-(lambdaErr)*(d*d)) - accelerationConstant*np.linalg.norm(currentJointAccelerations)
@@ -114,6 +115,6 @@ class Reach(Task):
             #return -d + \
              #       np.array(d < self.distance_threshold, dtype=np.float64)*np.array(np.linalg.norm(currentJointVelocities) < 0.2, dtype=np.float64) 
                     #np.array(d < self.distance_threshold, dtype=np.float64) + \
-            return np.exp(-(lambdaErr)*(d*d)) - accelerationConstant*np.linalg.norm(currentJointAccelerations) - (velocityConst*np.linalg.norm(currentJointVelocities))/(1+d)+ \
+            return np.exp(-(lambdaErr)*(d*d)) - accelerationConstant*np.linalg.norm(currentJointAccelerations) - (velocityConst*np.linalg.norm(currentJointVelocities))/(1+alpha*d)+ \
                    thresholdConstant*np.array(d < self.distance_threshold, dtype=np.float64)*np.array(np.linalg.norm(currentJointVelocities) < velocityThreshold, dtype=np.float64)     
             #return -np.array(d > self.distance_threshold, dtype=np.float64)   

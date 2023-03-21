@@ -23,16 +23,16 @@
 # -= Resources =-
 #
 
-#SBATCH --job-name=kutemcpu
+#SBATCH --job-name=PPOexpnumber
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=24
+#SBATCH --ntasks-per-node=1
 #SBATCH --nodelist=rk01
 #SBATCH --partition=kutem
 #SBATCH --qos=kutem
 #SBATCH --account=kutem
 ##SBATCH --gres=gpu:tesla_a100:1  
 #SBATCH --time=04:00:00
-#SBATCH --output=kutemcpu.out
+#SBATCH --output=PPPexpnumber.out
 #SBATCH --mail-type=END
 #SBATCH --mail-user=tbal21@ku.edu.tr
 
@@ -42,10 +42,12 @@
 
 ## Load Python 3.8.6
 echo "Activating Python 3.8.6..."
-#module load python/3.8.6
-
-module load anaconda/2022.05
-source activate stableBaselines
+module load python/3.8.6
+#module load python/3.8.0
+#module load anaconda/2022.05
+#conda init --all
+#source activate stableBaselines
+#conda activate stableBaselines
 
 ## Load GCC-9.1.0
 echo "Activating GCC-9.1.0..."
@@ -70,6 +72,8 @@ echo "==========================================================================
 echo "Running Python script..."
 # Put Python script command below
 echo "First Script..."
+which python
+python --version
 python3 trainTest.py
 echo "Second Script..."
 #python3 test.py

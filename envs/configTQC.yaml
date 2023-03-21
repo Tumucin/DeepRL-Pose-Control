@@ -33,6 +33,7 @@ accelerationConstant: 0.005
 velocityConstant: 0.0
 velocityThreshold: 0.08
 thresholdConstant: 0.0
+alpha: 10
 # TODO env = VecNormalize(env, norm_obs=True, norm_reward=True,
                    #clip_obs=10.)
 

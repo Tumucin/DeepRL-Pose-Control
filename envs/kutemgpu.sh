@@ -23,7 +23,7 @@
 # -= Resources =-
 #
 
-#SBATCH --job-name=tmcnkutemgpu
+#SBATCH --job-name=algorithmexpnumber
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --nodelist=rk02
@@ -32,7 +32,7 @@
 #SBATCH --account=kutem
 #SBATCH --gres=gpu:tesla_a100:1  
 #SBATCH --time=02:00:00
-#SBATCH --output=kutemgpu.out
+#SBATCH --output=algorithmexpnumber.out
 #SBATCH --mail-type=END
 #SBATCH --mail-user=tbal21@ku.edu.tr
 
@@ -42,9 +42,9 @@
 
 ## Load Python 3.8.6
 echo "Activating Python 3.8.6..."
-#module load python/3.8.6
-module load anaconda/2022.05
-source activate stableBaselines
+module load python/3.8.6
+#module load anaconda/2022.05
+#source activate stableBaselines
 
 ## Load GCC-9.1.0
 echo "Activating GCC-9.1.0..."

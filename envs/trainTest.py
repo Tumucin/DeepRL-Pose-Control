@@ -1,3 +1,6 @@
+import sys
+sys.path.append('/scratch/users/tbal21/.conda/envs/stableBaselines/lib/python3.8/site-packages')
+sys.path.append('/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym')
 import gym
 #import gymnasium as gym
 import panda_gym
@@ -7,7 +10,6 @@ from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.callbacks import CheckpointCallback
 import argparse
 import os 
-import sys
 import yaml
 from yaml.loader import SafeLoader
 from sb3_contrib import TQC
@@ -32,7 +34,7 @@ class TRAINTEST():
                 print("NORMAL LEARNING FOR PPO")
                 policy_kwargs = dict(activation_fn=th.nn.ReLU, net_arch=[dict(pi=[128, 128], vf=[128,128,])])
 
-                model = algorithm(policy=self.config['policy'], env=env, n_steps=self.config['n_steps'],verbose=self.config['verbose'], batch_size=self.config['batch_size'], learning_rate=self.config['learning_rate'],
+                model = algorithm(policy=self.config['policy'], env=env, n_steps=self.config['n_steps'],n_epochs=self.config['n_epochs'],verbose=self.config['verbose'], batch_size=self.config['batch_size'], learning_rate=self.config['learning_rate'],
                                 tensorboard_log=logDir+"/"+self.config['envName']+"_"+self.config['algorithm'],policy_kwargs=policy_kwargs)
         
         if self.config['algorithm']=="DDPG":

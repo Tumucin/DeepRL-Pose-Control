@@ -96,7 +96,7 @@ class MYROBOT(PyBulletRobot):
     def set_action(self, action: np.ndarray, obs) -> None:
         action = action.copy()  # ensure action don't change
         ## TODO network output 10a böl
-        #action = action/5
+        action = action/5
         #print("action:", action)
         if self.config['pseudoI']==True:
             action = self.calActionWDLS(obs) + action
