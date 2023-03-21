@@ -9,7 +9,6 @@ import yaml
 #import PyKDL
 import PyKDL
 from ..utils.kinematics import KINEMATICS
-    
 #import PyKDL
 class Reach(Task):
     def __init__(
@@ -28,9 +27,9 @@ class Reach(Task):
         self.distance_threshold = distance_threshold
         self.get_ee_position = get_ee_position
         self.goal_range_low = np.array([-goal_range / 2, -goal_range / 2, 0])
-        self.jointLimitLow = np.array([-math.pi, 0, -2.9, -math.pi, -2.9, 0, -2.9])
+        self.jointLimitLow = np.array([-math.pi/3, -0.09-math.pi/6, 0.00, -1.85, 0.00, 2.26, 0.79])
         #self.jointLimitLow = np.array([0, math.pi/4-0.3, 0.00, 0.00, 0.00, 0, 0.00])
-        self.jointLimitHigh = np.array([math.pi, math.pi/2, 2.9, 0.00, 2.9, 3.8, 2.9])
+        self.jointLimitHigh = np.array([math.pi/3, -0.09+math.pi/6, 0.00, -1.85, 0.00, 2.26, 0.79])
         #self.jointLimitHigh = np.array([0, math.pi/4+0.3, 0.00, 0.00, 0.00, 0, 0.00])
         self.goal_range_high = np.array([goal_range / 2, goal_range / 2, goal_range])
             
@@ -75,10 +74,11 @@ class Reach(Task):
             q_in[0], q_in[1], q_in[2], q_in[3] =sampledAngles[0], sampledAngles[1], sampledAngles[2], sampledAngles[3]
             q_in[4], q_in[5], q_in[6] = sampledAngles[4], sampledAngles[5], sampledAngles[6]
             goalFrame = self.kinematics.forwardKinematicsPoseSolv(q_in)
-            goalFrame.p[0] = goalFrame.p[0] -0.6
+            goalFrame.p[0] = goalFrame.p[0] #+0.6
             goal[0], goal[1], goal[2] = goalFrame.p[0], goalFrame.p[1], goalFrame.p[2]
             #goal = np.array([0.0,0.00,0.00])
-            #print("goal in reach.py:", goal)
+        
+        #print("goal in reach.py:", goal)
         return goal
 
     def is_success(self, achieved_goal: np.ndarray, desired_goal: np.ndarray) -> Union[np.ndarray, float]:

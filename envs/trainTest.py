@@ -16,6 +16,8 @@ from sb3_contrib import TQC
 import time
 import numpy as np
 import torch as th
+import matplotlib.pyplot as plt
+
 
 class TRAINTEST():
     def __init__(self, config):
@@ -95,11 +97,19 @@ class TRAINTEST():
         successRate1 = 0.0
         successRate5 = 0.0
         avgJntVel = 0.0
+        #xPoints = []
+        #yPoints = []
+        #zPoints = []
         for step in range(self.config['testSamples']):
             print("step:", step)
             counter = 0        
             done = False
             obs = env.reset()
+            goal = obs['desired_goal']
+            #xPoints.append(goal[0][0])
+            #yPoints.append(goal[0][1])
+            #zPoints.append(goal[0][2])
+            #plt.plot(goal[0][0], goal[0][1])
             episode_reward = 0.0
             while not done:
                 counter+=1
@@ -123,6 +133,17 @@ class TRAINTEST():
                 #env.render()
             #print("episode reward is:", episode_reward)
         #print("Squared Error:",squaredError)
+        #plt.plot(xPoints, yPoints, 'o')
+        #plt.xlabel("x [m]")
+        #plt.ylabel("y [m]")
+        #plt.savefig('Workspace_3_xy.png')
+        #plt.close()
+        #plt.plot(xPoints, zPoints, 'o')
+        #plt.xlabel("x [m]")
+        #plt.ylabel("z [m]")
+        #plt.savefig('Workspace_3_xz.png')
+        #plt.close()
+        #plt.show()
         print("RMSE:", np.sqrt((squaredError)/(self.config['testSamples'])))
         print("MAE:", mae/self.config['testSamples'])
         print("Success Rate 1 cm:", successRate1/self.config['testSamples'])

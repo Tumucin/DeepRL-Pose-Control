@@ -41,9 +41,9 @@ class MYROBOT(PyBulletRobot):
         self.networkAction = np.zeros(7)
         action_space = spaces.Box(-1.0, 1.0, shape=(n_action,), dtype=np.float32)
             
-        self.jointLimitLow = np.array([-math.pi, 0, -2.9, -math.pi, -2.9, 0, -2.9, 0.00, 0.00])
+        self.jointLimitLow = np.array([-0.1, 0, -2.9, -math.pi, -2.9, 0, -2.9, 0.00, 0.00])
         #self.jointLimitLow =np.array([0, math.pi/4-0.01, 0.00, 0.00, 0.00, 0, 0.00, 0.00, 0.00])
-        self.jointLimitHigh = np.array([math.pi, math.pi/2, 2.9, 0.00, 2.9, 3.8, 2.9, 0.00,0.00])
+        self.jointLimitHigh = np.array([0.1, math.pi/2, 2.9, 0.00, 2.9, 3.8, 2.9, 0.00,0.00])
         #self.jointLimitHigh = np.array([0, math.pi/4+0.01, 0.00, 0.00, 0.00, 0, 0.00, 0.00, 0.00])
         super().__init__(
             sim,
@@ -56,7 +56,7 @@ class MYROBOT(PyBulletRobot):
         )
 
         self.fingers_indices = np.array([9, 10])
-        self.neutral_joint_values = np.array([0.00, 0.41, 0.00, -1.85, 0.00, 2.26, 0.79, 0.00, 0.00])
+        self.neutral_joint_values = np.array([0.00, 0.5, 0.00, -1.85, 0.00, 2.26, 0.79, 0.00, 0.00])
         #self.neutral_joint_values = np.array([0.00, 0.41, 0.00, -1.85, 0.00, 2.26, 0.79, 0.00, 0.00])
         #self.neutral_joint_values = np.array([0.00, math.pi/2, 0.00, -0.00, 0.00, 0.00, 0.00, 0.00, 0.00])
         self.ee_link = 11
@@ -97,6 +97,7 @@ class MYROBOT(PyBulletRobot):
         action = action.copy()  # ensure action don't change
         ## TODO network output 10a böl
         action = action/5
+        #action = 0*action
         #print("action:", action)
         if self.config['pseudoI']==True:
             action = self.calActionWDLS(obs) + action
