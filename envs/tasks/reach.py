@@ -27,9 +27,9 @@ class Reach(Task):
         self.distance_threshold = distance_threshold
         self.get_ee_position = get_ee_position
         self.goal_range_low = np.array([-goal_range / 2, -goal_range / 2, 0])
-        self.jointLimitLow = np.array([-math.pi/3, -0.09-math.pi/6, 0.00, -1.85, 0.00, 2.26, 0.79])
+        self.jointLimitLow = np.array([-math.pi/2, -0.09-math.pi/4, 0.00, -1.85, 0.00, 2.26, 0.79])
         #self.jointLimitLow = np.array([0, math.pi/4-0.3, 0.00, 0.00, 0.00, 0, 0.00])
-        self.jointLimitHigh = np.array([math.pi/3, -0.09+math.pi/6, 0.00, -1.85, 0.00, 2.26, 0.79])
+        self.jointLimitHigh = np.array([math.pi/2, -0.09+math.pi/4, 0.00, -1.85, 0.00, 2.26, 0.79])
         #self.jointLimitHigh = np.array([0, math.pi/4+0.3, 0.00, 0.00, 0.00, 0, 0.00])
         self.goal_range_high = np.array([goal_range / 2, goal_range / 2, goal_range])
             
