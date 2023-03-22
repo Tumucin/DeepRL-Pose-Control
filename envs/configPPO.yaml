@@ -1,14 +1,14 @@
-#modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
-#logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
-#urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
-modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
-logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
-urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
-expNumber: 101
+modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
+logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
+urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
+#modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
+#logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
+#urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
+expNumber: 92
 curriNumber: 69
 envName: "PandaReach-v2"             
 total_timesteps: !!float 6e6
-mode: True                           
+mode: False                           
 algorithm: "PPO"                    
 policy: "MultiInputPolicy"           
 render: False                        
@@ -18,7 +18,7 @@ n_epochs: 10
 batch_size: 1024
 learning_rate: 0.0003
 n_envs: 8
-testSamples: 1000
+testSamples: 10
 max_episode_steps: 800
 verbose: 1
 pseudoI: False
