@@ -1,46 +1,53 @@
+#################### PATHS ####################
 modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
 logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
 urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
 #modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
 #logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
 #urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
-expNumber: 92
-curriNumber: 69
-envName: "PandaReach-v2"             
-total_timesteps: !!float 6e6
-mode: False                           
-algorithm: "PPO"                    
+expNumber: 115
+envName: "PandaReach-v2"            
+total_timesteps: !!float 10000
+mode: True                           
+algorithm: "PPO"                 
 policy: "MultiInputPolicy"           
 render: False                        
 gamma: 0.95 
-n_steps: 2048
+n_steps: 800
 n_epochs: 10
-batch_size: 1024
+batch_size: 128
 learning_rate: 0.0003
-n_envs: 8
-testSamples: 10
+n_envs: 5
+testSamples: 2
 max_episode_steps: 800
 verbose: 1
 pseudoI: False
-save_freq: !!float 100e6 
+save_freq: !!float 100e6
 sampleJointAnglesGoal: True     # If this is false, then you should determine goal_range value
 goal_range: 0.3
-randomStart: False              # If this is false, then you should determine neutral joint angles.. These values are defined in myrobot.py
-curriLearning: False            # If this is true, than determine curriNumber
+randomStart: True              # If this is false, then you should determine neutral joint angles.. These values are defined in myrobot.py
 lambdaErr: 20.0
-accelerationConstant: 0.00
+accelerationConstant: 0.5
 velocityConstant: 0.0
 velocityThreshold: 0.05
 thresholdConstant: 0.0
 alpha: 1.0
+
+activation_fn: 1 # ReLU:1, Tanh: 0
+hiddenUnits: 128
+
+workSpaces:
+     W1: [1,2,3]
+     W2: [4,5,6]
 
 # TODO env = VecNormalize(env, norm_obs=True, norm_reward=True,
                    #clip_obs=10.)
 
 ######
 #policy_kwargs= dict(
-#                    log_std_init=-2,
-#                 ortho_init=False,
-#                    activation_fn=th.nn.ReLU,
-#                    net_arch=dict(pi=[128, 128], vf=[128, 128])
-#                  )
+ #                   log_std_init=-2,
+  #               ortho_init=False,
+   #                 activation_fn=th.nn.ReLU,
+    #                net_arch=dict(pi=[128, 128], vf=[128, 128])
+     #             )
+#policy_kwargs: {"activation_fn": "<class 'torch.nn.modules.activation.ReLU'>"}

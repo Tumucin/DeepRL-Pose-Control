@@ -25,6 +25,6 @@ class PandaReachEnv(RobotTaskEnv):
         with open('/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/configPPO.yaml') as f:
             config = yaml.load(f, Loader=SafeLoader)
         sim = PyBullet(render=render)
-        robot = MYROBOT(sim, block_gripper=True, base_position=np.array([-0.6, 0.0, 0.0]), control_type=control_type, config=config)
+        robot = MYROBOT(sim, block_gripper=True, base_position=np.array([0.00, 0.0, 0.0]), control_type=control_type, config=config)
         task = Reach(sim, reward_type=reward_type, get_ee_position=robot.get_ee_position, goal_range=config['goal_range'],config=config)
         super().__init__(robot, task)

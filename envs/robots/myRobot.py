@@ -29,7 +29,7 @@ class MYROBOT(PyBulletRobot):
         block_gripper: bool = False,
         base_position: np.ndarray = np.array([0.0, 0.0, 0.0]),
         control_type: str = "joints",
-        config: dict = None
+        config: dict=None
     ) -> None:
         self.config = config
         self.kinematic = KINEMATICS(self.config['urdfPath'])
@@ -41,10 +41,24 @@ class MYROBOT(PyBulletRobot):
         self.networkAction = np.zeros(7)
         action_space = spaces.Box(-1.0, 1.0, shape=(n_action,), dtype=np.float32)
             
-        self.jointLimitLow = np.array([-0.1, 0, -2.9, -math.pi, -2.9, 0, -2.9, 0.00, 0.00])
-        #self.jointLimitLow =np.array([0, math.pi/4-0.01, 0.00, 0.00, 0.00, 0, 0.00, 0.00, 0.00])
-        self.jointLimitHigh = np.array([0.1, math.pi/2, 2.9, 0.00, 2.9, 3.8, 2.9, 0.00,0.00])
-        #self.jointLimitHigh = np.array([0, math.pi/4+0.01, 0.00, 0.00, 0.00, 0, 0.00, 0.00, 0.00])
+        self.workspacesdict = {'W1Low':  np.array([-math.pi/6, -0.09-math.pi/12, 0.00, -1.85, 0.00, 2.26, 0.79]),
+                               'W1High': np.array([+math.pi/6, -0.09+math.pi/12, 0.00, -1.85, 0.00, 2.26, 0.79]),
+                               'W2Low':  np.array([-math.pi/3, -0.09-math.pi/6,  0.00, -1.85, 0.00, 2.26, 0.79]),
+                               'W2High': np.array([+math.pi/3, -0.09+math.pi/6,  0.00, -1.85, 0.00, 2.26, 0.79]),
+                               'W3Low':  np.array([-math.pi/2, -0.09-math.pi/4,  0.00, -1.85, 0.00, 2.26, 0.79]),
+                               'W3High': np.array([+math.pi/2, -0.09+math.pi/4,  0.00, -1.85, 0.00, 2.26, 0.79]),
+                               
+                               'W4Low':  np.array([-math.pi/6, 0.00,      -2.96, 0.00,    -2.9, 0.00, -2.9]),
+                               'W4High': np.array([+math.pi/6, math.pi/6, +2.96, -math.pi, 2.9, 3.8,  +2.9]),
+                               'W5Low':  np.array([-math.pi/3, 0.0,       -2.96, 0.00,    -2.9, 0.00, -2.9]),
+                               'W5High': np.array([+math.pi/3, math.pi/3, +2.96, -math.pi, 2.9, 3.8,  +2.9]),
+                               'W6Low':  np.array([-math.pi/2, 0.00,      -2.96, 0.00,    -2.9, 0.00, -2.9]),
+                               'W6High': np.array([+math.pi/2, math.pi/2, +2.96, -math.pi, 2.9, 3.8,  +2.9]),} 
+        
+        self.jointLimitLow = self.workspacesdict['W1Low']
+        self.jointLimitHigh = self.workspacesdict['W1High']
+        
+        
         super().__init__(
             sim,
             body_name="panda",
@@ -171,7 +185,7 @@ class MYROBOT(PyBulletRobot):
         else:
             obs = np.concatenate((currentJointAngles, currentJoinVelocities))
 
-        #print("obs:", obs)
+        #print("obs in m:", obs)
         return obs
 
     def reset(self) -> None:
@@ -181,6 +195,7 @@ class MYROBOT(PyBulletRobot):
 
     def set_joint_neutral(self) -> None:
         """Set the robot to its neutral pose."""
+        #print("neural joint values in myRobot.py:", self.neutral_joint_values)
         if self.config['randomStart']==True:
             seed=None
             np_random, seed = gym.utils.seeding.np_random(seed)

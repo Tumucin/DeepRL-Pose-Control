@@ -6,20 +6,19 @@ bufferPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/bufferhpc/'
 #logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
 #urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
 #bufferPath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/bufferhpc'
-expNumber: "2"
-curriNumber: "3" 
+expNumber: 5
 envName: "PandaReach-v2"   
-total_timesteps: 500
-learning_starts: 100
-mode: True  
+total_timesteps: 1000
+learning_starts: 900
+mode: False  
 algorithm: "TQC" 
 policy: "MultiInputPolicy"
-render: False
+render: True
 gamma: 0.95
-batch_size: 512
+batch_size: 32
 learning_rate: 0.001
 n_envs: 1
-testSamples: 1
+testSamples: 3
 max_episode_steps: 800
 verbose: 1 
 pseudoI: False 
@@ -27,7 +26,6 @@ save_freq: 50000
 sampleJointAnglesGoal: False # If this is false, then you should determine goal_range value
 goal_range: 0.4
 randomStart: False # If this is false, then you should determine neutral joint angles.. These values are defined in myrobot.py
-curriLearning: True  
 lambdaErr: 20.0
 accelerationConstant: 0.005
 velocityConstant: 0.0
@@ -45,7 +43,7 @@ normalize: True
 buffer_size: 300000
 replay_buffer_kwargs : {'online_sampling' : True,
              'goal_selection_strategy' : 'future',
-             'n_sampled_goal' : 8}
+             'n_sampled_goal' : 4}
 policy_kwargs : {'net_arch' : [128, 128], 
                  'n_critics' : 1}
 
