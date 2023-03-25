@@ -77,13 +77,13 @@ class Reach(Task):
             #print("model timestamp in reach.py:", (self.model._n_updates*self.config['n_steps']*self.config['n_envs'])/(self.config['n_epochs']))
             #print("succes rate is:",safe_mean(self.model.ep_success_buffer))
             pass
+
         goal_range_low = np.array([-self.config['goal_range'] / 2, -self.config['goal_range'] / 2, 0])
         goal_range_high = np.array([self.config['goal_range'] / 2, self.config['goal_range'] / 2, self.config['goal_range']])
         goal = self.np_random.uniform(goal_range_low, goal_range_high)
 
         if self.config['sampleJointAnglesGoal']==True:
             sampledAngles = self.np_random.uniform(self.jointLimitLow, self.jointLimitHigh)
-            #print("sampledAngles:", sampledAngles)
             q_in = PyKDL.JntArray(self.kinematics.numbOfJoints)
             
             q_in[0], q_in[1], q_in[2], q_in[3] =sampledAngles[0], sampledAngles[1], sampledAngles[2], sampledAngles[3]
@@ -91,9 +91,7 @@ class Reach(Task):
             goalFrame = self.kinematics.forwardKinematicsPoseSolv(q_in)
             goalFrame.p[0] = goalFrame.p[0] #+0.6
             goal[0], goal[1], goal[2] = goalFrame.p[0], goalFrame.p[1], goalFrame.p[2]
-            #goal = np.array([0.0,0.00,0.00])
 
-        #print("goal in reach.py:", goal)
         return goal
 
     def is_success(self, achieved_goal: np.ndarray, desired_goal: np.ndarray) -> Union[np.ndarray, float]:
@@ -114,22 +112,11 @@ class Reach(Task):
         lambdaErr = self.config['lambdaErr']
         accelerationConstant = self.config['accelerationConstant']
         velocityConst = self.config['velocityConstant']
-        velocityThreshold = self.config['velocityThreshold']
+        velocityNormThreshold = self.config['velocityNormThreshold']
         thresholdConstant = self.config['thresholdConstant']
         alpha = self.config['alpha']
         if self.reward_type == "sparse":
-            #if type(d)=='float' and d > 0.005:
-            #    return np.exp(-(lambdaErr)*(d*d)) - accelerationConstant*np.linalg.norm(currentJointAccelerations)
-            #else:
-            #    return np.exp(-(lambdaErr)*(d*d)) - accelerationConstant*np.linalg.norm(currentJointAccelerations) - velocityConst*np.linalg.norm(currentJointVelocities)
             return np.exp(-(lambdaErr)*(d*d)) - accelerationConstant*np.linalg.norm(currentJointVelocities)
-            #return -np.array(d > self.distance_threshold, dtype=np.float64) #-np.array(np.linalg.norm(currentJointVelocities) > 0.02, dtype=np.float64)
-            #return -np.array(np.linalg.norm(currentJointVelocities) > 0.02, dtype=np.float64)
-            #return np.exp(-(lambdaErr)*(d*d)) - accelerationConstant*np.linalg.norm(currentJointAccelerations)
         else:
-            #return -d + \
-             #       np.array(d < self.distance_threshold, dtype=np.float64)*np.array(np.linalg.norm(currentJointVelocities) < 0.2, dtype=np.float64) 
-                    #np.array(d < self.distance_threshold, dtype=np.float64) + \
             return np.exp(-(lambdaErr)*(d*d)) - accelerationConstant*np.linalg.norm(currentJointAccelerations) - (velocityConst*np.linalg.norm(currentJointVelocities))/(1+alpha*d)+ \
-                   thresholdConstant*np.array(d < self.distance_threshold, dtype=np.float64)*np.array(np.linalg.norm(currentJointVelocities) < velocityThreshold, dtype=np.float64)     
-            #return -np.array(d > self.distance_threshold, dtype=np.float64)   
+                   thresholdConstant*np.array(d < self.distance_threshold, dtype=np.float64)*np.array(np.linalg.norm(currentJointVelocities) < velocityNormThreshold, dtype=np.float64)     

@@ -139,7 +139,7 @@ def main():
     parser.add_argument('--lambdaErr', type= float, help="")
     parser.add_argument('--accelerationConstant', type= float, help="")
     parser.add_argument('--velocityConstant', type= float, help="")
-    parser.add_argument('--velocityThreshold', type= float, help="")
+    parser.add_argument('--velocityNormThreshold', type= float, help="")
     parser.add_argument('--thresholdConstant', type= float, help="")
     parser.add_argument('--alpha', type= float, help="")
     parser.add_argument('--activation_fn', type= int, help="ReLU:1, Tanh:0")
