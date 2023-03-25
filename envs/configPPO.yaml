@@ -4,10 +4,10 @@
 modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
 logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
 urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
-expNumber: 101
+expNumber: 114
 curriNumber: 69
 envName: "PandaReach-v2"             
-total_timesteps: !!float 6e6
+total_timesteps: !!float 5e6
 mode: True                           
 algorithm: "PPO"                    
 policy: "MultiInputPolicy"           
@@ -27,9 +27,9 @@ sampleJointAnglesGoal: True     # If this is false, then you should determine go
 goal_range: 0.3
 randomStart: False              # If this is false, then you should determine neutral joint angles.. These values are defined in myrobot.py
 curriLearning: False            # If this is true, than determine curriNumber
-lambdaErr: 20.0
-accelerationConstant: 0.00
-velocityConstant: 0.0
+lambdaErr: 100.0
+accelerationConstant: 0.0
+velocityConstant: 0.1
 velocityThreshold: 0.05
 thresholdConstant: 0.0
 alpha: 1.0
