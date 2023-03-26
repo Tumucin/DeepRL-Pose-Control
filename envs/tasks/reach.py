@@ -31,14 +31,14 @@ class Reach(Task):
                                'W2Low':  np.array([-math.pi/3, -0.09-math.pi/6,  0.00, -1.85, 0.00, 2.26, 0.79]),
                                'W2High': np.array([+math.pi/3, -0.09+math.pi/6,  0.00, -1.85, 0.00, 2.26, 0.79]),
                                'W3Low':  np.array([-math.pi/2, -0.09-math.pi/4,  0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W3High': np.array([+math.pi/2, -0.09+math.pi/4,  0.00, -1.85, 0.00, 2.26, 0.79]),
+                               'W3High': np.array([+math.pi/2, -0.09+math.pi/4,  0.00, -1.85, 0.00, 2.26, 0.79])}
                                
-                               'W4Low':  np.array([-math.pi/6, 0.00,      -2.96, 0.00,    -2.9, 0.00, -2.9]),
-                               'W4High': np.array([+math.pi/6, math.pi/6, +2.96, -math.pi, 2.9, 3.8,  +2.9]),
-                               'W5Low':  np.array([-math.pi/3, 0.0,       -2.96, 0.00,    -2.9, 0.00, -2.9]),
-                               'W5High': np.array([+math.pi/3, math.pi/3, +2.96, -math.pi, 2.9, 3.8,  +2.9]),
-                               'W6Low':  np.array([-math.pi/2, 0.00,      -2.96, 0.00,    -2.9, 0.00, -2.9]),
-                               'W6High': np.array([+math.pi/2, math.pi/2, +2.96, -math.pi, 2.9, 3.8,  +2.9]),} 
+                               #'W4Low':  np.array([-math.pi/6, 0.00,      -2.96, 0.00,    -2.9, 0.00, -2.9]),
+                               #'W4High': np.array([+math.pi/6, math.pi/6, +2.96, -math.pi, 2.9, 3.8,  +2.9]),
+                               #'W5Low':  np.array([-math.pi/3, 0.0,       -2.96, 0.00,    -2.9, 0.00, -2.9]),
+                               #'W5High': np.array([+math.pi/3, math.pi/3, +2.96, -math.pi, 2.9, 3.8,  +2.9]),
+                               #'W6Low':  np.array([-math.pi/2, 0.00,      -2.96, 0.00,    -2.9, 0.00, -2.9]),
+                               #'W6High': np.array([+math.pi/2, math.pi/2, +2.96, -math.pi, 2.9, 3.8,  +2.9]),} 
         
         self.jointLimitLow = self.workspacesdict['W3Low']
         self.jointLimitHigh = self.workspacesdict['W3High']
@@ -75,9 +75,10 @@ class Reach(Task):
         """Randomize goal."""
         if self.model is not None:
             #print("model timestamp in reach.py:", (self.model._n_updates*self.config['n_steps']*self.config['n_envs'])/(self.config['n_epochs']))
-            #print("succes rate is:",safe_mean(self.model.ep_success_buffer))
+            #print("succes rate is in reach.py:",safe_mean(self.model.ep_success_buffer))
+            #print("total_timesteps is in reach.py:", self.model._total_timesteps)
             pass
-
+        
         goal_range_low = np.array([-self.config['goal_range'] / 2, -self.config['goal_range'] / 2, 0])
         goal_range_high = np.array([self.config['goal_range'] / 2, self.config['goal_range'] / 2, self.config['goal_range']])
         goal = self.np_random.uniform(goal_range_low, goal_range_high)
@@ -91,7 +92,8 @@ class Reach(Task):
             goalFrame = self.kinematics.forwardKinematicsPoseSolv(q_in)
             goalFrame.p[0] = goalFrame.p[0] #+0.6
             goal[0], goal[1], goal[2] = goalFrame.p[0], goalFrame.p[1], goalFrame.p[2]
-
+        #print("goal in reach.py:", goal)
+        #goal[0], goal[1], goal[2] = 0.0237163, 0.0, 0.0
         return goal
 
     def is_success(self, achieved_goal: np.ndarray, desired_goal: np.ndarray) -> Union[np.ndarray, float]:

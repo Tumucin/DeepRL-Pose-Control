@@ -5,32 +5,34 @@ urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/ro
 #modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
 #logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
 #urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
-expNumber: 115
+expNumber: 114
 envName: "PandaReach-v2"            
-total_timesteps: !!float 4096
+total_timesteps: !!float 5e6
 mode: True                           
 algorithm: "PPO"                 
 policy: "MultiInputPolicy"           
 render: False                        
 gamma: 0.95 
-n_steps: 2
+n_steps: 2048
 n_epochs: 10
-batch_size: 128
+batch_size: 1024
 learning_rate: 0.0003
-n_envs: 2
-testSamples: 2
+n_envs: 8
+testSamples: 1000
+testSampleOnTraining: 100
+evalFreqOnTraining: 25
 max_episode_steps: 800
 verbose: 1
 pseudoI: False
 save_freq: !!float 100e6
 sampleJointAnglesGoal: True     # If this is false, then you should determine goal_range value
 goal_range: 0.3
-randomStart: False              # If this is false, then you should determine neutral joint angles.. These values are defined in myrobot.py
-lambdaErr: 20.0
-accelerationConstant: 0.5
-velocityConstant: 0.0
+randomStart: True              # If this is false,, then you should determine neutral joint angles.. These values are defined in myrobot.py
+lambdaErr: 100.0
+accelerationConstant: 100.0
+velocityConstant: 0.05
 velocityNormThreshold: 0.05
 thresholdConstant: 0.0
 alpha: 1.0
-activation_fn: 1 # ReLU:1, Tanh: 0
+activation_fn: 0 # ReLU:1, Tanh: 0
 hiddenUnits: 128

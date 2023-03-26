@@ -17,20 +17,21 @@ import time
 import numpy as np
 import torch as th
 import matplotlib.pyplot as plt
-
+from CustomCallback import CUSTOMCALLBACK
 class TRAINTEST():
-    def __init__(self, config, ):
+    def __init__(self, config):
         self.config = config
         # The name of the checkpoint file for example PandaReach-v2PPO_3
-        self.chechkPointNamePrefix = self.config['envName']+self.config['algorithm']+"_"+str(self.config['expNumber'])
+        self.checkPointNamePrefix = self.config['envName']+self.config['algorithm']+"_"+str(self.config['expNumber'])
         self.tbParentFolderToSave = self.config['logSavePath']
         self.tbFileNameToSave = self.tbParentFolderToSave+"/"+self.config['envName']+"_"+self.config['algorithm']+"/"+str(self.config['expNumber'])
         self.modelParentFolderToSave = self.config['modelSavePath']
         self.modelFileNameToSave = self.modelParentFolderToSave+"/"+self.config['envName']+""+self.config['algorithm']+"_"+str(self.config['expNumber'])
+
     def train(self,algorithm,env):
         checkpoint_callback = CheckpointCallback(save_freq=self.config['save_freq'], save_path=self.config['modelSavePath'],
-                                            name_prefix=self.chechkPointNamePrefix)
-                
+                                            name_prefix=self.checkPointNamePrefix)
+        
         if self.config['algorithm']=="PPO":
             
             print("NORMAL LEARNING FOR PPO")
@@ -48,6 +49,7 @@ class TRAINTEST():
             #print(model._total_timesteps)
             for i in range(self.config['n_envs']):
                 env.envs[i].task.model = model
+                env.envs[i].robot.model = model
             
         if self.config['algorithm']=="TQC":
 
@@ -56,11 +58,11 @@ class TRAINTEST():
                             verbose=self.config['verbose'], ent_coef=self.config['ent_coef'], batch_size=self.config['batch_size'], gamma=self.config['gamma'],
                             learning_rate=self.config['learning_rate'], learning_starts=self.config['learning_starts'],replay_buffer_class=HerReplayBuffer,
                             replay_buffer_kwargs=self.config['replay_buffer_kwargs'], policy_kwargs=self.config['policy_kwargs'])
-            
         
+        CustomCallBack = CUSTOMCALLBACK(verbose=0, config=self.config)
         start_time = time.time()
         #, tb_log_name = logDir+"/"+config['envName']+"_"+config['algorithm']
-        model.learn(total_timesteps=self.config['total_timesteps'], callback=checkpoint_callback)
+        model.learn(total_timesteps=self.config['total_timesteps'], callback=[checkpoint_callback,CustomCallBack])
         #print(model._total_timesteps)
         print("Total time:", time.time()-start_time)
         model.save(self.modelFileNameToSave)
@@ -69,48 +71,56 @@ class TRAINTEST():
             print("REPLAY BUFFER IS SAVED--NORMAL LEARNING")
             model.save_replay_buffer(self.config['bufferPath']+str(self.config['expNumber']))   
 
-        
-    def load_model(self, algorithm,env):
-        modelDir = self.config['modelSavePath']
-        
-        model = algorithm.load(self.modelFileNameToSave, env=env) 
-        env = model.get_env()
+    def evaluatePolicy(self, numberOfSteps, model, env):
         mae = 0.0
         squaredError = 0.0
         successRate1 = 0.0
         successRate5 = 0.0
         avgJntVel = 0.0
 
-        obs = env.reset()
-        for step in range(self.config['testSamples']):
+        for step in range(numberOfSteps):
+            obs = env.reset()
             print("step: ", step)
-            counter = 0        
             done = False
             
             episode_reward = 0.0
             while not done:
-                counter+=1
                 action, _states = model.predict(obs, deterministic=True)
                 obs, reward, done, info = env.step(action)
-                #print("done in traintest.py", done)
-                if counter==self.config['max_episode_steps']-2:
-                    error = abs(obs['achieved_goal'] - obs['desired_goal'])
-                    mae = np.linalg.norm(error) + mae
-                    squaredError += np.sum(error**2)
-                    avgJntVel = np.linalg.norm(action) + avgJntVel
-                    if np.linalg.norm(error) <=0.01:
-                        successRate1+=1
-                    
-                    if np.linalg.norm(error) <=0.05:
-                        successRate5+=1
+            error = abs(obs['achieved_goal'] - obs['desired_goal'])
+            mae = np.linalg.norm(error) + mae
+            squaredError += np.sum(error**2)
+            avgJntVel = np.linalg.norm(action) + avgJntVel
+            if np.linalg.norm(error) <=0.01:
+                successRate1+=1
+            
+            if np.linalg.norm(error) <=0.05:
+                successRate5+=1
 
-                episode_reward+=reward
+                #episode_reward+=reward
+        rmse = np.sqrt((squaredError)/(numberOfSteps))
+        mae = mae/numberOfSteps
+        successRate1 = successRate1/numberOfSteps
+        successRate5 = successRate5/numberOfSteps
+        avgJntVel = avgJntVel/numberOfSteps
+
+        return rmse, mae, successRate1, successRate5, avgJntVel
+
+    def loadAndEvaluateModel(self, algorithm,env):
+        modelDir = self.config['modelSavePath']
         
-        print("RMSE:", np.sqrt((squaredError)/(self.config['testSamples'])))
-        print("MAE:", mae/self.config['testSamples'])
-        print("Success Rate 1 cm:", successRate1/self.config['testSamples'])
-        print("Success Rate 5 cm:", successRate5/self.config['testSamples'])
-        print("Average joint velocities:", avgJntVel/self.config['testSamples'])
+        model = algorithm.load(self.modelFileNameToSave) 
+        #env = model.get_env()
+        env.robot.jointLimitLow = env.robot.workspacesdict['W4Low']
+        env.robot.jointLimitHigh = env.robot.workspacesdict['W4High']
+        rmse, mae, successRate1, successRate5, avgJntVel = self.evaluatePolicy(self.config['testSamples'],
+                                                                               model, env)
+
+        print("RMSE:", rmse)
+        print("MAE:", mae)
+        print("Success Rate 1 cm:", successRate1)
+        print("Success Rate 5 cm:", successRate5)
+        print("Average joint velocities:", avgJntVel)
         
         
 def main():
@@ -143,7 +153,8 @@ def main():
     parser.add_argument('--thresholdConstant', type= float, help="")
     parser.add_argument('--alpha', type= float, help="")
     parser.add_argument('--activation_fn', type= int, help="ReLU:1, Tanh:0")
-
+    parser.add_argument('--testSampleOnTraining', type=int, help="Number of samples to be testes while training.")
+    parser.add_argument('--evalFreqOnTraining', type=int,help="Iteration freq for evaluating the metrics while training")
     args = parser.parse_args()
 
     with open('configPPO.yaml') as f:
@@ -182,13 +193,13 @@ def main():
         env.task.config = config
         env._max_episode_steps = trainTest.config['max_episode_steps']
         time.sleep(5)
-        trainTest.load_model(algorithm,env)
+        trainTest.loadAndEvaluateModel(algorithm,env)
     else:
         env = gym.make(trainTest.config['envName'], render=trainTest.config['render'])
         env.robot.config = config
         env.task.config = config
         env._max_episode_steps = trainTest.config['max_episode_steps']
-        trainTest.load_model(algorithm,env)
+        trainTest.loadAndEvaluateModel(algorithm,env)
     print("DONE!!!")
     
 if __name__=='__main__':
