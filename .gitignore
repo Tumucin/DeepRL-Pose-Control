@@ -1,1 +1,4 @@
 *__pycache__
+envs/__pycache__/
+envs/robots/__pycache__/
+envs/tasks/__pycache__/

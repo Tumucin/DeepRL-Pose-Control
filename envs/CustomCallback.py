@@ -33,6 +33,8 @@ class CUSTOMCALLBACK(BaseCallback):
         self.testingEnv.env.robot.config = self.config
         self.testingEnv.env.task.config = self.config
         self.testingEnv.env._max_episode_steps = self.config['max_episode_steps']
+        self.rmse = 0
+        self.avgJntVel = 0
         
         
 
@@ -91,16 +93,16 @@ class CUSTOMCALLBACK(BaseCallback):
             print("current iteration in customCallBack.py:", self.currentIteration)
             print("current time step", self.num_timesteps )
 
-            rmse, mae, successRate1, successRate5, avgJntVel = self.evaluatePolicy(self.config['testSampleOnTraining'], 
+            self.rmse, mae, successRate1, successRate5, self.avgJntVel = self.evaluatePolicy(self.config['testSampleOnTraining'], 
                                                                                self.model, 
                                                                                self.testingEnv)
-            print("RMSE in CustomCallBack.py:", rmse)
+            print("RMSE in CustomCallBack.py:", self.rmse)
             print("MAE CustomCallBack.py:", mae)
             print("Success Rate 1 cm CustomCallBack.py:", successRate1)
             print("Success Rate 5 cm CustomCallBack.py:", successRate5)
-            print("Average joint velocities CustomCallBack.py:", avgJntVel)
+            print("Average joint velocities CustomCallBack.py:", self.avgJntVel)
 
-            if rmse < 0.01 and avgJntVel < 0.1 :
+            if self.rmse < 0.01 and self.avgJntVel < 0.1 :
                 # Change workspace 
                 self.currentWorkspace+=1
                 
@@ -116,6 +118,9 @@ class CUSTOMCALLBACK(BaseCallback):
                 print("testing new jointLimitHigh:", self.testingEnv.robot.jointLimitHigh)
 
         self.logger.record("rollout/currentWorkspace", self.currentWorkspace)
+        self.logger.record("rollout/rmse", self.rmse)
+        self.logger.record("rollout/avgJntVel", self.avgJntVel)
+        
 
     def _on_step(self) -> bool:
         """
