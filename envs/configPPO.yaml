@@ -1,13 +1,13 @@
 #################### PATHS ####################
-modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
-logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
-urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
-#modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
-#logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
-#urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
-expNumber: 114
+#modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
+#logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
+#urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
+modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
+logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
+urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
+expNumber: 179
 envName: "PandaReach-v2"            
-total_timesteps: !!float 5e6
+total_timesteps: !!float 12e6
 mode: True                           
 algorithm: "PPO"                 
 policy: "MultiInputPolicy"           
@@ -20,7 +20,7 @@ learning_rate: 0.0003
 n_envs: 8
 testSamples: 1000
 testSampleOnTraining: 100
-evalFreqOnTraining: 25
+evalFreqOnTraining: 30
 max_episode_steps: 800
 verbose: 1
 pseudoI: False
@@ -29,7 +29,7 @@ sampleJointAnglesGoal: True     # If this is false, then you should determine go
 goal_range: 0.3
 randomStart: True              # If this is false,, then you should determine neutral joint angles.. These values are defined in myrobot.py
 lambdaErr: 100.0
-accelerationConstant: 100.0
+accelerationConstant: 0.0
 velocityConstant: 0.05
 velocityNormThreshold: 0.05
 thresholdConstant: 0.0

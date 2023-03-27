@@ -22,14 +22,14 @@
 
 # -= Resources =-
 #
-#SBATCH --job-name=PPOexp901
+#SBATCH --job-name=PPOexp179
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --partition=mid
 #SBATCH --gres=gpu:tesla_t4:1
 #SBATCH --mem-per-cpu=8G
 #SBATCH --time=1-0
-#SBATCH --output=PPOexp901.out
+#SBATCH --output=PPOexp179.out
 #SBATCH --mail-type=END
 #SBATCH --mail-user=tbal21@ku.edu.tr
 

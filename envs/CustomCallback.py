@@ -115,7 +115,7 @@ class CUSTOMCALLBACK(BaseCallback):
                 print("testing new jointLimitLow:", self.testingEnv.robot.jointLimitLow)
                 print("testing new jointLimitHigh:", self.testingEnv.robot.jointLimitHigh)
 
-        self.logger.record("train/currentWorkspace", self.currentWorkspace)
+        self.logger.record("rollout/currentWorkspace", self.currentWorkspace)
 
     def _on_step(self) -> bool:
         """
