@@ -156,6 +156,9 @@ def main():
     parser.add_argument('--activation_fn', type= int, help="ReLU:1, Tanh:0")
     parser.add_argument('--testSampleOnTraining', type=int, help="Number of samples to be testes while training.")
     parser.add_argument('--evalFreqOnTraining', type=int,help="Iteration freq for evaluating the metrics while training")
+    parser.add_argument('--CurriLearning', type=bool,help="")
+    parser.add_argument('--jointLimitLowStartID', type=str,help="")
+    parser.add_argument('--jointLimitHighStartID', type=str,help="")
     args = parser.parse_args()
 
     with open('configPPO.yaml') as f:
@@ -164,6 +167,7 @@ def main():
     for arg in args._get_kwargs():
         if not arg[1]==None:
             print(arg[0])
+            print(arg[1])
             config[arg[0]] = arg[1]
 
     
