@@ -111,8 +111,9 @@ class TRAINTEST():
         
         model = algorithm.load(self.modelFileNameToSave) 
         #env = model.get_env()
-        env.robot.jointLimitLow = env.robot.workspacesdict['W4Low']
-        env.robot.jointLimitHigh = env.robot.workspacesdict['W4High']
+                
+        env.robot.jointLimitLow = env.robot.workspacesdict[str(list(env.robot.workspacesdict)[-2])]
+        env.robot.jointLimitHigh = env.robot.workspacesdict[str(list(env.robot.workspacesdict)[-1])]
         rmse, mae, successRate1, successRate5, avgJntVel = self.evaluatePolicy(self.config['testSamples'],
                                                                                model, env)
 

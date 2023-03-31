@@ -28,6 +28,7 @@ class CUSTOMCALLBACK(BaseCallback):
         # self.parent = None  # type: Optional[BaseCallback]
         self.currentWorkspace = 0 # 0 means that it is fixed 
         self.currentIteration = 0
+        self.workspaceLen = None
         self.config = config
         self.testingEnv = gym.make(self.config['envName'], render=False)
         self.testingEnv.env.robot.config = self.config
@@ -88,8 +89,10 @@ class CUSTOMCALLBACK(BaseCallback):
         This event is triggered before collecting new samples. After policy update
         """
         self.currentIteration+=1
+        if self.workspaceLen == None:
+            self.workspaceLen = len(self.training_env.envs[0].robot.workspacesdict)/2 - 1
         
-        if self.currentIteration%self.config['evalFreqOnTraining'] == 0 and self.currentWorkspace < 4:
+        if self.currentIteration%self.config['evalFreqOnTraining'] == 0 and self.currentWorkspace < self.workspaceLen and self.config['CurriLearning']:
             print("current iteration in customCallBack.py:", self.currentIteration)
             print("current time step", self.num_timesteps )
 

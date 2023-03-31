@@ -26,22 +26,19 @@ class Reach(Task):
         self.reward_type = reward_type
         self.distance_threshold = distance_threshold
         self.get_ee_position = get_ee_position
-        self.workspacesdict = {'W1Low':  np.array([-math.pi/6, -0.09-math.pi/12, 0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W1High': np.array([+math.pi/6, -0.09+math.pi/12, 0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W2Low':  np.array([-math.pi/3, -0.09-math.pi/6,  0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W2High': np.array([+math.pi/3, -0.09+math.pi/6,  0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W3Low':  np.array([-math.pi/2, -0.09-math.pi/4,  0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W3High': np.array([+math.pi/2, -0.09+math.pi/4,  0.00, -1.85, 0.00, 2.26, 0.79])}
-                               
-                               #'W4Low':  np.array([-math.pi/6, 0.00,      -2.96, 0.00,    -2.9, 0.00, -2.9]),
-                               #'W4High': np.array([+math.pi/6, math.pi/6, +2.96, -math.pi, 2.9, 3.8,  +2.9]),
-                               #'W5Low':  np.array([-math.pi/3, 0.0,       -2.96, 0.00,    -2.9, 0.00, -2.9]),
-                               #'W5High': np.array([+math.pi/3, math.pi/3, +2.96, -math.pi, 2.9, 3.8,  +2.9]),
-                               #'W6Low':  np.array([-math.pi/2, 0.00,      -2.96, 0.00,    -2.9, 0.00, -2.9]),
-                               #'W6High': np.array([+math.pi/2, math.pi/2, +2.96, -math.pi, 2.9, 3.8,  +2.9]),} 
+
+        """
+        self.jointLimitLow = np.array([-math.pi/2, -0.09-math.pi/4, 0.00, -1.85, 0.00, 2.26, 0.79])
+        self.jointLimitHigh = np.array([+math.pi/2, -0.09+math.pi/4,  0.00, -1.85, 0.00, 2.26, 0.79])
+        """
         
-        self.jointLimitLow = self.workspacesdict['W3Low']
-        self.jointLimitHigh = self.workspacesdict['W3High']
+        self.jointLimitLow = np.array([-math.pi/2, 0.00, 0.00, -1.85, 0.00, 2.26, 0.79])
+        self.jointLimitHigh = np.array([+math.pi/2, math.pi/2,  0.00, -1.85, 0.00, 2.26, 0.79])
+        
+        """
+        self.jointLimitLow = np.array([-math.pi/2,    0.00,     0.00,  0.00, -2.9, 0.00, -2.9])
+        self.jointLimitHigh = np.array([+math.pi/2, math.pi/2,  0.00, -math.pi, 2.9, 3.8, 2.9])
+        """
         with self.sim.no_rendering():
             self._create_scene()
             self.sim.place_visualizer(target_position=np.zeros(3), distance=0.9, yaw=45, pitch=-30)
