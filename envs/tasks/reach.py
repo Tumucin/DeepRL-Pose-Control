@@ -32,15 +32,15 @@ class Reach(Task):
         self.jointLimitHigh = np.array([+math.pi/2, -0.09+math.pi/4,  0.00, -1.85, 0.00, 2.26, 0.79])
         """
 
-        #"""
+        """
         self.jointLimitLow = np.array([-math.pi/2, 0.00, 0.00, -1.85, 0.00, 2.26, 0.79])
         self.jointLimitHigh = np.array([+math.pi/2, math.pi/2,  0.00, -1.85, 0.00, 2.26, 0.79])
-        #"""
-
         """
+
+        #"""
         self.jointLimitLow = np.array([-math.pi/2,    0.00,     0.00,  0.00, -2.9, 0.00, -2.9])
         self.jointLimitHigh = np.array([+math.pi/2, math.pi/2,  0.00, -math.pi, 2.9, 3.8, 2.9])
-        """
+        #"""
         with self.sim.no_rendering():
             self._create_scene()
             self.sim.place_visualizer(target_position=np.zeros(3), distance=0.9, yaw=45, pitch=-30)

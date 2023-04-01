@@ -57,7 +57,7 @@ class MYROBOT(PyBulletRobot):
                                'W4High': np.array([+math.pi/2, -0.09+math.pi/4,  0.00, -1.85, 0.00, 2.26, 0.79])}
         """     
 
-        #"""
+        """
         self.workspacesdict = {'W0Low':  np.array([0.00,         0.5,       0.00, -1.85, 0.00, 2.26, 0.79]),
                                'W0High': np.array([0.00,         0.5,       0.00, -1.85, 0.00, 2.26, 0.79]),
                                'W1Low':  np.array([-math.pi/12,  0.00,      0.00, -1.85, 0.00, 2.26, 0.79]),
@@ -68,9 +68,9 @@ class MYROBOT(PyBulletRobot):
                                'W3High': np.array([+math.pi/3,  math.pi/3,  0.00, -1.85, 0.00, 2.26, 0.79]),
                                'W4Low':  np.array([-math.pi/2,   0.00,      0.00, -1.85, 0.00, 2.26, 0.79]),
                                'W4High': np.array([+math.pi/2,  math.pi/2,  0.00, -1.85, 0.00, 2.26, 0.79])}
-        #"""
-
         """
+
+        #"""
         self.workspacesdict = {'W0Low':  np.array([0.00,         0.5,       0.00, -1.85, 0.00, 2.26, 0.79]),
                                'W0High': np.array([0.00,         0.5,       0.00, -1.85, 0.00, 2.26, 0.79]),
                                'W1Low':  np.array([-math.pi/12,  0.00,      0.00, -1.85, 0.00, 2.26, 0.79]),
@@ -84,11 +84,12 @@ class MYROBOT(PyBulletRobot):
                                'W5Low':  np.array([-math.pi/2,   0.00,      0.00,  0.00, -2.9, 0.00, -2.9]),
                                'W5High':  np.array([-math.pi/2,   math.pi/2,      0.00,  -math.pi, 2.9, 3.8, 2.9])
                                }
-        """
+        #"""
         self.jointLimitLow = self.workspacesdict[self.config['jointLimitLowStartID']]
         self.jointLimitHigh = self.workspacesdict[self.config['jointLimitHighStartID']]
-        
-        
+        self.J = np.zeros((3, 7))
+        self.q_in = PyKDL.JntArray(self.kinematic.numbOfJoints)
+        self.j_kdl = PyKDL.Jacobian(self.kinematic.numbOfJoints)
         super().__init__(
             sim,
             body_name="panda",
@@ -109,33 +110,42 @@ class MYROBOT(PyBulletRobot):
         self.sim.set_spinning_friction(self.body_name, self.fingers_indices[0], spinning_friction=0.001)
         self.sim.set_spinning_friction(self.body_name, self.fingers_indices[1], spinning_friction=0.001)
 
-    def calActionWDLS(self, obs):
-        #time.sleep(0.5)
-        wdlsAction = np.zeros(7)
+    def calculateqdotOnlyPosition(self, obs):
+        v = np.zeros(3)
         deltax = obs['desired_goal'] - obs['achieved_goal']
 
-        q_in = PyKDL.JntArray(self.kinematic.numbOfJoints)
-        q_in[0], q_in[1], q_in[2], q_in[3] = obs['observation'][0], obs['observation'][1], obs['observation'][2], obs['observation'][3]
-        q_in[4], q_in[5], q_in[6] = obs['observation'][4], obs['observation'][5], obs['observation'][6]
+        for i in range(self.kinematic.numbOfJoints):
+            self.q_in[i] = obs['observation'][i]
 
-        v_in = PyKDL.Twist(PyKDL.Vector(deltax[0],deltax[1],deltax[2]), PyKDL.Vector(0.0,0.00,0.00))
-        v_norm = np.linalg.norm(deltax)
-        if v_norm > 0.5:
-            v_in/=v_norm*2
+        self.kinematic.jacSolver.JntToJac(self.q_in, self.j_kdl)
 
-        ## v_in = v_in*threshold/norm(vi) 
+        for i in range(3):
+            for j in range(self.kinematic.numbOfJoints):
+                self.J[i,j] = self.j_kdl[i,j]
+        
+        J_pinv = np.linalg.pinv(self.J)
 
-        ## TODO v_in normalize et 
+        v[0], v[1], v[2] = deltax[0], deltax[1], deltax[2]
+        if np.linalg.norm(v) >0.5:
+            v/=3
+        qdot = np.dot(J_pinv, v)
+        return qdot
+    
+    def calculateqdotFullJac(self, obs):
+        qdot = np.zeros(self.kinematic.numbOfJoints)
+        error = obs['desired_goal'] - obs['achieved_goal']
+        
+        for i in range(self.kinematic.numbOfJoints):
+            self.q_in[i] = obs['observation'][i]
+        
+        v_in = PyKDL.Twist(PyKDL.Vector(error[0],error[1],error[2]), PyKDL.Vector(0.0,0.00,0.00))
         q_dot_out = PyKDL.JntArray(self.kinematic.numbOfJoints)
-        self.kinematic.ikVelKDL.CartToJnt(q_in, v_in, q_dot_out)
+        self.kinematic.ikVelKDL.CartToJnt(self.q_in, v_in, q_dot_out)
 
-        j_kdl = PyKDL.Jacobian(self.kinematic.numbOfJoints)
-        self.kinematic.jacSolver.JntToJac(q_in, j_kdl)
-        #print("j_kdl:", j_kdl)
-        for i in range(7):
-            wdlsAction[i] = q_dot_out[i]
+        for i in range(self.kinematic.numbOfJoints):
+            qdot[i] = q_dot_out[i]
 
-        return wdlsAction
+        return qdot
 
     def set_action(self, action: np.ndarray, obs) -> None:
         action = action.copy()  # ensure action don't change
@@ -144,15 +154,16 @@ class MYROBOT(PyBulletRobot):
         #action = 0*action
         if self.config['pseudoI']==True and self.config['networkOutput']==True:
             #print("pseudo+network")
-            action = self.calActionWDLS(obs) + action/5
+            action = self.calculateqdotOnlyPosition(obs) + action/5
 
         elif self.config['pseudoI']==True and self.config['networkOutput']==False:
             #print("only pseudoI")
-            action = self.calActionWDLS(obs)
+            action = self.calculateqdotOnlyPosition(obs)
         else:
             #print("Only network output")
             action = action/5
-        
+
+        #action=0*action
         action = np.clip(action, self.action_space.low, self.action_space.high)
 
         if self.control_type == "ee":

@@ -8,7 +8,7 @@ urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/ro
 expNumber: 210
 envName: "PandaReach-v2"            
 total_timesteps: !!float 12288000
-mode: True                           
+mode: False                           
 algorithm: "PPO"                 
 policy: "MultiInputPolicy"           
 render: False                        
@@ -23,8 +23,8 @@ testSampleOnTraining: 1000
 evalFreqOnTraining: 75
 max_episode_steps: 800
 verbose: 1
-pseudoI: False
-networkOutput: True
+pseudoI: True
+networkOutput: False
 save_freq: !!float 100e6
 sampleJointAnglesGoal: True     # If this is false, then you should determine goal_range value
 goal_range: 0.3
