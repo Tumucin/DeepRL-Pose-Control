@@ -55,8 +55,9 @@ class MYROBOT(PyBulletRobot):
                                'W3High': np.array([+math.pi/3, -0.09+math.pi/6,  0.00, -1.85, 0.00, 2.26, 0.79]),
                                'W4Low':  np.array([-math.pi/2, -0.09-math.pi/4,  0.00, -1.85, 0.00, 2.26, 0.79]),
                                'W4High': np.array([+math.pi/2, -0.09+math.pi/4,  0.00, -1.85, 0.00, 2.26, 0.79])}
-        """                         
-        
+        """     
+
+        #"""
         self.workspacesdict = {'W0Low':  np.array([0.00,         0.5,       0.00, -1.85, 0.00, 2.26, 0.79]),
                                'W0High': np.array([0.00,         0.5,       0.00, -1.85, 0.00, 2.26, 0.79]),
                                'W1Low':  np.array([-math.pi/12,  0.00,      0.00, -1.85, 0.00, 2.26, 0.79]),
@@ -67,7 +68,8 @@ class MYROBOT(PyBulletRobot):
                                'W3High': np.array([+math.pi/3,  math.pi/3,  0.00, -1.85, 0.00, 2.26, 0.79]),
                                'W4Low':  np.array([-math.pi/2,   0.00,      0.00, -1.85, 0.00, 2.26, 0.79]),
                                'W4High': np.array([+math.pi/2,  math.pi/2,  0.00, -1.85, 0.00, 2.26, 0.79])}
-        
+        #"""
+
         """
         self.workspacesdict = {'W0Low':  np.array([0.00,         0.5,       0.00, -1.85, 0.00, 2.26, 0.79]),
                                'W0High': np.array([0.00,         0.5,       0.00, -1.85, 0.00, 2.26, 0.79]),
@@ -138,12 +140,19 @@ class MYROBOT(PyBulletRobot):
     def set_action(self, action: np.ndarray, obs) -> None:
         action = action.copy()  # ensure action don't change
         ## TODO network output 10a böl
-        action = action/5
+        
         #action = 0*action
-        #print("action:", action)
-        if self.config['pseudoI']==True:
-            action = self.calActionWDLS(obs) + action
+        if self.config['pseudoI']==True and self.config['networkOutput']==True:
+            #print("pseudo+network")
+            action = self.calActionWDLS(obs) + action/5
 
+        elif self.config['pseudoI']==True and self.config['networkOutput']==False:
+            #print("only pseudoI")
+            action = self.calActionWDLS(obs)
+        else:
+            #print("Only network output")
+            action = action/5
+        
         action = np.clip(action, self.action_space.low, self.action_space.high)
 
         if self.control_type == "ee":

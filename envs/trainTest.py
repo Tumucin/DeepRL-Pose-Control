@@ -46,7 +46,6 @@ class TRAINTEST():
             
             model = algorithm(policy=self.config['policy'], env=env, n_steps=self.config['n_steps'],n_epochs=self.config['n_epochs'],verbose=self.config['verbose'], batch_size=self.config['batch_size'], learning_rate=self.config['learning_rate'],
                             tensorboard_log=self.tbFileNameToSave,policy_kwargs=policy_kwargs)
-            #print(model._total_timesteps)
             for i in range(self.config['n_envs']):
                 env.envs[i].task.model = model
                 env.envs[i].robot.model = model
@@ -61,9 +60,7 @@ class TRAINTEST():
         
         CustomCallBack = CUSTOMCALLBACK(verbose=0, config=self.config)
         start_time = time.time()
-        #, tb_log_name = logDir+"/"+config['envName']+"_"+config['algorithm']
         model.learn(total_timesteps=self.config['total_timesteps'], callback=[checkpoint_callback,CustomCallBack])
-        #print(model._total_timesteps)
         print("Total time:", time.time()-start_time)
         model.save(self.modelFileNameToSave)
         
@@ -104,24 +101,22 @@ class TRAINTEST():
         successRate5 = successRate5/numberOfSteps
         avgJntVel = avgJntVel/numberOfSteps
 
-        return rmse, mae, successRate1, successRate5, avgJntVel
-
-    def loadAndEvaluateModel(self, algorithm,env):
-        modelDir = self.config['modelSavePath']
-        
-        model = algorithm.load(self.modelFileNameToSave) 
-        #env = model.get_env()
-                
-        env.robot.jointLimitLow = env.robot.workspacesdict[str(list(env.robot.workspacesdict)[-2])]
-        env.robot.jointLimitHigh = env.robot.workspacesdict[str(list(env.robot.workspacesdict)[-1])]
-        rmse, mae, successRate1, successRate5, avgJntVel = self.evaluatePolicy(self.config['testSamples'],
-                                                                               model, env)
-
+        print("Testing environment jointLimitLow is:", env.robot.jointLimitLow)
+        print("Testing environment jointLimitHigh is:", env.robot.jointLimitHigh)
         print("RMSE:", rmse)
         print("MAE:", mae)
         print("Success Rate 1 cm:", successRate1)
         print("Success Rate 5 cm:", successRate5)
         print("Average joint velocities:", avgJntVel)
+        
+
+    def loadAndEvaluateModel(self, algorithm,env):
+        
+        model = algorithm.load(self.modelFileNameToSave)                 
+        env.robot.jointLimitLow = env.robot.workspacesdict[str(list(env.robot.workspacesdict)[-2])]
+        env.robot.jointLimitHigh = env.robot.workspacesdict[str(list(env.robot.workspacesdict)[-1])]
+        self.evaluatePolicy(self.config['testSamples'], model, env)
+        
         
         
 def main():
@@ -156,9 +151,10 @@ def main():
     parser.add_argument('--activation_fn', type= int, help="ReLU:1, Tanh:0")
     parser.add_argument('--testSampleOnTraining', type=int, help="Number of samples to be testes while training.")
     parser.add_argument('--evalFreqOnTraining', type=int,help="Iteration freq for evaluating the metrics while training")
-    parser.add_argument('--CurriLearning', type=bool,help="")
     parser.add_argument('--jointLimitLowStartID', type=str,help="")
     parser.add_argument('--jointLimitHighStartID', type=str,help="")
+    parser.add_argument('--rmseThreshold', type=float,help="")
+    parser.add_argument('--avgJntVelThreshold', type=float,help="")
     args = parser.parse_args()
 
     with open('configPPO.yaml') as f:
@@ -166,11 +162,8 @@ def main():
     
     for arg in args._get_kwargs():
         if not arg[1]==None:
-            print(arg[0])
-            print(arg[1])
             config[arg[0]] = arg[1]
 
-    
     trainTest = TRAINTEST(config)
     
     if trainTest.config['algorithm']=="PPO":
@@ -184,26 +177,26 @@ def main():
             env = gym.make(trainTest.config['envName'], render=trainTest.config['render'])
             env.robot.config = config
             env.task.config = config
-            env._max_episode_steps = trainTest.config['max_episode_steps']
+            #env._max_episode_steps = trainTest.config['max_episode_steps']
         else:
             env = make_vec_env(env_id=trainTest.config['envName'], n_envs=trainTest.config['n_envs'])
             for i in range(trainTest.config['n_envs']):
                 env.envs[i].robot.config = config
                 env.envs[i].task.config = config
-                env.envs[i]._max_episode_steps = trainTest.config['max_episode_steps']
+                #env.envs[i]._max_episode_steps = trainTest.config['max_episode_steps']
 
         trainTest.train(algorithm, env)
         env = gym.make(trainTest.config['envName'], render=trainTest.config['render'])
         env.robot.config = config
         env.task.config = config
-        env._max_episode_steps = trainTest.config['max_episode_steps']
+        #env._max_episode_steps = trainTest.config['max_episode_steps']
         time.sleep(5)
         trainTest.loadAndEvaluateModel(algorithm,env)
     else:
         env = gym.make(trainTest.config['envName'], render=trainTest.config['render'])
         env.robot.config = config
         env.task.config = config
-        env._max_episode_steps = trainTest.config['max_episode_steps']
+        #env._max_episode_steps = trainTest.config['max_episode_steps']
         trainTest.loadAndEvaluateModel(algorithm,env)
     print("DONE!!!")
     

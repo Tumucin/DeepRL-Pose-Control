@@ -105,7 +105,7 @@ class CUSTOMCALLBACK(BaseCallback):
             print("Success Rate 5 cm CustomCallBack.py:", successRate5)
             print("Average joint velocities CustomCallBack.py:", self.avgJntVel)
 
-            if self.rmse < 0.01 and self.avgJntVel < 0.1 :
+            if self.rmse < self.config['rmseThreshold'] and self.avgJntVel < self.config['avgJntVelThreshold'] :
                 # Change workspace 
                 self.currentWorkspace+=1
                 

@@ -5,7 +5,7 @@ urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/ro
 #modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
 #logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
 #urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
-expNumber: 216
+expNumber: 210
 envName: "PandaReach-v2"            
 total_timesteps: !!float 12288000
 mode: True                           
@@ -24,6 +24,7 @@ evalFreqOnTraining: 75
 max_episode_steps: 800
 verbose: 1
 pseudoI: False
+networkOutput: True
 save_freq: !!float 100e6
 sampleJointAnglesGoal: True     # If this is false, then you should determine goal_range value
 goal_range: 0.3
@@ -36,6 +37,8 @@ thresholdConstant: 0.0
 alpha: 1.0
 activation_fn: 0 # ReLU:1, Tanh: 0
 hiddenUnits: 128
-CurriLearning: False # If this is false, then you should determine the low limit and high limit angle in myrobot.py
+CurriLearning: True # If this is false, then you should determine the low limit and high limit angle in myrobot.py
 jointLimitLowStartID: 'W0Low'
 jointLimitHighStartID: 'W0High'
+rmseThreshold: 0.01
+avgJntVelThreshold: 0.1
