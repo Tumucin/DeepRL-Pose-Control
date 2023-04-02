@@ -5,10 +5,10 @@ urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/ro
 #modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
 #logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
 #urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
-expNumber: 210
+expNumber: 999
 envName: "PandaReach-v2"            
 total_timesteps: !!float 12288000
-mode: False                           
+mode: True                           
 algorithm: "PPO"                 
 policy: "MultiInputPolicy"           
 render: False                        
@@ -17,14 +17,14 @@ n_steps: 2048
 n_epochs: 10
 batch_size: 1024
 learning_rate: 0.0003
-n_envs: 8
+n_envs: 16
 testSamples: 1000
-testSampleOnTraining: 1000
+testSampleOnTraining: 500
 evalFreqOnTraining: 75
 max_episode_steps: 800
 verbose: 1
-pseudoI: True
-networkOutput: False
+pseudoI: False
+networkOutput: True
 save_freq: !!float 100e6
 sampleJointAnglesGoal: True     # If this is false, then you should determine goal_range value
 goal_range: 0.3
@@ -41,4 +41,4 @@ CurriLearning: True # If this is false, then you should determine the low limit 
 jointLimitLowStartID: 'W0Low'
 jointLimitHighStartID: 'W0High'
 rmseThreshold: 0.01
-avgJntVelThreshold: 0.1
+avgJntVelThreshold: 0.12

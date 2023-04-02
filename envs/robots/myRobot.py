@@ -71,18 +71,16 @@ class MYROBOT(PyBulletRobot):
         """
 
         #"""
-        self.workspacesdict = {'W0Low':  np.array([0.00,         0.5,       0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W0High': np.array([0.00,         0.5,       0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W1Low':  np.array([-math.pi/12,  0.00,      0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W1High': np.array([+math.pi/12, math.pi/12, 0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W2Low':  np.array([-math.pi/6,   0.00,      0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W2High': np.array([+math.pi/6,  math.pi/6,  0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W3Low':  np.array([-math.pi/3,   0.00,      0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W3High': np.array([+math.pi/3,  math.pi/3,  0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W4Low':  np.array([-math.pi/2,   0.00,      0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W4High': np.array([+math.pi/2,  math.pi/2,  0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W5Low':  np.array([-math.pi/2,   0.00,      0.00,  0.00, -2.9, 0.00, -2.9]),
-                               'W5High':  np.array([-math.pi/2,   math.pi/2,      0.00,  -math.pi, 2.9, 3.8, 2.9])
+        self.workspacesdict = {'W0Low':  np.array([0.00,          0.5,        0.00,  -1.85,         0.00,   2.26,    0.79]),
+                               'W0High': np.array([0.00,          0.5,        0.00,  -1.85,         0.00,   2.26,    0.79]),
+                               'W1Low':  np.array([-math.pi/12,   0.00,       0.00,  -math.pi/6,   -0.74,   0.00,   -0.74]),
+                               'W1High': np.array([+math.pi/12,   math.pi/12, 0.00,   0.00,         0.74,   0.955,   0.74]),
+                               'W2Low':  np.array([-math.pi/6,    0.00,       0.00,  -math.pi/3,   -1.48,   0.00,   -1.48]),
+                               'W2High': np.array([+math.pi/6,    math.pi/6,  0.00,   0.00,         1.48,   1.91,    1.48]),
+                               'W3Low':  np.array([-math.pi/3,    0.00,       0.00,  -2*math.pi/3, -2.22,   0.00,   -2.22]),
+                               'W3High': np.array([+math.pi/3,    math.pi/3,  0.00,   0.00,         2.22,   2.865,   2.22]),
+                               'W4Low':  np.array([-math.pi/2,    0.00,       0.00,  -math.pi,     -2.96,   0.00,   -2.96]),
+                               'W4High': np.array([+math.pi/2,    math.pi/2,  0.00,   0.00,         2.96,   3.82,    2.96]),
                                }
         #"""
         self.jointLimitLow = self.workspacesdict[self.config['jointLimitLowStartID']]
