@@ -23,7 +23,7 @@
 # -= Resources =-
 #
 
-#SBATCH --job-name=PPOexpnumber
+#SBATCH --job-name=PPOexp216
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --nodelist=rk01
@@ -31,8 +31,8 @@
 #SBATCH --qos=kutem
 #SBATCH --account=kutem
 ##SBATCH --gres=gpu:tesla_a100:1  
-#SBATCH --time=04:00:00
-#SBATCH --output=PPPexpnumber.out
+#SBATCH --time=1-0
+#SBATCH --output=PPPexp216.out
 #SBATCH --mail-type=END
 #SBATCH --mail-user=tbal21@ku.edu.tr
 
@@ -72,9 +72,7 @@ echo "==========================================================================
 echo "Running Python script..."
 # Put Python script command below
 echo "First Script..."
-which python
-python --version
-python3 trainTest.py
+python3 trainTest.py --expNumber 216 --total_timesteps 163840 --n_steps 2048 --batch_size 1024 --n_envs 8 --testSamples 2 --testSampleOnTraining 2 --accelerationConstant 0.00000 --velocityConstant 0.1 --jointLimitLowStartID "W0Low" --jointLimitHighStartID "W0High"
 echo "Second Script..."
 #python3 test.py
 # Command 2 for matrix
