@@ -1,4 +1,4 @@
 # panda-gym
-- [X] Different workspaces were added to myrobot.py and reach.py
-- [X] If Curriculum learning is false, then specify the jointAnglelimitlow and jointanglelimithigh
+- [X] Different workspaced were defined in myRobot.py. Workspace 3 is the half workspace.
+- [X] 2 Different pseudoinverse functions were implemented. Now you can use only position inverse kinematic solver with the orientation solver.
 
