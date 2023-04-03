@@ -38,8 +38,8 @@ class Reach(Task):
         """
 
         #"""
-        self.jointLimitLow = np.array([-math.pi/2,    0.00,     0.00,  0.00, -2.9, 0.00, -2.9])
-        self.jointLimitHigh = np.array([+math.pi/2, math.pi/2,  0.00, -math.pi, 2.9, 3.8, 2.9])
+        self.jointLimitLow = np.array([-math.pi/2,    0.00,       0.00,  0.00, -2.9, 0.00, -2.9])
+        self.jointLimitHigh = np.array([+math.pi/2,   math.pi/2,  0.00, -math.pi, 2.9, 3.8, 2.9])
         #"""
         with self.sim.no_rendering():
             self._create_scene()

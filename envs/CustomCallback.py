@@ -1,6 +1,7 @@
 from stable_baselines3.common.callbacks import BaseCallback
 import gym
 import numpy as np
+
 class CUSTOMCALLBACK(BaseCallback):
     """
     A custom callback that derives from ``BaseCallback``.

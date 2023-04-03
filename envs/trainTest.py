@@ -41,11 +41,13 @@ class TRAINTEST():
             else:
                 print("Activation fnc is Tanh")
                 activation_fn = th.nn.Tanh
-            policy_kwargs = dict(activation_fn=activation_fn, net_arch=[dict(pi=[self.config['hiddenUnits'], self.config['hiddenUnits']], 
-                                                                            vf=[self.config['hiddenUnits'],self.config['hiddenUnits']])])
-            
+            #policy_kwargs = dict(activation_fn=activation_fn, net_arch=[dict(pi=[self.config['hiddenUnits'], self.config['hiddenUnits']], 
+            #                                                                vf=[self.config['hiddenUnits'],self.config['hiddenUnits']])])
+            print(type(self.config['net_arch']))
+            policy_kwargs = dict(activation_fn=activation_fn, net_arch=self.config['net_arch'])
             model = algorithm(policy=self.config['policy'], env=env, n_steps=self.config['n_steps'],n_epochs=self.config['n_epochs'],verbose=self.config['verbose'], batch_size=self.config['batch_size'], learning_rate=self.config['learning_rate'],
                             tensorboard_log=self.tbFileNameToSave,policy_kwargs=policy_kwargs)
+            
             for i in range(self.config['n_envs']):
                 env.envs[i].task.model = model
                 env.envs[i].robot.model = model
@@ -163,7 +165,7 @@ def main():
     for arg in args._get_kwargs():
         if not arg[1]==None:
             config[arg[0]] = arg[1]
-
+    
     trainTest = TRAINTEST(config)
     
     if trainTest.config['algorithm']=="PPO":
@@ -193,7 +195,9 @@ def main():
         time.sleep(5)
         trainTest.loadAndEvaluateModel(algorithm,env)
     else:
+        print("------------------------------------------------------------")
         env = gym.make(trainTest.config['envName'], render=trainTest.config['render'])
+        print("------------------------------------------------------------")
         env.robot.config = config
         env.task.config = config
         #env._max_episode_steps = trainTest.config['max_episode_steps']

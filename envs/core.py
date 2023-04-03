@@ -247,8 +247,6 @@ class RobotTaskEnv(gym.GoalEnv):
     def _get_obs(self) -> Dict[str, np.ndarray]:
         robot_obs = self.robot.get_obs()  # robot state
         task_obs = self.task.get_obs()  # object position, velococity, etc...
-        #print("robot_obs in core:", robot_obs)
-        #print("control type in core.py", self.robot.control_type)
         observation = np.concatenate([robot_obs, task_obs])
         deltax = self.task.get_goal() - self.task.get_achieved_goal()
         observation = np.concatenate([observation, deltax])
@@ -256,7 +254,6 @@ class RobotTaskEnv(gym.GoalEnv):
         isSuccess = self.task.is_success(self.task.get_achieved_goal(), self.task.get_goal())
         isSuccess = isSuccess[...,np.newaxis]
         observation = np.concatenate([observation, isSuccess])
-        #print("observation in core.py:", observation)
         return {
             "observation": observation,
             "achieved_goal": achieved_goal,
@@ -272,20 +269,13 @@ class RobotTaskEnv(gym.GoalEnv):
     def step(self, action: np.ndarray) -> Tuple[Dict[str, np.ndarray], float, bool, Dict[str, Any]]:
         obs = self._get_obs()
         self.robot.set_action(action, obs)
-        #print("action in core.py", action)
         self.sim.step()
         obs = self._get_obs()
         done = False
         info = {"is_success": self.task.is_success(obs["achieved_goal"], self.task.get_goal())}
-        #if info["is_success"]==1:
-         #   done = True
-        #current_arm_joint_angles = np.array([self.sim.get_joint_angle("panda",joint=i) for i in range(7)])
-        #print("current_arm_joint_angles",current_arm_joint_angles)
-        #print(len(obs["achieved_goal"]))
+
         reward = self.task.compute_reward(obs["achieved_goal"],self.task.get_goal(), info)
-        #reward = 0.00
-        #networkAction = obs['observation'][14:20]
-        #reward += - 0.05*np.linalg.norm(networkAction)
+
         assert isinstance(reward, float)  # needed for pytype cheking
         return obs, reward, done, info
 
