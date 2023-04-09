@@ -67,7 +67,9 @@ class MYROBOT(PyBulletRobot):
                                'W3Low':  np.array([-math.pi/3,   0.00,      0.00, -1.85, 0.00, 2.26, 0.79]),
                                'W3High': np.array([+math.pi/3,  math.pi/3,  0.00, -1.85, 0.00, 2.26, 0.79]),
                                'W4Low':  np.array([-math.pi/2,   0.00,      0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W4High': np.array([+math.pi/2,  math.pi/2,  0.00, -1.85, 0.00, 2.26, 0.79])}
+                               'W4High': np.array([+math.pi/2,  math.pi/2,  0.00, -1.85, 0.00, 2.26, 0.79]),}
+                               #'W4Low':  np.array([-math.pi/2,   0.00,      0.00, -1.85, 0.00, 0.00, 0.79]),
+                               #'W4High': np.array([+math.pi/2,  math.pi/2,  0.00, -1.85, 0.00, 3.82, 0.79]),}
         """
 
         #"""

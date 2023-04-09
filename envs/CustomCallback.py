@@ -36,7 +36,9 @@ class CUSTOMCALLBACK(BaseCallback):
         self.testingEnv.env.task.config = self.config
         self.testingEnv.env._max_episode_steps = self.config['max_episode_steps']
         self.rmse = 0
+        self.mae = 0
         self.avgJntVel = 0
+        self.counterTesting = 1
         
         
 
@@ -89,24 +91,30 @@ class CUSTOMCALLBACK(BaseCallback):
         using the current policy.
         This event is triggered before collecting new samples. After policy update
         """
+        flag = False
         self.currentIteration+=1
+        
+        if self.model.num_timesteps> self.config['evalFreqOnTraining']*self.counterTesting:
+            self.counterTesting+=1
+            flag = True
+
         if self.workspaceLen == None:
             self.workspaceLen = len(self.training_env.envs[0].robot.workspacesdict)/2 - 1
         
-        if self.currentIteration%self.config['evalFreqOnTraining'] == 0 and self.currentWorkspace < self.workspaceLen and self.config['CurriLearning']:
+        if flag and self.currentWorkspace < self.workspaceLen and self.config['CurriLearning']:
             print("current iteration in customCallBack.py:", self.currentIteration)
             print("current time step", self.num_timesteps )
 
-            self.rmse, mae, successRate1, successRate5, self.avgJntVel = self.evaluatePolicy(self.config['testSampleOnTraining'], 
+            self.rmse, self.mae, successRate1, successRate5, self.avgJntVel = self.evaluatePolicy(self.config['testSampleOnTraining'], 
                                                                                self.model, 
                                                                                self.testingEnv)
             print("RMSE in CustomCallBack.py:", self.rmse)
-            print("MAE CustomCallBack.py:", mae)
+            print("MAE CustomCallBack.py:", self.mae)
             print("Success Rate 1 cm CustomCallBack.py:", successRate1)
             print("Success Rate 5 cm CustomCallBack.py:", successRate5)
             print("Average joint velocities CustomCallBack.py:", self.avgJntVel)
 
-            if self.rmse < self.config['rmseThreshold'] and self.avgJntVel < self.config['avgJntVelThreshold'] :
+            if self.mae < self.config['maeThreshold'] and self.avgJntVel < self.config['avgJntVelThreshold'] :
                 # Change workspace 
                 self.currentWorkspace+=1
                 
@@ -123,9 +131,9 @@ class CUSTOMCALLBACK(BaseCallback):
 
         self.logger.record("rollout/currentWorkspace", self.currentWorkspace)
         self.logger.record("rollout/rmse", self.rmse)
+        self.logger.record("rollout/mae", self.mae)
         self.logger.record("rollout/avgJntVel", self.avgJntVel)
         
-
     def _on_step(self) -> bool:
         """
         This method will be called by the model after each call to `env.step()`.

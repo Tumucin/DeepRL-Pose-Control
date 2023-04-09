@@ -114,7 +114,8 @@ class TRAINTEST():
 
     def loadAndEvaluateModel(self, algorithm,env):
         
-        model = algorithm.load(self.modelFileNameToSave)                 
+        model = algorithm.load(self.modelFileNameToSave)         
+        ## Random start        
         env.robot.jointLimitLow = env.robot.workspacesdict[str(list(env.robot.workspacesdict)[-2])]
         env.robot.jointLimitHigh = env.robot.workspacesdict[str(list(env.robot.workspacesdict)[-1])]
         self.evaluatePolicy(self.config['testSamples'], model, env)
@@ -122,7 +123,6 @@ class TRAINTEST():
         
         
 def main():
-    
     parser = argparse.ArgumentParser()
     parser.add_argument('--envName',type=str, help="Name of the environment")
     parser.add_argument('--expNumber',type=int, help="Experiement number")
@@ -156,6 +156,7 @@ def main():
     parser.add_argument('--jointLimitLowStartID', type=str,help="")
     parser.add_argument('--jointLimitHighStartID', type=str,help="")
     parser.add_argument('--rmseThreshold', type=float,help="")
+    parser.add_argument('--maeThreshold', type=float,help="")
     parser.add_argument('--avgJntVelThreshold', type=float,help="")
     args = parser.parse_args()
 
