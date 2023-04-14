@@ -5,7 +5,7 @@ urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/ro
 #modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
 #logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
 #urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
-expNumber: 284
+expNumber: 999
 envName: "PandaReach-v2"            
 total_timesteps: !!float 65536000
 mode: True                           
@@ -15,7 +15,7 @@ render: False
 gamma: 0.95 
 n_steps: 800
 n_epochs: 10
-batch_size: 64
+batch_size: 2048
 learning_rate: 0.0003
 n_envs: 32
 testSamples: 1000

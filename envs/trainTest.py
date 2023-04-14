@@ -111,6 +111,9 @@ class TRAINTEST():
         print("Success Rate 5 cm:", successRate5)
         print("Average joint velocities:", avgJntVel)
         
+        with open("metrics"+str(self.config['expNumber'])+".txt", 'w') as f:
+            f.write('{}\n{}\n{}\n{}\n{}'.format(rmse, mae, successRate1, successRate5, avgJntVel))
+        
 
     def loadAndEvaluateModel(self, algorithm,env):
         
