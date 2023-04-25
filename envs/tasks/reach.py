@@ -92,7 +92,7 @@ class Reach(Task):
             goalFrame.p[0] = goalFrame.p[0] #+0.6
             goal[0], goal[1], goal[2] = goalFrame.p[0], goalFrame.p[1], goalFrame.p[2]
         #print("goal in reach.py:", goal)
-        #goal[0], goal[1], goal[2] = 0.0237163, 0.0, 0.0
+        #goal[0], goal[1], goal[2] = -0.4765, -0.6158, 0.208
         return goal
 
     def is_success(self, achieved_goal: np.ndarray, desired_goal: np.ndarray) -> Union[np.ndarray, float]:

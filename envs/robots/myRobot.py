@@ -155,6 +155,7 @@ class MYROBOT(PyBulletRobot):
         #action = 0*action
         if self.config['pseudoI']==True and self.config['networkOutput']==True:
             #print("pseudo+network")
+            #print("Network output:", action/5)
             action = self.calculateqdotOnlyPosition(obs) + action/5
 
         elif self.config['pseudoI']==True and self.config['networkOutput']==False:
