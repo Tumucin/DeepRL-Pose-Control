@@ -44,7 +44,12 @@ class PyBullet:
         self.physics_client.setAdditionalSearchPath(pybullet_data.getDataPath())
         self.physics_client.setGravity(0, 0, -9.81)
         self._bodies_idx = {}
-
+        self.xArrowGoal = None
+        self.yArrowGoal = None
+        self.zArrowGoal = None
+        self.xArrowEE = None
+        self.yArrowEE = None
+        self.zArrowEE = None
     @property
     def dt(self):
         """Timestep."""
@@ -52,6 +57,7 @@ class PyBullet:
 
     def step(self) -> None:
         """Step the simulation."""
+        self.drawFrameForCurrentPose()
         for _ in range(self.n_substeps):
             self.physics_client.stepSimulation()
 
@@ -274,11 +280,58 @@ class PyBullet:
             position (np.ndarray): The position, as (x, y, z).
             orientation (np.ndarray): The target orientation as quaternion (x, y, z, w).
         """
+        self.drawFrameForRandomGoalPose(position, orientation)
         if len(orientation) == 3:
             orientation = self.physics_client.getQuaternionFromEuler(orientation)
         self.physics_client.resetBasePositionAndOrientation(
             bodyUniqueId=self._bodies_idx[body], posObj=position, ornObj=orientation
         )
+    def drawFrameForRandomGoalPose(self, positionGoal, orientationGoal):
+        # create an arrow
+        if self.xArrowGoal!=None:
+            p.removeUserDebugItem(self.xArrowGoal)
+            p.removeUserDebugItem(self.yArrowGoal)
+            p.removeUserDebugItem(self.zArrowGoal)
+        rotation_matrix = np.array(p.getMatrixFromQuaternion(orientationGoal)).reshape(3, 3)
+
+        axis_length = 0.2
+
+        # Create the lines for the frame
+        x_axis_end = positionGoal + axis_length * rotation_matrix[:, 0]
+        y_axis_end = positionGoal + axis_length * rotation_matrix[:, 1]
+        z_axis_end = positionGoal + axis_length * rotation_matrix[:, 2]
+
+        x_axis_color = [0, 0, 0]  # Red axis
+        y_axis_color = [0, 1, 0]  # Green axis
+        z_axis_color = [0, 0, 1]  # Blue axis
+        self.xArrowGoal = p.addUserDebugLine(positionGoal, x_axis_end, x_axis_color, lineWidth=7)
+        self.yArrowGoal = p.addUserDebugLine(positionGoal, y_axis_end, y_axis_color, lineWidth=7)
+        self.zArrowGoal = p.addUserDebugLine(positionGoal, z_axis_end, z_axis_color, lineWidth=7)
+    
+    def drawFrameForCurrentPose(self):
+        orientationGoal = self.get_link_orientation('panda', 11)
+        positionGoal = self.get_link_position('panda', 11)
+        # create an arrow
+        if self.xArrowEE!=None:
+            p.removeUserDebugItem(self.xArrowEE)
+            p.removeUserDebugItem(self.yArrowEE)
+            p.removeUserDebugItem(self.zArrowEE)
+        rotation_matrix = np.array(p.getMatrixFromQuaternion(orientationGoal)).reshape(3, 3)
+
+        axis_length = 0.2
+
+        # Create the lines for the frame
+        x_axis_end = positionGoal + axis_length * rotation_matrix[:, 0]
+        y_axis_end = positionGoal + axis_length * rotation_matrix[:, 1]
+        z_axis_end = positionGoal + axis_length * rotation_matrix[:, 2]
+
+        x_axis_color = [0, 0, 0]  # Red axis
+        y_axis_color = [0, 1, 0]  # Green axis
+        z_axis_color = [0, 0, 1]  # Blue axis
+        self.xArrowEE = p.addUserDebugLine(positionGoal, x_axis_end, x_axis_color, lineWidth=7)
+        self.yArrowEE = p.addUserDebugLine(positionGoal, y_axis_end, y_axis_color, lineWidth=7)
+        self.zArrowEE = p.addUserDebugLine(positionGoal, z_axis_end, z_axis_color, lineWidth=7)
+
 
     def set_joint_angles(self, body: str, joints: np.ndarray, angles: np.ndarray) -> None:
         """Set the angles of the joints of the body.
