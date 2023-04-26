@@ -11,8 +11,9 @@ import yaml
 import PyKDL
 from ..utils.kinematics import KINEMATICS
 from stable_baselines3.common.utils import safe_mean
+import pybullet as p
+from pyquaternion import Quaternion
 
-    
 class MYROBOT(PyBulletRobot):
     """Panda robot in PyBullet.
 
@@ -42,8 +43,12 @@ class MYROBOT(PyBulletRobot):
         self.wdlsAction = np.zeros(7)
         self.networkAction = np.zeros(7)
         self.currentWSNumber = 1
+        self.goalFrame = None
         action_space = spaces.Box(-1.0, 1.0, shape=(n_action,), dtype=np.float32)
-        
+        self.quaternionAngleError = 0.00
+        self.quaternionDistanceError = 0.00
+        self.quaternionError = Quaternion(1, 0, 0, 0)
+        self.finalAction = np.zeros(7)
         """
         self.workspacesdict = {'W0Low':  np.array([0.00, 0.5, 0.00, -1.85, 0.00, 2.26, 0.79, 0.00, 0.00]),
                                'W0High':  np.array([0.00, 0.5, 0.00, -1.85, 0.00, 2.26, 0.79, 0.00, 0.00]),
@@ -57,7 +62,7 @@ class MYROBOT(PyBulletRobot):
                                'W4High': np.array([+math.pi/2, -0.09+math.pi/4,  0.00, -1.85, 0.00, 2.26, 0.79])}
         """     
 
-        """
+        #"""
         self.workspacesdict = {'W0Low':  np.array([0.00,         0.5,       0.00, -1.85, 0.00, 2.26, 0.79]),
                                'W0High': np.array([0.00,         0.5,       0.00, -1.85, 0.00, 2.26, 0.79]),
                                'W1Low':  np.array([-math.pi/12,  0.00,      0.00, -1.85, 0.00, 2.26, 0.79]),
@@ -70,9 +75,9 @@ class MYROBOT(PyBulletRobot):
                                'W4High': np.array([+math.pi/2,  math.pi/2,  0.00, -1.85, 0.00, 2.26, 0.79]),}
                                #'W4Low':  np.array([-math.pi/2,   0.00,      0.00, -1.85, 0.00, 0.00, 0.79]),
                                #'W4High': np.array([+math.pi/2,  math.pi/2,  0.00, -1.85, 0.00, 3.82, 0.79]),}
-        """
-
         #"""
+
+        """
         self.workspacesdict = {'W0Low':  np.array([0.00,          0.5,        0.00,  -1.85,         0.00,   2.26,    0.79]),
                                'W0High': np.array([0.00,          0.5,        0.00,  -1.85,         0.00,   2.26,    0.79]),
                                'W1Low':  np.array([-math.pi/12,   0.00,       0.00,  -math.pi/15,   -0.20,   0.00,   -0.20]),
@@ -86,7 +91,7 @@ class MYROBOT(PyBulletRobot):
                                'W5Low':  np.array([-math.pi/2,    0.00,       0.00,  -math.pi,     -2.96,   0.00,   -2.96]),
                                'W5High': np.array([+math.pi/2,    math.pi/2,  0.00,   0.00,         2.96,   3.82,    2.96]),
                                }
-        #"""
+        """
         self.jointLimitLow = self.workspacesdict[self.config['jointLimitLowStartID']]
         self.jointLimitHigh = self.workspacesdict[self.config['jointLimitHighStartID']]
         self.J = np.zeros((3, 7))
@@ -103,7 +108,8 @@ class MYROBOT(PyBulletRobot):
         )
 
         self.fingers_indices = np.array([9, 10])
-        self.neutral_joint_values = np.array([0.00, 0.5, 0.00, -1.85, 0.00, 2.26, 0.79, 0.00, 0.00])
+        #self.neutral_joint_values = np.array([0.00, 0.5, 0.00, -1.85, 0.00, 2.26, 0.79, 0.00, 0.00])
+        self.neutral_joint_values = np.array([0.0, 0.0, 0.00, -0.00, 0.00, 0.0, 0.00, 0.00, 0.00])
         #self.neutral_joint_values = np.array([0.00, 0.41, 0.00, -1.85, 0.00, 2.26, 0.79, 0.00, 0.00])
         #self.neutral_joint_values = np.array([0.00, math.pi/2, 0.00, -0.00, 0.00, 0.00, 0.00, 0.00, 0.00])
         self.ee_link = 11
@@ -135,12 +141,14 @@ class MYROBOT(PyBulletRobot):
     
     def calculateqdotFullJac(self, obs):
         qdot = np.zeros(self.kinematic.numbOfJoints)
-        error = obs['desired_goal'] - obs['achieved_goal']
         
         for i in range(self.kinematic.numbOfJoints):
             self.q_in[i] = obs['observation'][i]
-        
-        v_in = PyKDL.Twist(PyKDL.Vector(error[0],error[1],error[2]), PyKDL.Vector(0.0,0.00,0.00))
+        positionError = obs['desired_goal'] - obs['achieved_goal']
+        #errorRPYFromRotationMatrix = self.calculateRPYErrorWithRotationMatrix()
+        errorRPYFromQuaternion = self.calculateRPYErrorWithQuaternion()
+        v_in = PyKDL.Twist(PyKDL.Vector(positionError[0],positionError[1],positionError[2]), 
+                           PyKDL.Vector(errorRPYFromQuaternion[0],errorRPYFromQuaternion[1],errorRPYFromQuaternion[2]))
         q_dot_out = PyKDL.JntArray(self.kinematic.numbOfJoints)
         self.kinematic.ikVelKDL.CartToJnt(self.q_in, v_in, q_dot_out)
 
@@ -148,37 +156,69 @@ class MYROBOT(PyBulletRobot):
             qdot[i] = q_dot_out[i]
 
         return qdot
+    
+    def calculateRPYErrorWithRotationMatrix(self):
+        currentRotationMatrixPYKDL = PyKDL.Rotation.Identity()
+        currentQuaternion = self.sim.get_link_orientation('panda', 11)
+        currentRotationMatrix = np.array(p.getMatrixFromQuaternion(currentQuaternion)).reshape(3, 3)
+
+        for row in range(3):
+            for column in range(3):
+                currentRotationMatrixPYKDL[row, column] = currentRotationMatrix[row, column]
+        
+        desiredRotationMatrix = self.goalFrame.M
+        rotationError = desiredRotationMatrix*currentRotationMatrixPYKDL.Inverse()
+        errorRPYFromRotationMatrix = np.asarray(rotationError.GetRPY())
+
+        #print("errorRPYFromRotationMatrix:", errorRPYFromRotationMatrix)
+        return errorRPYFromRotationMatrix
+        
+    def calculateRPYErrorWithQuaternion(self):
+        d1 = self.goalFrame.M.GetQuaternion()
+        c1 = self.sim.get_link_orientation('panda', 11)
+        #print("d1:", d1)
+        #print("c1:", c1)
+        desiredQuaternion = Quaternion(d1[3], d1[0], d1[1], d1[2])
+        currentQuaternion = Quaternion(c1[3], c1[0], c1[1], c1[2])
+
+        # Calculate quaternion error
+        self.quaternionError = desiredQuaternion * currentQuaternion.conjugate
+        q = PyKDL.Rotation.Quaternion(self.quaternionError[1], self.quaternionError[2], 
+                                      self.quaternionError[3], self.quaternionError[0])
+
+        errorRPYFromQuaternion = q.GetRPY()
+        self.quaternionAngleError = self.quaternionError.angle
+        self.quaternionDistanceError = Quaternion.distance(desiredQuaternion, currentQuaternion)
+        #print("Quaternion error:", q_err)
+        #print("Quaternion error angle:", q_err.angle)
+        #print("Quaternion distance:", Quaternion.distance(desiredQuaternion, currentQuaternion))
+        #print("errorRPYFromQuaternion:", errorRPYFromQuaternion)
+        return errorRPYFromQuaternion
 
     def set_action(self, action: np.ndarray, obs) -> None:
         action = action.copy()  # ensure action don't change
-        
+        self.calculateRPYErrorWithQuaternion()
         #action = 0*action
         if self.config['pseudoI']==True and self.config['networkOutput']==True:
-            #print("pseudo+network")
-            #print("Network output:", action/5)
-            action = self.calculateqdotOnlyPosition(obs) + action/5
+            action = self.calculateqdotFullJac(obs) + action/5
 
         elif self.config['pseudoI']==True and self.config['networkOutput']==False:
-            #print("only pseudoI")
-            action = self.calculateqdotOnlyPosition(obs)
+            action = self.calculateqdotFullJac(obs)
         else:
-            #print("Only network output")
             action = action/5
-
-        #action=0*action
         action = np.clip(action, self.action_space.low, self.action_space.high)
-
+        self.finalAction = action
         if self.control_type == "ee":
-            ee_displacement = action[:3]
+            ee_displacement = self.finalAction[:3]
             target_arm_angles = self.ee_displacement_to_target_arm_angles(ee_displacement)
         else:
-            arm_joint_ctrl = action[:7]
+            arm_joint_ctrl = self.finalAction[:7]
             target_arm_angles = self.arm_joint_ctrl_to_target_arm_angles(arm_joint_ctrl)
 
         if self.block_gripper:
             target_fingers_width = 0
         else:
-            fingers_ctrl = action[-1] * 0.2  # limit maximum change in position
+            fingers_ctrl = self.finalAction[-1] * 0.2  # limit maximum change in position
             fingers_width = self.get_fingers_width()
             target_fingers_width = fingers_width + fingers_ctrl
 
@@ -223,9 +263,6 @@ class MYROBOT(PyBulletRobot):
         return target_arm_angles
 
     def get_obs(self) -> np.ndarray:
-        # end-effector position and velocity
-        #ee_position = np.array(self.get_ee_position())
-        #ee_velocity = np.array(self.get_ee_velocity())
         currentJointAngles = [self.get_joint_angle(joint=i) for i in range(7) ]
         currentJoinVelocities = [self.get_joint_velocity(joint=i) for i in range(7) ]
         # fingers opening
@@ -233,9 +270,7 @@ class MYROBOT(PyBulletRobot):
             fingers_width = self.get_fingers_width()
             obs = np.concatenate((currentJointAngles, currentJoinVelocities, [fingers_width]))
         else:
-            obs = np.concatenate((currentJointAngles, currentJoinVelocities))
-
-        #print("obs in m:", obs)
+            obs = np.concatenate((currentJointAngles, currentJoinVelocities, self.quaternionError.elements))
         return obs
 
     def reset(self) -> None:
@@ -245,9 +280,6 @@ class MYROBOT(PyBulletRobot):
 
     def set_joint_neutral(self) -> None:
         """Set the robot to its neutral pose."""
-        if self.model is not None:
-            #print("model timestamp in myRobot.py:", (self.model._n_updates*self.config['n_steps']*self.config['n_envs'])/(self.config['n_epochs']))
-            pass
         if self.config['randomStart']==True:
             seed=None
             np_random, seed = gym.utils.seeding.np_random(seed)

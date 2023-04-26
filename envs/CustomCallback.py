@@ -1,6 +1,7 @@
 from stable_baselines3.common.callbacks import BaseCallback
 import gym
 import numpy as np
+from pyquaternion import Quaternion
 
 class CUSTOMCALLBACK(BaseCallback):
     """
@@ -48,6 +49,8 @@ class CUSTOMCALLBACK(BaseCallback):
         successRate1 = 0.0
         successRate5 = 0.0
         avgJntVel = 0.0
+        avgQuaternionDistance = 0.0
+        avgQuaternionAngle = 0.0
 
         for step in range(numberOfSteps):
             obs = env.reset()
@@ -58,12 +61,17 @@ class CUSTOMCALLBACK(BaseCallback):
             while not done:
                 action, _states = model.predict(obs, deterministic=True)
                 obs, reward, done, info = env.step(action)
-                #print("obs in customcallback.py:", obs['desired_goal'])
-                #print("done:", done)
             error = abs(obs['achieved_goal'] - obs['desired_goal'])
             mae = np.linalg.norm(error) + mae
             squaredError += np.sum(error**2)
-            avgJntVel = np.linalg.norm(action) + avgJntVel
+            avgJntVel = np.linalg.norm(env.robot.finalAction) + avgJntVel
+            d1 = env.robot.goalFrame.M.GetQuaternion()
+            c1 = env.sim.get_link_orientation('panda', 11)
+            desiredQuaternion = Quaternion(d1[3], d1[0], d1[1], d1[2])
+            currentQuaternion = Quaternion(c1[3], c1[0], c1[1], c1[2])
+            avgQuaternionDistance+=Quaternion.distance(desiredQuaternion, currentQuaternion)
+            quaternionError = desiredQuaternion*currentQuaternion.conjugate
+            avgQuaternionAngle+=quaternionError.angle
             if np.linalg.norm(error) <=0.01:
                 successRate1+=1
             
@@ -76,8 +84,10 @@ class CUSTOMCALLBACK(BaseCallback):
         successRate1 = successRate1/numberOfSteps
         successRate5 = successRate5/numberOfSteps
         avgJntVel = avgJntVel/numberOfSteps
+        avgQuaternionDistance=avgQuaternionDistance/numberOfSteps
+        avgQuaternionAngle = avgQuaternionAngle/numberOfSteps
 
-        return rmse, mae, successRate1, successRate5, avgJntVel
+        return rmse, mae, successRate1, successRate5, avgJntVel, avgQuaternionDistance, avgQuaternionAngle
     
     def _on_training_start(self) -> None:
         """
@@ -105,16 +115,17 @@ class CUSTOMCALLBACK(BaseCallback):
             print("current iteration in customCallBack.py:", self.currentIteration)
             print("current time step", self.num_timesteps )
 
-            self.rmse, self.mae, successRate1, successRate5, self.avgJntVel = self.evaluatePolicy(self.config['testSampleOnTraining'], 
-                                                                               self.model, 
-                                                                               self.testingEnv)
+            self.rmse, self.mae, successRate1, successRate5, self.avgJntVel, avgQuaternionDistance, avgQuaternionAngle = self.evaluatePolicy(self.config['testSampleOnTraining'], 
+                                                                                                                        self.model, 
+                                                                                                                        self.testingEnv)
             print("RMSE in CustomCallBack.py:", self.rmse)
             print("MAE CustomCallBack.py:", self.mae)
             print("Success Rate 1 cm CustomCallBack.py:", successRate1)
             print("Success Rate 5 cm CustomCallBack.py:", successRate5)
             print("Average joint velocities CustomCallBack.py:", self.avgJntVel)
-
-            if self.mae < self.config['maeThreshold'] and self.avgJntVel < self.config['avgJntVelThreshold'] :
+            print("Average quaternion distance:", avgQuaternionDistance)
+            print("Average quaternion angle:", avgQuaternionAngle)
+            if self.rmse < self.config['maeThreshold'] and self.avgJntVel < self.config['avgJntVelThreshold'] :
                 # Change workspace 
                 self.currentWorkspace+=1
                 

@@ -226,6 +226,7 @@ class RobotTaskEnv(gym.GoalEnv):
 
     def __init__(self, robot: PyBulletRobot, task: Task) -> None:
         assert robot.sim == task.sim, "The robot and the task must belong to the same simulation."
+        self.goalFrame = None
         self.sim = robot.sim
         self.robot = robot
         self.task = task
@@ -254,6 +255,7 @@ class RobotTaskEnv(gym.GoalEnv):
         isSuccess = self.task.is_success(self.task.get_achieved_goal(), self.task.get_goal())
         isSuccess = isSuccess[...,np.newaxis]
         observation = np.concatenate([observation, isSuccess])
+        #print("observation in core.py", observation)
         return {
             "observation": observation,
             "achieved_goal": achieved_goal,
@@ -264,6 +266,7 @@ class RobotTaskEnv(gym.GoalEnv):
         with self.sim.no_rendering():
             self.robot.reset()
             self.task.reset()
+            self.robot.goalFrame = self.task.goalFrame
         return self._get_obs()
 
     def step(self, action: np.ndarray) -> Tuple[Dict[str, np.ndarray], float, bool, Dict[str, Any]]:
@@ -274,6 +277,8 @@ class RobotTaskEnv(gym.GoalEnv):
         done = False
         info = {"is_success": self.task.is_success(obs["achieved_goal"], self.task.get_goal())}
 
+        self.task.quaternionAngleError = self.robot.quaternionAngleError
+        self.task.quaternionDistanceError = self.robot.quaternionDistanceError
         reward = self.task.compute_reward(obs["achieved_goal"],self.task.get_goal(), info)
 
         assert isinstance(reward, float)  # needed for pytype cheking

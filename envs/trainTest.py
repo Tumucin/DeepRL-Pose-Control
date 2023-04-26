@@ -18,6 +18,9 @@ import numpy as np
 import torch as th
 import matplotlib.pyplot as plt
 from CustomCallback import CUSTOMCALLBACK
+from pyquaternion import Quaternion
+
+
 class TRAINTEST():
     def __init__(self, config):
         self.config = config
@@ -76,7 +79,8 @@ class TRAINTEST():
         successRate1 = 0.0
         successRate5 = 0.0
         avgJntVel = 0.0
-
+        avgQuaternionDistance = 0.0
+        avgQuaternionAngle = 0.0
         for step in range(numberOfSteps):
             obs = env.reset()
             print("step: ", step)
@@ -89,7 +93,14 @@ class TRAINTEST():
             error = abs(obs['achieved_goal'] - obs['desired_goal'])
             mae = np.linalg.norm(error) + mae
             squaredError += np.sum(error**2)
-            avgJntVel = np.linalg.norm(action) + avgJntVel
+            avgJntVel = np.linalg.norm(env.robot.finalAction) + avgJntVel
+            d1 = env.robot.goalFrame.M.GetQuaternion()
+            c1 = env.sim.get_link_orientation('panda', 11)
+            desiredQuaternion = Quaternion(d1[3], d1[0], d1[1], d1[2])
+            currentQuaternion = Quaternion(c1[3], c1[0], c1[1], c1[2])
+            avgQuaternionDistance+=Quaternion.distance(desiredQuaternion, currentQuaternion)
+            quaternionError = desiredQuaternion*currentQuaternion.conjugate
+            avgQuaternionAngle+=quaternionError.angle
             if np.linalg.norm(error) <=0.01:
                 successRate1+=1
             
@@ -102,6 +113,8 @@ class TRAINTEST():
         successRate1 = successRate1/numberOfSteps
         successRate5 = successRate5/numberOfSteps
         avgJntVel = avgJntVel/numberOfSteps
+        avgQuaternionDistance=avgQuaternionDistance/numberOfSteps
+        avgQuaternionAngle = avgQuaternionAngle/numberOfSteps
 
         print("Testing environment jointLimitLow is:", env.robot.jointLimitLow)
         print("Testing environment jointLimitHigh is:", env.robot.jointLimitHigh)
@@ -110,9 +123,12 @@ class TRAINTEST():
         print("Success Rate 1 cm:", successRate1)
         print("Success Rate 5 cm:", successRate5)
         print("Average joint velocities:", avgJntVel)
+        print("Average quaternion distance:", avgQuaternionDistance)
+        print("Average quaternion angle:", avgQuaternionAngle)
         
         with open("metrics"+str(self.config['expNumber'])+".txt", 'w') as f:
-            f.write('{}\n{}\n{}\n{}\n{}'.format(rmse, mae, successRate1, successRate5, avgJntVel))
+            f.write('{}\n{}\n{}\n{}\n{}\n{}\n{}'.format(rmse, mae, successRate1, successRate5, avgJntVel, 
+                                                        avgQuaternionDistance, avgQuaternionAngle))
         
 
     def loadAndEvaluateModel(self, algorithm,env):
@@ -120,7 +136,7 @@ class TRAINTEST():
         model = algorithm.load(self.modelFileNameToSave)         
         ## Random start        
         env.robot.jointLimitLow = env.robot.workspacesdict[str(list(env.robot.workspacesdict)[-2])]
-        env.robot.jointLimitHigh = env.robot.workspacesdict[str(list(env.robot.workspacesdict)[-1])]
+        env.robot.jointLimitHigh = env.robot.workspacesdict[str(list(env.robot.workspacesdict)[-1])]        
         self.evaluatePolicy(self.config['testSamples'], model, env)
         
         
@@ -161,6 +177,7 @@ def main():
     parser.add_argument('--rmseThreshold', type=float,help="")
     parser.add_argument('--maeThreshold', type=float,help="")
     parser.add_argument('--avgJntVelThreshold', type=float,help="")
+    parser.add_argument('--orientationConstant', type=float, help="")
     args = parser.parse_args()
 
     with open('configPPO.yaml') as f:

@@ -26,21 +26,22 @@ class Reach(Task):
         self.reward_type = reward_type
         self.distance_threshold = distance_threshold
         self.get_ee_position = get_ee_position
-
+        self.goalFrame = None
+        self.quaternionAngleError = 0.0
+        self.quaternionDistanceError = 0.00
         """
         self.jointLimitLow = np.array([-math.pi/2, -0.09-math.pi/4, 0.00, -1.85, 0.00, 2.26, 0.79])
         self.jointLimitHigh = np.array([+math.pi/2, -0.09+math.pi/4,  0.00, -1.85, 0.00, 2.26, 0.79])
         """
-
-        """
+        #"""
         self.jointLimitLow = np.array([-math.pi/2, 0.00, 0.00, -1.85, 0.00, 2.26, 0.79])
         self.jointLimitHigh = np.array([+math.pi/2, math.pi/2,  0.00, -1.85, 0.00, 2.26, 0.79])
-        """
-
         #"""
+
+        """
         self.jointLimitLow = np.array([-math.pi/2,    0.00,       0.00,  0.00, -2.9, 0.00, -2.9])
         self.jointLimitHigh = np.array([+math.pi/2,   math.pi/2,  0.00, -math.pi, 2.9, 3.8, 2.9])
-        #"""
+        """
         with self.sim.no_rendering():
             self._create_scene()
             self.sim.place_visualizer(target_position=np.zeros(3), distance=0.9, yaw=45, pitch=-30)
@@ -68,16 +69,12 @@ class Reach(Task):
     def reset(self) -> None:
         #print("reset in reach.py")
         self.goal = self._sample_goal()
-        self.sim.set_base_pose('target', self.goal, np.array([0.0, 0.0, 0.0, 1.0]))
-
+        goalOrientation = np.asarray(self.goalFrame.M.GetQuaternion())
+        self.sim.set_base_pose('target', self.goal, goalOrientation)
+        #self.sim.set_base_pose('target', self.goal, np.array([0.0, 0.0, 0.0, 1.0]))
+        
     def _sample_goal(self) -> np.ndarray:
         """Randomize goal."""
-        if self.model is not None:
-            #print("model timestamp in reach.py:", (self.model._n_updates*self.config['n_steps']*self.config['n_envs'])/(self.config['n_epochs']))
-            #print("succes rate is in reach.py:",safe_mean(self.model.ep_success_buffer))
-            #print("total_timesteps is in reach.py:", self.model._total_timesteps)
-            pass
-        
         goal_range_low = np.array([-self.config['goal_range'] / 2, -self.config['goal_range'] / 2, 0])
         goal_range_high = np.array([self.config['goal_range'] / 2, self.config['goal_range'] / 2, self.config['goal_range']])
         goal = self.np_random.uniform(goal_range_low, goal_range_high)
@@ -91,8 +88,9 @@ class Reach(Task):
             goalFrame = self.kinematics.forwardKinematicsPoseSolv(q_in)
             goalFrame.p[0] = goalFrame.p[0] #+0.6
             goal[0], goal[1], goal[2] = goalFrame.p[0], goalFrame.p[1], goalFrame.p[2]
-        #print("goal in reach.py:", goal)
-        #goal[0], goal[1], goal[2] = -0.4765, -0.6158, 0.208
+        #goalFrame.M = PyKDL.Rotation.RPY(0.0, 0.0, 0.0)
+        self.goalFrame = goalFrame
+        
         return goal
 
     def is_success(self, achieved_goal: np.ndarray, desired_goal: np.ndarray) -> Union[np.ndarray, float]:
@@ -116,8 +114,10 @@ class Reach(Task):
         velocityNormThreshold = self.config['velocityNormThreshold']
         thresholdConstant = self.config['thresholdConstant']
         alpha = self.config['alpha']
+        orientationConstant = self.config['orientationConstant']
         if self.reward_type == "sparse":
             return np.exp(-(lambdaErr)*(d*d)) - accelerationConstant*np.linalg.norm(currentJointVelocities)
         else:
             return np.exp(-(lambdaErr)*(d*d)) - accelerationConstant*np.linalg.norm(currentJointAccelerations) - (velocityConst*np.linalg.norm(currentJointVelocities))/(1+alpha*d)+ \
-                   thresholdConstant*np.array(d < self.distance_threshold, dtype=np.float64)*np.array(np.linalg.norm(currentJointVelocities) < velocityNormThreshold, dtype=np.float64)     
+                   thresholdConstant*np.array(d < self.distance_threshold, dtype=np.float64)*np.array(np.linalg.norm(currentJointVelocities) < velocityNormThreshold, dtype=np.float64)+\
+                   np.exp(-(orientationConstant)*(self.quaternionDistanceError**2))     
