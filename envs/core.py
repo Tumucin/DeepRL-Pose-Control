@@ -255,6 +255,7 @@ class RobotTaskEnv(gym.GoalEnv):
         isSuccess = self.task.is_success(self.task.get_achieved_goal(), self.task.get_goal())
         isSuccess = isSuccess[...,np.newaxis]
         observation = np.concatenate([observation, isSuccess])
+        #self.sim.drawInfosOnScreen(deltax)
         #print("observation in core.py", observation)
         return {
             "observation": observation,

@@ -1,4 +1,6 @@
 # panda-gym
-- [X] Different workspaced were defined in myRobot.py. Workspace 3 is the half workspace.
-- [X] 2 Different pseudoinverse functions were implemented. Now you can use only position inverse kinematic solver with the orientation solver.
+- [X] Workspace version 2 is working very well with this version. (No Curriculum + Curriculum)
+- [X] Workspace version 3 is working at medium performance. 
+- [X] Orientation is added.
+- [X] Quaternion distance and angle were added as a metrics.
 

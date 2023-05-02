@@ -11,6 +11,7 @@ class KINEMATICS():
         self.urdfFileName = urdfFileName
         (_,self.kdlTree) = URDF.treeFromFile(self.urdfFileName)
         self.armChain = self.kdlTree.getChain('panda_link0', 'panda_grasptarget')
+        #self.armChain = self.kdlTree.getChain('j2s7s300_link_base', 'weight')
         self.numbOfJoints = self.armChain.getNrOfJoints()
         self.numbOfSegments = self.armChain.getNrOfSegments()
 

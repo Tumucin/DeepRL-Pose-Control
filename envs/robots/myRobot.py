@@ -101,6 +101,8 @@ class MYROBOT(PyBulletRobot):
             sim,
             body_name="panda",
             file_name="franka_panda/panda.urdf",
+            #body_name="j2s7s300",
+            #file_name="/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco_robotiq.urdf",
             base_position=base_position,
             action_space=action_space,
             joint_indices=np.array([0, 1, 2, 3, 4, 5, 6, 9, 10]),
@@ -175,7 +177,7 @@ class MYROBOT(PyBulletRobot):
         
     def calculateRPYErrorWithQuaternion(self):
         d1 = self.goalFrame.M.GetQuaternion()
-        c1 = self.sim.get_link_orientation('panda', 11)
+        c1 = self.sim.get_link_orientation(self.body_name, 11)
         #print("d1:", d1)
         #print("c1:", c1)
         desiredQuaternion = Quaternion(d1[3], d1[0], d1[1], d1[2])
@@ -190,7 +192,7 @@ class MYROBOT(PyBulletRobot):
         self.quaternionAngleError = self.quaternionError.angle
         self.quaternionDistanceError = Quaternion.distance(desiredQuaternion, currentQuaternion)
         #print("Quaternion error:", q_err)
-        #print("Quaternion error angle:", q_err.angle)
+        #print("Quaternion error angle:", self.quaternionError.angle)
         #print("Quaternion distance:", Quaternion.distance(desiredQuaternion, currentQuaternion))
         #print("errorRPYFromQuaternion:", errorRPYFromQuaternion)
         return errorRPYFromQuaternion
@@ -270,7 +272,7 @@ class MYROBOT(PyBulletRobot):
             fingers_width = self.get_fingers_width()
             obs = np.concatenate((currentJointAngles, currentJoinVelocities, [fingers_width]))
         else:
-            obs = np.concatenate((currentJointAngles, currentJoinVelocities, self.quaternionError.elements))
+            obs = np.concatenate((currentJointAngles, currentJoinVelocities, self.quaternionError.elements)) 
         return obs
 
     def reset(self) -> None:

@@ -50,6 +50,12 @@ class PyBullet:
         self.xArrowEE = None
         self.yArrowEE = None
         self.zArrowEE = None
+        self.counter = 0
+        self.positionErrorText = None
+        self.velocityNormText = None
+        self.timeStepText = None
+        self.angleErrorText = None
+        self.body_name = 'panda'
     @property
     def dt(self):
         """Timestep."""
@@ -57,10 +63,33 @@ class PyBullet:
 
     def step(self) -> None:
         """Step the simulation."""
-        self.drawFrameForCurrentPose()
+        if self.counter%100==0:
+            self.drawFrameForCurrentPose()
         for _ in range(self.n_substeps):
             self.physics_client.stepSimulation()
 
+    def drawInfosOnScreen(self, positionError, currentJointVelocitiesNorm, angleError)-> None:
+        text_pos1 = [0, 0, -0.1] # Position of the text in world coordinates
+        text_pos2 = [0, 0, -0.15] # Position of the text in world coordinates
+        text_pos3 = [0, 0, -0.2] # Position of the text in world coordinates
+        text_pos4 = [0, 0, -0.25] # Position of the text in world coordinates
+        text_color = [1, 0, -0.3] # Blue color
+        text_size = 1 # Text size in pixels
+
+        if self.counter%100 == 0:
+            if self.velocityNormText!=None:
+                p.removeUserDebugItem(self.timeStepText)
+                p.removeUserDebugItem(self.positionErrorText)
+                p.removeUserDebugItem(self.angleErrorText)
+                p.removeUserDebugItem(self.velocityNormText)
+            self.timeStepText = p.addUserDebugText("TIMESTEP:   "+str(self.counter), text_pos1, text_color, text_size)
+            self.positionErrorText = p.addUserDebugText("POSITION ERROR [m]:   "+str(positionError), text_pos2, text_color, text_size)
+            self.angleErrorText = p.addUserDebugText("ANGLE ERROR [rad]:   "+str(angleError), text_pos3, text_color, text_size)
+            self.velocityNormText = p.addUserDebugText("VELOCITYNORM [rad/s]:   "+str(currentJointVelocitiesNorm), text_pos4, text_color, text_size)
+            
+        self.counter +=1
+        if self.counter==800:
+            self.counter=0
     def close(self) -> None:
         """Close the simulation."""
         self.physics_client.disconnect()
@@ -304,13 +333,13 @@ class PyBullet:
         x_axis_color = [0, 0, 0]  # Red axis
         y_axis_color = [0, 1, 0]  # Green axis
         z_axis_color = [0, 0, 1]  # Blue axis
-        self.xArrowGoal = p.addUserDebugLine(positionGoal, x_axis_end, x_axis_color, lineWidth=7)
-        self.yArrowGoal = p.addUserDebugLine(positionGoal, y_axis_end, y_axis_color, lineWidth=7)
-        self.zArrowGoal = p.addUserDebugLine(positionGoal, z_axis_end, z_axis_color, lineWidth=7)
+        self.xArrowGoal = p.addUserDebugLine(positionGoal, x_axis_end, x_axis_color, lineWidth=5)
+        self.yArrowGoal = p.addUserDebugLine(positionGoal, y_axis_end, y_axis_color, lineWidth=5)
+        self.zArrowGoal = p.addUserDebugLine(positionGoal, z_axis_end, z_axis_color, lineWidth=5)
     
     def drawFrameForCurrentPose(self):
-        orientationGoal = self.get_link_orientation('panda', 11)
-        positionGoal = self.get_link_position('panda', 11)
+        orientationGoal = self.get_link_orientation(self.body_name, 11)
+        positionGoal = self.get_link_position(self.body_name, 11)
         # create an arrow
         if self.xArrowEE!=None:
             p.removeUserDebugItem(self.xArrowEE)
@@ -318,7 +347,7 @@ class PyBullet:
             p.removeUserDebugItem(self.zArrowEE)
         rotation_matrix = np.array(p.getMatrixFromQuaternion(orientationGoal)).reshape(3, 3)
 
-        axis_length = 0.2
+        axis_length = 0.25
 
         # Create the lines for the frame
         x_axis_end = positionGoal + axis_length * rotation_matrix[:, 0]
@@ -328,9 +357,9 @@ class PyBullet:
         x_axis_color = [0, 0, 0]  # Red axis
         y_axis_color = [0, 1, 0]  # Green axis
         z_axis_color = [0, 0, 1]  # Blue axis
-        self.xArrowEE = p.addUserDebugLine(positionGoal, x_axis_end, x_axis_color, lineWidth=7)
-        self.yArrowEE = p.addUserDebugLine(positionGoal, y_axis_end, y_axis_color, lineWidth=7)
-        self.zArrowEE = p.addUserDebugLine(positionGoal, z_axis_end, z_axis_color, lineWidth=7)
+        self.xArrowEE = p.addUserDebugLine(positionGoal, x_axis_end, x_axis_color, lineWidth=2)
+        self.yArrowEE = p.addUserDebugLine(positionGoal, y_axis_end, y_axis_color, lineWidth=2)
+        self.zArrowEE = p.addUserDebugLine(positionGoal, z_axis_end, z_axis_color, lineWidth=2)
 
 
     def set_joint_angles(self, body: str, joints: np.ndarray, angles: np.ndarray) -> None:

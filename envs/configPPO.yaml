@@ -2,16 +2,17 @@
 modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
 logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
 urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
+#urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco_robotiq_object.urdf'
 #modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
 #logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
 #urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
 expNumber: 354
 envName: "PandaReach-v2"            
 total_timesteps: !!float 32768000
-mode: True                       
+mode: False                       
 algorithm: "PPO"                 
 policy: "MultiInputPolicy"           
-render: False                        
+render: True                        
 gamma: 0.95 
 n_steps: 4096
 n_epochs: 10
