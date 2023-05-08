@@ -23,7 +23,7 @@ class PyBullet:
     """
 
     def __init__(
-        self, render: bool = False, n_substeps: int = 5, background_color: np.ndarray = np.array([223.0, 54.0, 45.0])
+        self, render: bool = False, n_substeps: int = 5, background_color: np.ndarray = np.array([223.0, 54.0, 45.0]), config=None
     ) -> None:
         self.background_color = background_color.astype(np.float64) / 255
         options = "--background_color_red={} \
@@ -55,7 +55,8 @@ class PyBullet:
         self.velocityNormText = None
         self.timeStepText = None
         self.angleErrorText = None
-        self.body_name = 'panda'
+        self.body_name = config['body_name']
+        self.ee_link = config['ee_link']
     @property
     def dt(self):
         """Timestep."""
@@ -338,8 +339,10 @@ class PyBullet:
         self.zArrowGoal = p.addUserDebugLine(positionGoal, z_axis_end, z_axis_color, lineWidth=5)
     
     def drawFrameForCurrentPose(self):
-        orientationGoal = self.get_link_orientation(self.body_name, 11)
-        positionGoal = self.get_link_position(self.body_name, 11)
+        orientationGoal = self.get_link_orientation(self.body_name, self.ee_link)
+        positionGoal = self.get_link_position(self.body_name, self.ee_link)
+        #print("ee position:", positionGoal)
+        #print("orientation 4:", self.get_link_orientation(self.body_name, 6))
         # create an arrow
         if self.xArrowEE!=None:
             p.removeUserDebugItem(self.xArrowEE)
@@ -347,7 +350,7 @@ class PyBullet:
             p.removeUserDebugItem(self.zArrowEE)
         rotation_matrix = np.array(p.getMatrixFromQuaternion(orientationGoal)).reshape(3, 3)
 
-        axis_length = 0.25
+        axis_length = 0.5
 
         # Create the lines for the frame
         x_axis_end = positionGoal + axis_length * rotation_matrix[:, 0]

@@ -35,7 +35,7 @@ class MYROBOT(PyBulletRobot):
     ) -> None:
         self.config = config
         self.model = None
-        self.kinematic = KINEMATICS(self.config['urdfPath'])
+        self.kinematic = KINEMATICS(self.config['urdfPath'], config['baseLinkName'], config['eeLinkName'])
         self.block_gripper = block_gripper
         self.control_type = control_type
         n_action = 3 if self.control_type == "ee" else 7  # control (x, y z) if "ee", else, control the 7 joints
@@ -49,20 +49,9 @@ class MYROBOT(PyBulletRobot):
         self.quaternionDistanceError = 0.00
         self.quaternionError = Quaternion(1, 0, 0, 0)
         self.finalAction = np.zeros(7)
+        self.np_random_start, _ = gym.utils.seeding.np_random()
+        
         """
-        self.workspacesdict = {'W0Low':  np.array([0.00, 0.5, 0.00, -1.85, 0.00, 2.26, 0.79, 0.00, 0.00]),
-                               'W0High':  np.array([0.00, 0.5, 0.00, -1.85, 0.00, 2.26, 0.79, 0.00, 0.00]),
-                               'W1Low':  np.array([-math.pi/12, -0.09-math.pi/24, 0.00, -1.85, 0.00, 2.26, 0.79, 0.00, 0.00]),
-                               'W1High':  np.array([+math.pi/12, -0.09+math.pi/24, 0.00, -1.85, 0.00, 2.26, 0.79, 0.00, 0.00]),
-                               'W2Low':  np.array([-math.pi/6, -0.09-math.pi/12, 0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W2High': np.array([+math.pi/6, -0.09+math.pi/12, 0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W3Low':  np.array([-math.pi/3, -0.09-math.pi/6,  0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W3High': np.array([+math.pi/3, -0.09+math.pi/6,  0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W4Low':  np.array([-math.pi/2, -0.09-math.pi/4,  0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W4High': np.array([+math.pi/2, -0.09+math.pi/4,  0.00, -1.85, 0.00, 2.26, 0.79])}
-        """     
-
-        #"""
         self.workspacesdict = {'W0Low':  np.array([0.00,         0.5,       0.00, -1.85, 0.00, 2.26, 0.79]),
                                'W0High': np.array([0.00,         0.5,       0.00, -1.85, 0.00, 2.26, 0.79]),
                                'W1Low':  np.array([-math.pi/12,  0.00,      0.00, -1.85, 0.00, 2.26, 0.79]),
@@ -75,7 +64,7 @@ class MYROBOT(PyBulletRobot):
                                'W4High': np.array([+math.pi/2,  math.pi/2,  0.00, -1.85, 0.00, 2.26, 0.79]),}
                                #'W4Low':  np.array([-math.pi/2,   0.00,      0.00, -1.85, 0.00, 0.00, 0.79]),
                                #'W4High': np.array([+math.pi/2,  math.pi/2,  0.00, -1.85, 0.00, 3.82, 0.79]),}
-        #"""
+        """
 
         """
         self.workspacesdict = {'W0Low':  np.array([0.00,          0.5,        0.00,  -1.85,         0.00,   2.26,    0.79]),
@@ -92,15 +81,18 @@ class MYROBOT(PyBulletRobot):
                                'W5High': np.array([+math.pi/2,    math.pi/2,  0.00,   0.00,         2.96,   3.82,    2.96]),
                                }
         """
+        self.workspacesdict = self.config['workspacesdict']
+        for key, value in self.workspacesdict.items():
+            self.workspacesdict[key] = np.array(value)
         self.jointLimitLow = self.workspacesdict[self.config['jointLimitLowStartID']]
         self.jointLimitHigh = self.workspacesdict[self.config['jointLimitHighStartID']]
-        self.J = np.zeros((3, 7))
-        self.q_in = PyKDL.JntArray(self.kinematic.numbOfJoints)
+        
+        #self.q_in = PyKDL.JntArray(self.kinematic.numbOfJoints)
         self.j_kdl = PyKDL.Jacobian(self.kinematic.numbOfJoints)
         super().__init__(
             sim,
-            body_name="panda",
-            file_name="franka_panda/panda.urdf",
+            body_name=config['body_name'],
+            file_name=config['file_name'],
             #body_name="j2s7s300",
             #file_name="/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco_robotiq.urdf",
             base_position=base_position,
@@ -110,105 +102,34 @@ class MYROBOT(PyBulletRobot):
         )
 
         self.fingers_indices = np.array([9, 10])
-        #self.neutral_joint_values = np.array([0.00, 0.5, 0.00, -1.85, 0.00, 2.26, 0.79, 0.00, 0.00])
-        self.neutral_joint_values = np.array([0.0, 0.0, 0.00, -0.00, 0.00, 0.0, 0.00, 0.00, 0.00])
-        #self.neutral_joint_values = np.array([0.00, 0.41, 0.00, -1.85, 0.00, 2.26, 0.79, 0.00, 0.00])
-        #self.neutral_joint_values = np.array([0.00, math.pi/2, 0.00, -0.00, 0.00, 0.00, 0.00, 0.00, 0.00])
-        self.ee_link = 11
+        self.neutral_joint_values = np.array(self.config['neutral_joint_values'])
+        self.ee_link = self.config['ee_link']
         self.sim.set_lateral_friction(self.body_name, self.fingers_indices[0], lateral_friction=1.0)
         self.sim.set_lateral_friction(self.body_name, self.fingers_indices[1], lateral_friction=1.0)
         self.sim.set_spinning_friction(self.body_name, self.fingers_indices[0], spinning_friction=0.001)
         self.sim.set_spinning_friction(self.body_name, self.fingers_indices[1], spinning_friction=0.001)
 
-    def calculateqdotOnlyPosition(self, obs):
-        v = np.zeros(3)
-        deltax = obs['desired_goal'] - obs['achieved_goal']
-
-        for i in range(self.kinematic.numbOfJoints):
-            self.q_in[i] = obs['observation'][i]
-
-        self.kinematic.jacSolver.JntToJac(self.q_in, self.j_kdl)
-
-        for i in range(3):
-            for j in range(self.kinematic.numbOfJoints):
-                self.J[i,j] = self.j_kdl[i,j]
-        
-        J_pinv = np.linalg.pinv(self.J)
-
-        v[0], v[1], v[2] = deltax[0], deltax[1], deltax[2]
-        if np.linalg.norm(v) >0.5:
-            v/=3
-        qdot = np.dot(J_pinv, v)
-        return qdot
     
-    def calculateqdotFullJac(self, obs):
-        qdot = np.zeros(self.kinematic.numbOfJoints)
-        
-        for i in range(self.kinematic.numbOfJoints):
-            self.q_in[i] = obs['observation'][i]
-        positionError = obs['desired_goal'] - obs['achieved_goal']
-        #errorRPYFromRotationMatrix = self.calculateRPYErrorWithRotationMatrix()
-        errorRPYFromQuaternion = self.calculateRPYErrorWithQuaternion()
-        v_in = PyKDL.Twist(PyKDL.Vector(positionError[0],positionError[1],positionError[2]), 
-                           PyKDL.Vector(errorRPYFromQuaternion[0],errorRPYFromQuaternion[1],errorRPYFromQuaternion[2]))
-        q_dot_out = PyKDL.JntArray(self.kinematic.numbOfJoints)
-        self.kinematic.ikVelKDL.CartToJnt(self.q_in, v_in, q_dot_out)
-
-        for i in range(self.kinematic.numbOfJoints):
-            qdot[i] = q_dot_out[i]
-
-        return qdot
-    
-    def calculateRPYErrorWithRotationMatrix(self):
-        currentRotationMatrixPYKDL = PyKDL.Rotation.Identity()
-        currentQuaternion = self.sim.get_link_orientation('panda', 11)
-        currentRotationMatrix = np.array(p.getMatrixFromQuaternion(currentQuaternion)).reshape(3, 3)
-
-        for row in range(3):
-            for column in range(3):
-                currentRotationMatrixPYKDL[row, column] = currentRotationMatrix[row, column]
-        
-        desiredRotationMatrix = self.goalFrame.M
-        rotationError = desiredRotationMatrix*currentRotationMatrixPYKDL.Inverse()
-        errorRPYFromRotationMatrix = np.asarray(rotationError.GetRPY())
-
-        #print("errorRPYFromRotationMatrix:", errorRPYFromRotationMatrix)
-        return errorRPYFromRotationMatrix
-        
-    def calculateRPYErrorWithQuaternion(self):
-        d1 = self.goalFrame.M.GetQuaternion()
-        c1 = self.sim.get_link_orientation(self.body_name, 11)
-        #print("d1:", d1)
-        #print("c1:", c1)
-        desiredQuaternion = Quaternion(d1[3], d1[0], d1[1], d1[2])
-        currentQuaternion = Quaternion(c1[3], c1[0], c1[1], c1[2])
-
-        # Calculate quaternion error
-        self.quaternionError = desiredQuaternion * currentQuaternion.conjugate
-        q = PyKDL.Rotation.Quaternion(self.quaternionError[1], self.quaternionError[2], 
-                                      self.quaternionError[3], self.quaternionError[0])
-
-        errorRPYFromQuaternion = q.GetRPY()
-        self.quaternionAngleError = self.quaternionError.angle
-        self.quaternionDistanceError = Quaternion.distance(desiredQuaternion, currentQuaternion)
-        #print("Quaternion error:", q_err)
-        #print("Quaternion error angle:", self.quaternionError.angle)
-        #print("Quaternion distance:", Quaternion.distance(desiredQuaternion, currentQuaternion))
-        #print("errorRPYFromQuaternion:", errorRPYFromQuaternion)
-        return errorRPYFromQuaternion
 
     def set_action(self, action: np.ndarray, obs) -> None:
         action = action.copy()  # ensure action don't change
         self.calculateRPYErrorWithQuaternion()
         #action = 0*action
         if self.config['pseudoI']==True and self.config['networkOutput']==True:
-            action = self.calculateqdotFullJac(obs) + action/5
+            if self.config['addOrientation'] == True:
+                action = self.calculateqdotFullJac(obs) + action/5
+            else:
+                action = self.calculateqdotOnlyPosition(obs) + action/5
 
         elif self.config['pseudoI']==True and self.config['networkOutput']==False:
-            action = self.calculateqdotFullJac(obs)
+            if self.config['addOrientation'] == True:
+                action = self.calculateqdotFullJac(obs)
+            else:
+                action = self.calculateqdotOnlyPosition(obs)
         else:
             action = action/5
         action = np.clip(action, self.action_space.low, self.action_space.high)
+        
         self.finalAction = action
         if self.control_type == "ee":
             ee_displacement = self.finalAction[:3]
@@ -272,7 +193,10 @@ class MYROBOT(PyBulletRobot):
             fingers_width = self.get_fingers_width()
             obs = np.concatenate((currentJointAngles, currentJoinVelocities, [fingers_width]))
         else:
-            obs = np.concatenate((currentJointAngles, currentJoinVelocities, self.quaternionError.elements)) 
+            if self.config['addOrientation']==True:
+                obs = np.concatenate((currentJointAngles, currentJoinVelocities, self.quaternionError.elements))
+            else:
+                 obs = np.concatenate((currentJointAngles, currentJoinVelocities))
         return obs
 
     def reset(self) -> None:
@@ -283,9 +207,10 @@ class MYROBOT(PyBulletRobot):
     def set_joint_neutral(self) -> None:
         """Set the robot to its neutral pose."""
         if self.config['randomStart']==True:
-            seed=None
-            np_random, seed = gym.utils.seeding.np_random(seed)
-            sampledAngles = np_random.uniform(self.jointLimitLow, self.jointLimitHigh)
+            #seed=None
+            #np_random, seed = gym.utils.seeding.np_random(seed)
+            sampledAngles = self.np_random_start.uniform(self.jointLimitLow, self.jointLimitHigh)
+            print("sampledAngles in myRobot.py:", sampledAngles)
             self.set_joint_angles(sampledAngles)
         else:
             self.set_joint_angles(self.neutral_joint_values)
@@ -303,3 +228,121 @@ class MYROBOT(PyBulletRobot):
     def get_ee_velocity(self) -> np.ndarray:
         """Returns the velocity of the end-effector as (vx, vy, vz)"""
         return self.get_link_velocity(self.ee_link)
+    
+    def calculateqdotOnlyPosition(self, obs):
+        """
+            This function calculates the required q_dot values for a given deltax (No orientation)
+            Deltax is the difference between the end effector and the desired position.
+            The equation for calculating q_dot is: q_dot = J_pinv * deltax
+            args:
+                obs: Observation of the robot
+            returns:
+                qdot: Desired joint velocities
+        """
+        q_in = PyKDL.JntArray(self.kinematic.numbOfJoints)
+
+        # Compute the current Jacobian for a given current joint angles
+        # And convert the calculated Jacobian to numpy array for matrix multiplication
+        for i in range(self.kinematic.numbOfJoints):
+            q_in[i] = obs['observation'][i]
+        self.kinematic.jacSolver.JntToJac(q_in, self.j_kdl)
+
+        # Take the first three rows of the Jacobian because we are not interested in Orientation
+        J = np.zeros((3, self.kinematic.numbOfJoints))
+        for i in range(3):
+            for j in range(self.kinematic.numbOfJoints):
+                J[i,j] = self.j_kdl[i,j]
+        
+        # Compute the Pseudoinverse of the Jacobian
+        J_pinv = np.linalg.pinv(J)
+        
+        # Calculate the desired q_dot for a given v_in
+        v_in = obs['desired_goal'] - obs['achieved_goal']
+        if np.linalg.norm(v_in) >0.5:
+            v_in/=3
+        qdot = np.dot(J_pinv, v_in)
+        return qdot
+    
+    def calculateqdotFullJac(self, obs):
+        """
+            This function calculates the required q_dot values for a given velocity difference
+            v_in is the difference(position+orientation) between the end effector and the desired position.
+            args:
+                obs: Observation of the robot
+            returns:
+                qdot: Desired joint velocities
+        """
+        q_in = PyKDL.JntArray(self.kinematic.numbOfJoints)
+        qdot = np.zeros(self.kinematic.numbOfJoints)
+        
+        for i in range(self.kinematic.numbOfJoints):
+            q_in[i] = obs['observation'][i]
+        
+        # Calculate the error in position and orientation seperately and create v_in Twist vector
+        # based on the errors
+        positionError = obs['desired_goal'] - obs['achieved_goal']
+        errorRPYFromQuaternion = self.calculateRPYErrorWithQuaternion()
+
+        v_in = PyKDL.Twist(PyKDL.Vector(positionError[0],positionError[1],positionError[2]), 
+                           PyKDL.Vector(errorRPYFromQuaternion[0],errorRPYFromQuaternion[1],errorRPYFromQuaternion[2]))
+        q_dot_out = PyKDL.JntArray(self.kinematic.numbOfJoints)
+        self.kinematic.ikVelKDL.CartToJnt(q_in, v_in, q_dot_out)
+
+        for i in range(self.kinematic.numbOfJoints):
+            qdot[i] = q_dot_out[i]
+
+        return qdot
+    
+    def calculateRPYErrorWithRotationMatrix(self):
+        """
+            This function calculates the error in orientation using Rotation Matrix. The formula is given as:
+            orientationError = R_d * inverse(R_c).
+            It is the error between the desired and current rotation matrix
+        """
+        # Create Identity Rotation Matrix
+        currentRotationMatrixPYKDL = PyKDL.Rotation.Identity()
+
+        # Get the orientation of the End Effector as quaternion info
+        currentQuaternion = self.sim.get_link_orientation(self.body_name, self.ee_link)
+
+        # Convert the current orientation to current Rotation Matrix
+        currentRotationMatrix = np.array(p.getMatrixFromQuaternion(currentQuaternion)).reshape(3, 3)
+        for row in range(3):
+            for column in range(3):
+                currentRotationMatrixPYKDL[row, column] = currentRotationMatrix[row, column]
+        
+        # Get the desired orientation using Rotation Matrix
+        desiredRotationMatrix = self.goalFrame.M
+
+        # Calculate the orientation error in terms of Rotation Matrix
+        rotationError = desiredRotationMatrix*currentRotationMatrixPYKDL.Inverse()
+
+        # Calculate the orientation error in terms of Roll-Pitch-Yaw
+        errorRPYFromRotationMatrix = np.asarray(rotationError.GetRPY())
+
+        return errorRPYFromRotationMatrix
+        
+    def calculateRPYErrorWithQuaternion(self):
+        """
+            This function calculates the error in orientation using quaternions. The formula is given as:
+            orientationError = quat_d * inverse(quat_c)
+            It is the error between the desired and current rotation matrix
+        """
+        # Get the desired and current orientation as "Quaternion"
+        # Note that the order of the values change 
+        d1 = self.goalFrame.M.GetQuaternion()
+        c1 = self.sim.get_link_orientation(self.body_name, self.ee_link)
+        desiredQuaternion = Quaternion(d1[3], d1[0], d1[1], d1[2])
+        currentQuaternion = Quaternion(c1[3], c1[0], c1[1], c1[2])
+
+        # Calculate quaternion error 
+        # Note that the order of the values change
+        self.quaternionError = desiredQuaternion * currentQuaternion.conjugate
+        q = PyKDL.Rotation.Quaternion(self.quaternionError[1], self.quaternionError[2], 
+                                      self.quaternionError[3], self.quaternionError[0])
+
+        # Get the orientation error in Roll-Pitch-Yaw
+        errorRPYFromQuaternion = q.GetRPY()
+        self.quaternionAngleError = self.quaternionError.angle
+        self.quaternionDistanceError = Quaternion.distance(desiredQuaternion, currentQuaternion)
+        return errorRPYFromQuaternion

@@ -19,6 +19,7 @@ import torch as th
 import matplotlib.pyplot as plt
 from CustomCallback import CUSTOMCALLBACK
 from pyquaternion import Quaternion
+import gym.utils.seeding
 
 
 class TRAINTEST():
@@ -95,7 +96,7 @@ class TRAINTEST():
             squaredError += np.sum(error**2)
             avgJntVel = np.linalg.norm(env.robot.finalAction) + avgJntVel
             d1 = env.robot.goalFrame.M.GetQuaternion()
-            c1 = env.sim.get_link_orientation(env.sim.body_name, 11)
+            c1 = env.sim.get_link_orientation(env.sim.body_name, self.config['ee_link'])
             desiredQuaternion = Quaternion(d1[3], d1[0], d1[1], d1[2])
             currentQuaternion = Quaternion(c1[3], c1[0], c1[1], c1[2])
             avgQuaternionDistance+=Quaternion.distance(desiredQuaternion, currentQuaternion)
@@ -136,7 +137,9 @@ class TRAINTEST():
         model = algorithm.load(self.modelFileNameToSave)         
         ## Random start        
         env.robot.jointLimitLow = env.robot.workspacesdict[str(list(env.robot.workspacesdict)[-2])]
-        env.robot.jointLimitHigh = env.robot.workspacesdict[str(list(env.robot.workspacesdict)[-1])]        
+        env.robot.jointLimitHigh = env.robot.workspacesdict[str(list(env.robot.workspacesdict)[-1])]  
+        env.task.np_random_reach, _ = gym.utils.seeding.np_random(200)
+        env.robot.np_random_start, _ = gym.utils.seeding.np_random(100)
         self.evaluatePolicy(self.config['testSamples'], model, env)
         
         
@@ -178,15 +181,16 @@ def main():
     parser.add_argument('--maeThreshold', type=float,help="")
     parser.add_argument('--avgJntVelThreshold', type=float,help="")
     parser.add_argument('--orientationConstant', type=float, help="")
+    parser.add_argument('--ee_link', type=int, help="")
+    parser.add_argument('--body_name', type=str, help="")
+    parser.add_argument('--configName', type=str, help="")
     args = parser.parse_args()
-
-    with open('configPPO.yaml') as f:
+    with open(args.configName) as f:
         config = yaml.load(f, Loader=SafeLoader)
     
     for arg in args._get_kwargs():
         if not arg[1]==None:
             config[arg[0]] = arg[1]
-    
     trainTest = TRAINTEST(config)
     
     if trainTest.config['algorithm']=="PPO":
@@ -221,7 +225,6 @@ def main():
         print("------------------------------------------------------------")
         env.robot.config = config
         env.task.config = config
-        #env._max_episode_steps = trainTest.config['max_episode_steps']
         trainTest.loadAndEvaluateModel(algorithm,env)
     print("DONE!!!")
     
