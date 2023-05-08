@@ -210,7 +210,7 @@ class MYROBOT(PyBulletRobot):
             #seed=None
             #np_random, seed = gym.utils.seeding.np_random(seed)
             sampledAngles = self.np_random_start.uniform(self.jointLimitLow, self.jointLimitHigh)
-            print("sampledAngles in myRobot.py:", sampledAngles)
+            #print("sampledAngles in myRobot.py:", sampledAngles)
             self.set_joint_angles(sampledAngles)
         else:
             self.set_joint_angles(self.neutral_joint_values)

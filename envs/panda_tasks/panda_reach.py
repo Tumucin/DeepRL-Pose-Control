@@ -21,7 +21,7 @@ class PandaReachEnv(RobotTaskEnv):
         reward_type = "dense"
         #with open('/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/configPanda.yaml') as f:
          #   config = yaml.load(f, Loader=SafeLoader)
-        with open('/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/6.yaml') as f:
+        with open('/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/12.yaml') as f:
             config = yaml.load(f, Loader=SafeLoader)
         sim = PyBullet(render=render, config=config)
         robot = MYROBOT(sim, block_gripper=True, base_position=np.array(config['base_position']), control_type=control_type, config=config)

@@ -89,7 +89,7 @@ class Reach(Task):
         goal = self.np_random_reach.uniform(goal_range_low, goal_range_high)
         if self.config['sampleJointAnglesGoal']==True:
             sampledAngles = self.np_random_reach.uniform(self.jointLimitLow, self.jointLimitHigh)
-            print("sampledAngles in reach.py:", sampledAngles)
+            #print("sampledAngles in reach.py:", sampledAngles)
             q_in = PyKDL.JntArray(self.kinematics.numbOfJoints)
             q_in[0], q_in[1], q_in[2], q_in[3] =sampledAngles[0], sampledAngles[1], sampledAngles[2], sampledAngles[3]
             q_in[4], q_in[5], q_in[6] = sampledAngles[4], sampledAngles[5], sampledAngles[6]
