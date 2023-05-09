@@ -8,7 +8,7 @@ modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/mode
 logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
 urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
 
-expNumber: 394                        # Experiement Number  
+expNumber: 302                        # Experiement Number  
 envName: "PandaReach-v2"              # Environment Name    
 ee_link: 11                           # End effector link ID
 body_name: 'panda'                    # Name of the robot   
@@ -32,7 +32,7 @@ testSampleOnTraining: 500             # Number of samples for evaluation while t
 evalFreqOnTraining: 2000000           # Number of timesteps per evaluation (Curriculum Learning)
 max_episode_steps: 800                # Episode length
 verbose: 1                            # Visualize the log of training
-pseudoI: False                         # Use PseudoInverse to calculate q_dot (Note that there are Position Only and FullJacobian methods)
+pseudoI: True                         # Use PseudoInverse to calculate q_dot (Note that there are Position Only and FullJacobian methods)
 networkOutput: True                  # Use Network output
 save_freq: !!float 100e6              # Number of timesteps for saving checkpoints
 sampleJointAnglesGoal: True           # Sample random goals(Position+Orientation). If this is FALSE, then you should determine goal_range value
@@ -41,7 +41,7 @@ randomStart: True                     # Sample random starting goals(Position+Or
 neutral_joint_values: [0.00, 0.41, 0.00, -1.85, 0.00, 2.26, 0.79, 0.00, 0.00]
 lambdaErr: 100.0                      # One of the parameters for reward function exp(-k*d*d)
 orientationConstant: 1                # One of the parameters for reward function exp(-k*d*d)
-addOrientation: True                 # Use orientation information as states. If FALSE, do not use
+addOrientation: False                 # Use orientation information as states. If FALSE, do not use
 accelerationConstant: 0.0             # One of the parameters for reward function k*norm(jntAcceleration)
 velocityConstant: 0.1                 # One of the parameters for reward function k*norm(jntVelocity)
 velocityNormThreshold: 0.05

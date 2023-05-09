@@ -52,8 +52,8 @@ hiddenUnits: 128                      # The number of neurons in the hidden laye
 CurriLearning: True                  # Use Curriculum Learning or not. If this is FALSE, then you should edit the variables below
 jointLimitLowStartID: 'W0Low'         # This low limit is used for random start. Starting ee pose
 jointLimitHighStartID: 'W0High'       # This high limit is used for random start. Starting ee pose
-rmseThreshold: 0.012                  # RMSE threshold to go to the next Workspace (Curriculum Learning)
-maeThreshold: 0.012                   # MAE threshold to go to the next Workspace (Curriculum Learning)
+rmseThreshold: 0.025                  # RMSE threshold to go to the next Workspace (Curriculum Learning)
+maeThreshold: 0.025                   # MAE threshold to go to the next Workspace (Curriculum Learning)
 avgJntVelThreshold: 0.1               # AverageJntVel threshold to go to the next Workspace (Curriculum Learning)
 
 net_arch: [{'pi': [128, 128],

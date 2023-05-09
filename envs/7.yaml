@@ -16,7 +16,7 @@ file_name: "franka_panda/panda.urdf"  # The location of a URDF file which descri
 baseLinkName: 'panda_link0'           # The name of the base link of a robot
 eeLinkName: 'panda_grasptarget'       # The name of the ee link of a robot
 base_position: [-0.6, 0.0, 0.0]       # Base position of the base link
-total_timesteps: !!float 32768000     # Total timesteps for training
+total_timesteps: !!float 65536000     # Total timesteps for training
 mode: True                           # True: Training, False: Testing
 algorithm: "PPO"                      # Name of the algorithm
 policy: "MultiInputPolicy"            # Policy network
