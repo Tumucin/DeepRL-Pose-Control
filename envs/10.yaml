@@ -1,12 +1,12 @@
 #################### PATHS - LOCAL- ####################
-modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
-logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
-urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
+#modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
+#logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
+#urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
 
 #################### PATHS - HPC- ####################
-#modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
-#logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
-#urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
+modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
+logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
+urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/panda.urdf'
 
 expNumber: 349                        # Experiement Number  
 envName: "PandaReach-v2"              # Environment Name    
