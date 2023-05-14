@@ -1,0 +1,27 @@
+authors: []
+blacklist:
+- trac_ik
+- trac_ik_examples
+build_space: build
+catkin_make_args: []
+cmake_args:
+- -DPYTHON_EXECUTABLE=/home/tumu/anaconda3/envs/stableBaselines/bin/python
+- -DPYTHON_VERSION=3
+- -DCMAKE_BUILD_TYPE=Release
+devel_layout: merged
+devel_space: devel
+extend_path: null
+extends: null
+install: false
+install_space: install
+isolate_install: false
+jobs_args: []
+licenses:
+- TODO
+log_space: logs
+maintainers: []
+make_args: []
+source_space: src
+use_env_cache: false
+use_internal_make_jobserver: true
+whitelist: []

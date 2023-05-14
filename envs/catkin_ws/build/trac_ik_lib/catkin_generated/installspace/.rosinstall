@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/catkin_ws/install/setup.sh

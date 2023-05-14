@@ -1,0 +1,12 @@
+[ 50%] [32mBuilding CXX object CMakeFiles/trac_ik_kinematics_plugin.dir/src/trac_ik_kinematics_plugin.cpp.o[0m
+[01m[K/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/catkin_ws/src/trac_ik/trac_ik_kinematics_plugin/src/trac_ik_kinematics_plugin.cpp:[m[K In member function ‘[01m[Kvirtual bool trac_ik_kinematics_plugin::TRAC_IKKinematicsPlugin::initialize(const string&, const string&, const string&, const string&, double)[m[K’:
+[01m[K/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/catkin_ws/src/trac_ik/trac_ik_kinematics_plugin/src/trac_ik_kinematics_plugin.cpp:51:86:[m[K [01;35m[Kwarning: [m[K‘[01m[Kvirtual void kinematics::KinematicsBase::setValues(const string&, const string&, const string&, const string&, double)[m[K’ is deprecated [[01;35m[K-Wdeprecated-declarations[m[K]
+   setValues(robot_description, group_name, base_name, tip_name, search_discretization[01;35m[K)[m[K;
+                                                                                      [01;35m[K^[m[K
+In file included from [01m[K/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/catkin_ws/src/trac_ik/trac_ik_kinematics_plugin/include/trac_ik/trac_ik_kinematics_plugin.hpp:34:0[m[K,
+                 from [01m[K/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/catkin_ws/src/trac_ik/trac_ik_kinematics_plugin/src/trac_ik_kinematics_plugin.cpp:39[m[K:
+[01m[K/opt/ros/melodic/include/moveit/kinematics_base/kinematics_base.h:344:31:[m[K [01;36m[Knote: [m[Kdeclared here
+   [[deprecated]] virtual void [01;36m[KsetValues[m[K(const std::string& robot_description, const std::string& group_name,
+                               [01;36m[K^~~~~~~~~[m[K
+[100%] [32m[1mLinking CXX shared library /home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/catkin_ws/devel/lib/libtrac_ik_kinematics_plugin.so[0m
+[100%] Built target trac_ik_kinematics_plugin

@@ -1,0 +1,8 @@
+prefix=/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/catkin_ws/install
+
+Name: trac_ik_python
+Description: Description of trac_ik_python
+Version: 1.5.1
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

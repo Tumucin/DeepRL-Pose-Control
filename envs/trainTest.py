@@ -1,4 +1,5 @@
 import sys
+import os 
 sys.path.append('/scratch/users/tbal21/.conda/envs/stableBaselines/lib/python3.8/site-packages')
 sys.path.append('/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym')
 import gym
@@ -185,12 +186,18 @@ def main():
     parser.add_argument('--body_name', type=str, help="")
     parser.add_argument('--configName', type=str, help="")
     args = parser.parse_args()
-    with open(args.configName) as f:
+
+
+    with open("currentConfigNumber"+".txt", 'w') as f:
+            f.write('{}'.format(args.configName))
+            
+    with open("configFiles/"+args.configName) as f:
         config = yaml.load(f, Loader=SafeLoader)
     
     for arg in args._get_kwargs():
         if not arg[1]==None:
             config[arg[0]] = arg[1]
+
     trainTest = TRAINTEST(config)
     
     if trainTest.config['algorithm']=="PPO":

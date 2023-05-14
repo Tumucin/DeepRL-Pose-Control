@@ -1,0 +1,6 @@
+devel_space: /home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/catkin_ws/devel
+install: false
+install_space: /home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/catkin_ws/install
+profile: default
+source_space: /home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/catkin_ws/src
+workspace: /home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/catkin_ws

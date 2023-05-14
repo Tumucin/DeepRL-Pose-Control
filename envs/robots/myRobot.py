@@ -38,7 +38,7 @@ class MYROBOT(PyBulletRobot):
         self.kinematic = KINEMATICS(self.config['urdfPath'], config['baseLinkName'], config['eeLinkName'])
         self.block_gripper = block_gripper
         self.control_type = control_type
-        n_action = 3 if self.control_type == "ee" else 7  # control (x, y z) if "ee", else, control the 7 joints
+        n_action = 3 if self.control_type == "ee" else self.kinematic.numbOfJoints  # control (x, y z) if "ee", else, control the 7 joints
         n_action += 0 if self.block_gripper else 1
         self.wdlsAction = np.zeros(7)
         self.networkAction = np.zeros(7)
@@ -129,7 +129,6 @@ class MYROBOT(PyBulletRobot):
         else:
             action = action/5
         action = np.clip(action, self.action_space.low, self.action_space.high)
-        
         self.finalAction = action
         if self.control_type == "ee":
             ee_displacement = self.finalAction[:3]
@@ -273,11 +272,14 @@ class MYROBOT(PyBulletRobot):
                 qdot: Desired joint velocities
         """
         q_in = PyKDL.JntArray(self.kinematic.numbOfJoints)
+        
         qdot = np.zeros(self.kinematic.numbOfJoints)
         
         for i in range(self.kinematic.numbOfJoints):
             q_in[i] = obs['observation'][i]
-        
+        #print("q_in:", q_in)
+        #print("desired pos:", obs['desired_goal'])
+        #print("achieved_goal:", obs['achieved_goal'])
         # Calculate the error in position and orientation seperately and create v_in Twist vector
         # based on the errors
         positionError = obs['desired_goal'] - obs['achieved_goal']
@@ -334,7 +336,8 @@ class MYROBOT(PyBulletRobot):
         c1 = self.sim.get_link_orientation(self.body_name, self.ee_link)
         desiredQuaternion = Quaternion(d1[3], d1[0], d1[1], d1[2])
         currentQuaternion = Quaternion(c1[3], c1[0], c1[1], c1[2])
-
+        #print("current Quaternion:", currentQuaternion)
+        #print("desired guaternion:", desiredQuaternion)
         # Calculate quaternion error 
         # Note that the order of the values change
         self.quaternionError = desiredQuaternion * currentQuaternion.conjugate

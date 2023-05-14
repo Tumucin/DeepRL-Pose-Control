@@ -1,0 +1,5 @@
+[ 25%] [32mBuilding CXX object CMakeFiles/trac_ik.dir/src/kdl_tl.cpp.o[0m
+[ 75%] [32mBuilding CXX object CMakeFiles/trac_ik.dir/src/nlopt_ik.cpp.o[0m
+[ 75%] [32mBuilding CXX object CMakeFiles/trac_ik.dir/src/trac_ik.cpp.o[0m
+[100%] [32m[1mLinking CXX shared library /home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/catkin_ws/devel/lib/libtrac_ik.so[0m
+[100%] Built target trac_ik

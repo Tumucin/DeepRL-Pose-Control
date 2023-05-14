@@ -1,0 +1,6 @@
+[35m[1mScanning dependencies of target trac_ik_wrap_swig_compilation[0m
+[ 33%] [34m[1mSwig compile swig/trac_ik_wrap.i for python[0m
+[ 33%] Built target trac_ik_wrap_swig_compilation
+[ 66%] [32mBuilding C object CMakeFiles/_trac_ik_wrap.dir/CMakeFiles/_trac_ik_wrap.dir/trac_ik_wrapPYTHON_wrap.c.o[0m
+[100%] [32m[1mLinking C shared module /home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/catkin_ws/devel/lib/python3/dist-packages/trac_ik_python/_trac_ik_wrap.so[0m
+[100%] Built target _trac_ik_wrap

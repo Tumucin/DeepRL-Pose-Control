@@ -1,0 +1,8 @@
+prefix=/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/catkin_ws/install
+
+Name: trac_ik_lib
+Description: Description of trac_ik_lib
+Version: 1.5.1
+Cflags: -I${prefix}/include -I/usr/include
+Libs: -L${prefix}/lib -ltrac_ik /usr/lib/x86_64-linux-gnu/libboost_date_time.so
+Requires: kdl_parser roscpp urdf

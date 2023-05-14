@@ -6,7 +6,7 @@ from panda_gym.utils import distance
 from yaml.loader import SafeLoader
 import yaml
 from stable_baselines3.common.utils import safe_mean
-
+import os
 import PyKDL
 from ..utils.kinematics import KINEMATICS
 import gym.utils.seeding
@@ -89,10 +89,12 @@ class Reach(Task):
         goal = self.np_random_reach.uniform(goal_range_low, goal_range_high)
         if self.config['sampleJointAnglesGoal']==True:
             sampledAngles = self.np_random_reach.uniform(self.jointLimitLow, self.jointLimitHigh)
-            #print("sampledAngles in reach.py:", sampledAngles)
+            #print("sampledAngles in reach.py:", sampledAngles)            
             q_in = PyKDL.JntArray(self.kinematics.numbOfJoints)
-            q_in[0], q_in[1], q_in[2], q_in[3] =sampledAngles[0], sampledAngles[1], sampledAngles[2], sampledAngles[3]
-            q_in[4], q_in[5], q_in[6] = sampledAngles[4], sampledAngles[5], sampledAngles[6]
+            for i in range(self.kinematics.numbOfJoints):
+                q_in[i] = sampledAngles[i]
+            #q_in[0], q_in[1], q_in[2], q_in[3] =sampledAngles[0], sampledAngles[1], sampledAngles[2], sampledAngles[3]
+            #q_in[4], q_in[5], q_in[6] = sampledAngles[4], sampledAngles[5], sampledAngles[6]
             goalFrame = self.kinematics.forwardKinematicsPoseSolv(q_in)
             goalFrame.p[0] = goalFrame.p[0] #+0.6
             goal[0], goal[1], goal[2] = goalFrame.p[0], goalFrame.p[1], goalFrame.p[2]
@@ -116,6 +118,11 @@ class Reach(Task):
         if self.reward_type == "sparse":
             return np.exp(-(self.lambdaErr)*(d*d)) - self.accelerationConstant*currentJointVelocitiesNorm
         else:
-            return np.exp(-(self.lambdaErr)*(d*d)) - self.accelerationConstant*np.linalg.norm(currentJointAccelerations) - (self.velocityConst*currentJointVelocitiesNorm)/(1+self.alpha*d)+ \
-                   self.thresholdConstant*np.array(d < self.distance_threshold, dtype=np.float64)*np.array(currentJointVelocitiesNorm < self.velocityNormThreshold, dtype=np.float64)+\
-                   np.exp(-(self.orientationConstant)*(self.quaternionAngleError**2))     
+            if self.config['addOrientation'] == True:
+
+                return np.exp(-(self.lambdaErr)*(d*d)) - self.accelerationConstant*np.linalg.norm(currentJointAccelerations) - (self.velocityConst*currentJointVelocitiesNorm)/(1+self.alpha*d)+ \
+                    self.thresholdConstant*np.array(d < self.distance_threshold, dtype=np.float64)*np.array(currentJointVelocitiesNorm < self.velocityNormThreshold, dtype=np.float64)+\
+                    np.exp(-(self.orientationConstant)*(self.quaternionAngleError**2))     
+            else:
+                return np.exp(-(self.lambdaErr)*(d*d)) - self.accelerationConstant*np.linalg.norm(currentJointAccelerations) - (self.velocityConst*currentJointVelocitiesNorm)/(1+self.alpha*d)+ \
+                    self.thresholdConstant*np.array(d < self.distance_threshold, dtype=np.float64)*np.array(currentJointVelocitiesNorm < self.velocityNormThreshold, dtype=np.float64)
