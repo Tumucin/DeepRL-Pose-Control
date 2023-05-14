@@ -2,17 +2,18 @@
 #modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
 #logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
 #urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco7DOF.urdf'
+#file_name: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco7DOF.urdf"
 
 #################### PATHS - HPC- ####################
 modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
 logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
-urdfPath: '/kuacc/users/tbal21/panda_gym/envs/robots/jaco7DOF.urdf'
+urdfPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco7DOF.urdf'
+file_name: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco7DOF.urdf'
 
 expNumber: 999                        # Experiement Number
 envName: "PandaReach-v2"              # Environment Name 
 ee_link: 8                           # End effector link ID
 body_name: 'j2s7s300'                 # Name of the robot
-file_name: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco7DOF.urdf"
 baseLinkName: 'j2s7s300_link_base'    # The name of the base link of a robot
 eeLinkName: 'j2s7s300_ee_link'        # The name of the ee link of a robot
 base_position: [-0.0, 0.0, 0.0]       # Base position of the base link
