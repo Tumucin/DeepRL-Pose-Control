@@ -20,7 +20,7 @@ total_timesteps: !!float 32768000     # Total timesteps for training
 mode: False                           # True: Training, False: Testing
 algorithm: "PPO"                      # Name of the algorithm
 policy: "MultiInputPolicy"            # Policy network
-render: True                          # True: Render the sim, False: No Rendering
+render: False                          # True: Render the sim, False: No Rendering
 gamma: 0.95                           # Discount Factor
 n_steps: 4096                         # The number of steps to run for each environment per update
 n_epochs: 10                          # Number of epoch when optimizing the surrogate loss
