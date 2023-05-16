@@ -39,7 +39,7 @@ save_freq: !!float 100e6              # Number of timesteps for saving checkpoin
 sampleJointAnglesGoal: True           # Sample random goals(Position+Orientation). If this is FALSE, then you should determine goal_range value
 goal_range: 0.5                       # Goal range for sampling the goals(desired points)
 randomStart: True                     # Sample random starting goals(Position+Orientation) If this is FALSE, then you should determine neutral_joint_values below
-neutral_joint_values: [-1.5708, 3.9, 0, 1.0472, 0.0, 1.5708, 3.14]
+neutral_joint_values: [-1.5708, 3.9270, 0.0000, 1.0472, 0.0000, 3.1416, 6.2831]
 lambdaErr: 100.0                      # One of the parameters for reward function exp(-k*d*d)
 orientationConstant: 1                # One of the parameters for reward function exp(-k*d*d)
 addOrientation: True                 # Use orientation information as states. If FALSE, do not use
@@ -63,21 +63,21 @@ net_arch: [{'pi': [128, 128],
 ################################### WORKSPACE - V3 - JACO ##############################
 # Each Wi represents the sub workspace of the entire workspace. And these boundaries are 
 # used for creating a random robot starting pose
-TODO
+
 workspacesdict:
-  W0Low : [-1.5708, 3.9, 0, 1.0472, 0.0, 1.5708, 3.14]
-  W0High: [-1.5708, 3.9, 0, 1.0472, 0.0, 1.5708, 3.14]
-  W1Low : [-1.8326, 3.1415, 0, 1.0472, 0.0, 1.5708, 3.14]
-  W1High: [-1.309,  3.4033, 0, 1.0472, 0.0, 1.5708, 3.14]
-  W2Low : [-2.0944, 3.1415, 0, 1.0472, 0.0, 1.5708, 3.14]
-  W2High: [-1.0472, 3.6651, 0, 1.0472, 0.0, 1.5708, 3.14]
-  W3Low : [-2.618, 3.1415, 0, 1.0472, 0.0, 1.5708, 3.14]
-  W3High: [-0.5236, 3.9269, 0, 1.0472, 0.0, 1.5708, 3.14]
-  W4Low : [-3.1415, 3.1415, 0, 1.0472, 0.0, 1.5708, 3.14]
-  W4High: [0.00000, 4.7123, 0, 1.0472, 0.0, 1.5708, 3.14]
-  W5Low: []
-  W5High: []
+  W0Low : [-1.5708, 3.9270, 0.0000, 1.0472, 0.0000, 3.1416, 6.2831]
+  W0High: [-1.5708, 3.9270, 0.0000, 1.0472, 0.0000, 3.1416, 6.2831]
+  W1Low : [-1.7453, 3.7525, -0.1745, 1.6581, -0.1745, 2.9671, 6.2831]
+  W1High: [-1.3963, 4.1015,  0.1745, 2.0071,  0.1745, 3.3161, 6.2831]
+  W2Low : [-1.9635, 3.7306, -0.7854, 1.6362, -0.7854, 2.7489, 6.2831]
+  W2High: [-1.1781, 4.1233,  0.7854, 2.0289,  0.7854, 3.5343, 6.2831]
+  W3Low : [-2.3562, 3.5343, -1.5708, 1.4399, -1.5708, 2.3562, 6.2831]
+  W3High: [-0.7854, 4.3197,  1.5708, 2.2235,  1.5708, 3.9270, 6.2831]
+  W4Low : [-2.7489, 3.3379, -2.3562, 1.2435, -2.3562, 1.9635, 6.2831]
+  W4High: [-0.3927, 4.5160,  2.3562, 2.4216,  2.3562, 4.3197, 6.2831]
+  W5Low:  [-3.1416, 3.1416, -3.1416, 1.0472, -3.1416, 1.5708, 6.2831]
+  W5High: [ 0.0000, 4.7124,  3.1416, 2.6180,  3.1416, 4.7124, 6.2831]
 
 # This is for creating random Goals
-jointLimitLow:  [-3.1415, 3.1415, 0, 1.0472, 0.0, 1.5708, 3.14]
-jointLimitHigh: [0.00000, 4.7123, 0, 1.0472, 0.0, 1.5708, 3.14]
+jointLimitLow:  [-3.1416, 3.1416, -3.1416, 1.0472, -3.1416, 1.5708, 6.2831]
+jointLimitHigh: [ 0.0000, 4.7124,  3.1416, 2.6180,  3.1416, 4.7124, 6.2831]

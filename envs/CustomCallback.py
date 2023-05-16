@@ -66,7 +66,7 @@ class CUSTOMCALLBACK(BaseCallback):
             squaredError += np.sum(error**2)
             avgJntVel = np.linalg.norm(env.robot.finalAction) + avgJntVel
             d1 = env.robot.goalFrame.M.GetQuaternion()
-            c1 = env.sim.get_link_orientation('panda', 11)
+            c1 = env.sim.get_link_orientation(env.sim.body_name, self.config['ee_link'])
             desiredQuaternion = Quaternion(d1[3], d1[0], d1[1], d1[2])
             currentQuaternion = Quaternion(c1[3], c1[0], c1[1], c1[2])
             avgQuaternionDistance+=Quaternion.distance(desiredQuaternion, currentQuaternion)

@@ -129,6 +129,7 @@ class MYROBOT(PyBulletRobot):
         else:
             action = action/5
         action = np.clip(action, self.action_space.low, self.action_space.high)
+        #action = 0 * action
         self.finalAction = action
         if self.control_type == "ee":
             ee_displacement = self.finalAction[:3]
