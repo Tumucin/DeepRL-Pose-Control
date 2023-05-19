@@ -50,37 +50,6 @@ class MYROBOT(PyBulletRobot):
         self.quaternionError = Quaternion(1, 0, 0, 0)
         self.finalAction = np.zeros(7)
         self.np_random_start, _ = gym.utils.seeding.np_random()
-        
-        """
-        self.workspacesdict = {'W0Low':  np.array([0.00,         0.5,       0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W0High': np.array([0.00,         0.5,       0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W1Low':  np.array([-math.pi/12,  0.00,      0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W1High': np.array([+math.pi/12, math.pi/12, 0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W2Low':  np.array([-math.pi/6,   0.00,      0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W2High': np.array([+math.pi/6,  math.pi/6,  0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W3Low':  np.array([-math.pi/3,   0.00,      0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W3High': np.array([+math.pi/3,  math.pi/3,  0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W4Low':  np.array([-math.pi/2,   0.00,      0.00, -1.85, 0.00, 2.26, 0.79]),
-                               'W4High': np.array([+math.pi/2,  math.pi/2,  0.00, -1.85, 0.00, 2.26, 0.79]),}
-                               #'W4Low':  np.array([-math.pi/2,   0.00,      0.00, -1.85, 0.00, 0.00, 0.79]),
-                               #'W4High': np.array([+math.pi/2,  math.pi/2,  0.00, -1.85, 0.00, 3.82, 0.79]),}
-        """
-
-        """
-        self.workspacesdict = {'W0Low':  np.array([0.00,          0.5,        0.00,  -1.85,         0.00,   2.26,    0.79]),
-                               'W0High': np.array([0.00,          0.5,        0.00,  -1.85,         0.00,   2.26,    0.79]),
-                               'W1Low':  np.array([-math.pi/12,   0.00,       0.00,  -math.pi/15,   -0.20,   0.00,   -0.20]),
-                               'W1High': np.array([+math.pi/12,   math.pi/12, 0.00,   0.00,         0.20,   0.30,   0.20]),
-                               'W2Low':  np.array([-math.pi/12,   0.00,       0.00,  -math.pi/6,   -0.74,   0.00,   -0.74]),
-                               'W2High': np.array([+math.pi/12,   math.pi/12, 0.00,   0.00,         0.74,   0.955,   0.74]),
-                               'W3Low':  np.array([-math.pi/6,    0.00,       0.00,  -math.pi/3,   -1.48,   0.00,   -1.48]),
-                               'W3High': np.array([+math.pi/6,    math.pi/6,  0.00,   0.00,         1.48,   1.91,    1.48]),
-                               'W4Low':  np.array([-math.pi/3,    0.00,       0.00,  -2*math.pi/3, -2.22,   0.00,   -2.22]),
-                               'W4High': np.array([+math.pi/3,    math.pi/3,  0.00,   0.00,         2.22,   2.865,   2.22]),
-                               'W5Low':  np.array([-math.pi/2,    0.00,       0.00,  -math.pi,     -2.96,   0.00,   -2.96]),
-                               'W5High': np.array([+math.pi/2,    math.pi/2,  0.00,   0.00,         2.96,   3.82,    2.96]),
-                               }
-        """
         self.workspacesdict = self.config['workspacesdict']
         for key, value in self.workspacesdict.items():
             self.workspacesdict[key] = np.array(value)
@@ -89,6 +58,12 @@ class MYROBOT(PyBulletRobot):
         
         #self.q_in = PyKDL.JntArray(self.kinematic.numbOfJoints)
         self.j_kdl = PyKDL.Jacobian(self.kinematic.numbOfJoints)
+        if self.config['body_name'] == 'j2n6s300':
+            joint_indices = np.array([0, 1, 2, 3, 4, 5])
+            joint_forces = np.array([87.0, 87.0, 87.0, 87.0, 12.0, 120.0])
+        else:
+            joint_indices = np.array([0, 1, 2, 3, 4, 5, 6, 9, 10])
+            joint_forces = np.array([87.0, 87.0, 87.0, 87.0, 12.0, 120.0, 120.0, 170.0, 170.0])
         super().__init__(
             sim,
             body_name=config['body_name'],
@@ -97,8 +72,8 @@ class MYROBOT(PyBulletRobot):
             #file_name="/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco_robotiq.urdf",
             base_position=base_position,
             action_space=action_space,
-            joint_indices=np.array([0, 1, 2, 3, 4, 5, 6, 9, 10]),
-            joint_forces=np.array([87.0, 87.0, 87.0, 87.0, 12.0, 120.0, 120.0, 170.0, 170.0]),
+            joint_indices=joint_indices,
+            joint_forces=joint_forces,
         )
 
         self.fingers_indices = np.array([9, 10])
@@ -130,12 +105,13 @@ class MYROBOT(PyBulletRobot):
             action = action/5
         action = np.clip(action, self.action_space.low, self.action_space.high)
         #action = 0 * action
+        #action[4] = 0.4
         self.finalAction = action
         if self.control_type == "ee":
             ee_displacement = self.finalAction[:3]
             target_arm_angles = self.ee_displacement_to_target_arm_angles(ee_displacement)
         else:
-            arm_joint_ctrl = self.finalAction[:7]
+            arm_joint_ctrl = self.finalAction[:self.kinematic.numbOfJoints]
             target_arm_angles = self.arm_joint_ctrl_to_target_arm_angles(arm_joint_ctrl)
 
         if self.block_gripper:
@@ -146,6 +122,9 @@ class MYROBOT(PyBulletRobot):
             target_fingers_width = fingers_width + fingers_ctrl
 
         target_angles = np.concatenate((target_arm_angles, [target_fingers_width / 2, target_fingers_width / 2]))
+        
+        if self.config['body_name'] == 'j2n6s300':
+            target_angles = target_angles[0:6]
         self.control_joints(target_angles=target_angles)
 
     def ee_displacement_to_target_arm_angles(self, ee_displacement: np.ndarray) -> np.ndarray:
@@ -181,13 +160,13 @@ class MYROBOT(PyBulletRobot):
         """
         arm_joint_ctrl = arm_joint_ctrl * 0.05  # limit maximum change in position
         # get the current position and the target position
-        current_arm_joint_angles = np.array([self.get_joint_angle(joint=i) for i in range(7)])
+        current_arm_joint_angles = np.array([self.get_joint_angle(joint=i) for i in range(self.kinematic.numbOfJoints)])
         target_arm_angles = current_arm_joint_angles + arm_joint_ctrl
         return target_arm_angles
 
     def get_obs(self) -> np.ndarray:
-        currentJointAngles = [self.get_joint_angle(joint=i) for i in range(7) ]
-        currentJoinVelocities = [self.get_joint_velocity(joint=i) for i in range(7) ]
+        currentJointAngles = [self.get_joint_angle(joint=i) for i in range(self.kinematic.numbOfJoints) ]
+        currentJoinVelocities = [self.get_joint_velocity(joint=i) for i in range(self.kinematic.numbOfJoints) ]
         # fingers opening
         if not self.block_gripper:
             fingers_width = self.get_fingers_width()
@@ -246,7 +225,7 @@ class MYROBOT(PyBulletRobot):
         for i in range(self.kinematic.numbOfJoints):
             q_in[i] = obs['observation'][i]
         self.kinematic.jacSolver.JntToJac(q_in, self.j_kdl)
-
+        #print("q_in in myRobot.py:",q_in)
         # Take the first three rows of the Jacobian because we are not interested in Orientation
         J = np.zeros((3, self.kinematic.numbOfJoints))
         for i in range(3):

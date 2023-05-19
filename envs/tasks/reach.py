@@ -40,15 +40,6 @@ class Reach(Task):
         self.alpha = self.config['alpha']
         self.orientationConstant = self.config['orientationConstant']
         self.np_random_reach, _ = gym.utils.seeding.np_random()
-        """
-        self.jointLimitLow = np.array([-math.pi/2, 0.00, 0.00, -1.85, 0.00, 2.26, 0.79])
-        self.jointLimitHigh = np.array([+math.pi/2, math.pi/2,  0.00, -1.85, 0.00, 2.26, 0.79])
-        """
-
-        """
-        self.jointLimitLow = np.array([-math.pi/2,    0.00,       0.00,  0.00, -2.9, 0.00, -2.9])
-        self.jointLimitHigh = np.array([+math.pi/2,   math.pi/2,  0.00, -math.pi, 2.9, 3.8, 2.9])
-        """
         self.jointLimitLow = np.array(self.config['jointLimitLow'])
         self.jointLimitHigh = np.array(self.config['jointLimitHigh'])
         with self.sim.no_rendering():
@@ -57,7 +48,7 @@ class Reach(Task):
         self.previousJointVelocities = 0
 
     def _create_scene(self) -> None:
-        self.sim.create_plane(z_offset=-0.4)
+        self.sim.create_plane(z_offset=-1)
         #self.sim.create_table(length=1.1, width=0.7, height=0.4, x_offset=-0.3)
         self.sim.create_sphere(
             body_name="target",
