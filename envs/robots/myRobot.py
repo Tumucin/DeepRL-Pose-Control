@@ -51,6 +51,7 @@ class MYROBOT(PyBulletRobot):
         self.finalAction = np.zeros(7)
         self.np_random_start, _ = gym.utils.seeding.np_random()
         self.workspacesdict = self.config['workspacesdict']
+        self.pseudoAction = np.zeros(self.kinematic.numbOfJoints)
         for key, value in self.workspacesdict.items():
             self.workspacesdict[key] = np.array(value)
         self.jointLimitLow = self.workspacesdict[self.config['jointLimitLowStartID']]
@@ -92,15 +93,19 @@ class MYROBOT(PyBulletRobot):
         #action = 0*action
         if self.config['pseudoI']==True and self.config['networkOutput']==True:
             if self.config['addOrientation'] == True:
-                action = self.calculateqdotFullJac(obs) + action/5
+                self.pseudoAction = self.calculateqdotFullJac(obs)
+                action =  self.pseudoAction+ action/5
             else:
-                action = self.calculateqdotOnlyPosition(obs) + action/5
+                self.pseudoAction = self.calculateqdotOnlyPosition(obs)
+                action =  self.pseudoAction+ action/5
 
         elif self.config['pseudoI']==True and self.config['networkOutput']==False:
             if self.config['addOrientation'] == True:
-                action = self.calculateqdotFullJac(obs)
+                self.pseudoAction = self.calculateqdotFullJac(obs)
+                action = self.pseudoAction
             else:
-                action = self.calculateqdotOnlyPosition(obs)
+                self.pseudoAction = self.calculateqdotOnlyPosition(obs)
+                action = self.pseudoAction
         else:
             action = action/5
         action = np.clip(action, self.action_space.low, self.action_space.high)
@@ -173,9 +178,15 @@ class MYROBOT(PyBulletRobot):
             obs = np.concatenate((currentJointAngles, currentJoinVelocities, [fingers_width]))
         else:
             if self.config['addOrientation']==True:
-                obs = np.concatenate((currentJointAngles, currentJoinVelocities, self.quaternionError.elements))
+                if self.config['pseudoI'] == True:
+                    obs = np.concatenate((currentJointAngles, currentJoinVelocities, self.pseudoAction , self.quaternionError.elements))
+                else:
+                    obs = np.concatenate((currentJointAngles, currentJoinVelocities, self.quaternionError.elements))
             else:
-                 obs = np.concatenate((currentJointAngles, currentJoinVelocities))
+                if self.config['pseudoI'] == True:
+                    obs = np.concatenate((currentJointAngles, currentJoinVelocities, self.pseudoAction))
+                else:
+                    obs = np.concatenate((currentJointAngles, currentJoinVelocities))  
         return obs
 
     def reset(self) -> None:
