@@ -178,15 +178,9 @@ class MYROBOT(PyBulletRobot):
             obs = np.concatenate((currentJointAngles, currentJoinVelocities, [fingers_width]))
         else:
             if self.config['addOrientation']==True:
-                if self.config['pseudoI'] == True:
-                    obs = np.concatenate((currentJointAngles, currentJoinVelocities, self.pseudoAction , self.quaternionError.elements))
-                else:
-                    obs = np.concatenate((currentJointAngles, currentJoinVelocities, self.quaternionError.elements))
+                obs = np.concatenate((currentJointAngles, currentJoinVelocities, self.quaternionError.elements))
             else:
-                if self.config['pseudoI'] == True:
-                    obs = np.concatenate((currentJointAngles, currentJoinVelocities, self.pseudoAction))
-                else:
-                    obs = np.concatenate((currentJointAngles, currentJoinVelocities))  
+                obs = np.concatenate((currentJointAngles, currentJoinVelocities))  
         return obs
 
     def reset(self) -> None:
