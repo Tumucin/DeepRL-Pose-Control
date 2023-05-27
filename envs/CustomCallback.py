@@ -132,6 +132,8 @@ class CUSTOMCALLBACK(BaseCallback):
                 for i in range(self.training_env.num_envs):
                     self.training_env.envs[i].robot.jointLimitLow = self.training_env.envs[i].robot.workspacesdict['W'+str(self.currentWorkspace)+"Low"]
                     self.training_env.envs[i].robot.jointLimitHigh = self.training_env.envs[i].robot.workspacesdict['W'+str(self.currentWorkspace)+"High"]
+                    self.training_env.envs[i].task.jointLimitLow = self.training_env.envs[i].robot.jointLimitLow
+                    self.training_env.envs[i].task.jointLimitHigh = self.training_env.envs[i].robot.jointLimitHigh
                     self.testingEnv.robot.jointLimitLow = self.training_env.envs[i].robot.workspacesdict['W'+str(self.currentWorkspace)+"Low"]
                     self.testingEnv.robot.jointLimitHigh = self.training_env.envs[i].robot.workspacesdict['W'+str(self.currentWorkspace)+"High"]
                 #print("currentWorkspace:", self.currentWorkspace)
