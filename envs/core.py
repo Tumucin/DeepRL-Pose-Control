@@ -274,13 +274,13 @@ class RobotTaskEnv(gym.GoalEnv):
         obs = self._get_obs()
         self.robot.set_action(action, obs)
         self.sim.step()
-        newObs = self._get_obs()
+        obs = self._get_obs()
         done = False
         info = {"is_success": self.task.is_success(obs["achieved_goal"], self.task.get_goal())}
 
         self.task.quaternionAngleError = self.robot.quaternionAngleError
         self.task.quaternionDistanceError = self.robot.quaternionDistanceError
-        reward = self.task.compute_reward(newObs["achieved_goal"],self.task.get_goal(), info)
+        reward = self.task.compute_reward(obs["achieved_goal"],self.task.get_goal(), info)
         assert isinstance(reward, float)  # needed for pytype cheking
         return obs, reward, done, info
 
