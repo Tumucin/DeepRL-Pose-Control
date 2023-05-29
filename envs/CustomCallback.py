@@ -128,19 +128,32 @@ class CUSTOMCALLBACK(BaseCallback):
             if self.mae < self.config['maeThreshold'] and self.avgJntVel < self.config['avgJntVelThreshold'] :
                 # Change workspace 
                 self.currentWorkspace+=1
-                
+                print("before (robot)training new jointLimitLow:", self.training_env.envs[0].robot.jointLimitLow)
+                print("before (robot)training new jointLimitHigh:", self.training_env.envs[0].robot.jointLimitHigh)
+                print("before (robot)testing new jointLimitLow:", self.testingEnv.robot.jointLimitLow)
+                print("before (robot)testing new jointLimitHigh:", self.testingEnv.robot.jointLimitHigh)
+                print("before (task)training new jointLimitLow:", self.training_env.envs[0].task.jointLimitLow)
+                print("before (task)training new jointLimitHigh:", self.training_env.envs[0].task.jointLimitHigh)
+                print("before (task)testing new jointLimitLow:", self.testingEnv.task.jointLimitLow)
+                print("before (task)testing new jointLimitHigh:", self.testingEnv.task.jointLimitHigh)
                 for i in range(self.training_env.num_envs):
                     self.training_env.envs[i].robot.jointLimitLow = self.training_env.envs[i].robot.workspacesdict['W'+str(self.currentWorkspace)+"Low"]
                     self.training_env.envs[i].robot.jointLimitHigh = self.training_env.envs[i].robot.workspacesdict['W'+str(self.currentWorkspace)+"High"]
                     self.training_env.envs[i].task.jointLimitLow = self.training_env.envs[i].robot.jointLimitLow
                     self.training_env.envs[i].task.jointLimitHigh = self.training_env.envs[i].robot.jointLimitHigh
-                    self.testingEnv.robot.jointLimitLow = self.training_env.envs[i].robot.workspacesdict['W'+str(self.currentWorkspace)+"Low"]
-                    self.testingEnv.robot.jointLimitHigh = self.training_env.envs[i].robot.workspacesdict['W'+str(self.currentWorkspace)+"High"]
+                    self.testingEnv.robot.jointLimitLow = self.training_env.envs[i].robot.jointLimitLow
+                    self.testingEnv.robot.jointLimitHigh = self.training_env.envs[i].robot.jointLimitHigh
+                    self.testingEnv.task.jointLimitLow = self.training_env.envs[i].robot.jointLimitLow
+                    self.testingEnv.task.jointLimitHigh = self.training_env.envs[i].robot.jointLimitHigh
                 #print("currentWorkspace:", self.currentWorkspace)
-                print("training new jointLimitLow:", self.training_env.envs[0].robot.jointLimitLow)
-                print("training new jointLimitHigh:", self.training_env.envs[0].robot.jointLimitHigh)
-                print("testing new jointLimitLow:", self.testingEnv.robot.jointLimitLow)
-                print("testing new jointLimitHigh:", self.testingEnv.robot.jointLimitHigh)
+                print("(robot)training new jointLimitLow:", self.training_env.envs[0].robot.jointLimitLow)
+                print("(robot)training new jointLimitHigh:", self.training_env.envs[0].robot.jointLimitHigh)
+                print("(robot)testing new jointLimitLow:", self.testingEnv.robot.jointLimitLow)
+                print("(robot)testing new jointLimitHigh:", self.testingEnv.robot.jointLimitHigh)
+                print("(task)training new jointLimitLow:", self.training_env.envs[0].task.jointLimitLow)
+                print("(task)training new jointLimitHigh:", self.training_env.envs[0].task.jointLimitHigh)
+                print("(task)testing new jointLimitLow:", self.testingEnv.task.jointLimitLow)
+                print("(task)testing new jointLimitHigh:", self.testingEnv.task.jointLimitHigh)
 
         self.logger.record("rollout/currentWorkspace", self.currentWorkspace)
         self.logger.record("rollout/rmse", self.rmse)

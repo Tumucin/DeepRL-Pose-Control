@@ -1,14 +1,14 @@
 #################### PATHS - LOCAL- ####################
-#modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
-#logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
-#urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf'
-#file_name: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf"
+modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
+logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
+urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf'
+file_name: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf"
 
 #################### PATHS - HPC- ####################
-modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
-logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
-urdfPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf'
-file_name: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf'
+#modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
+#logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
+#urdfPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf'
+#file_name: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf'
 
 expNumber: 999                        # Experiement Number
 envName: "PandaReach-v2"              # Environment Name 
@@ -65,16 +65,18 @@ net_arch: [{'pi': [128, 128],
 # used for creating a random robot starting pose
 
 workspacesdict:
-  W0Low : [1.5708,  -0.5236, -2.0000, -2.3800, -5.0000, 3.1416]
-  W0High: [4.7124,  1.5708,  -2.0000, -2.3800, -5.0000, 3.1416]
-  W1Low : [1.5708,  -2.6000, -2.0000, -2.3800, -5.0000, 3.1416]
-  W1High: [4.7124,  2.6000,  -2.0000, -2.3800, -5.0000, 3.1416]
-  W2Low : [1.5708,  -2.6000, -2.6000, -2.3800, -5.0000, 3.1416]
-  W2High: [4.7124,  2.6000,   2.6000, -2.3800, -5.0000, 3.1416]
-  W3Low : [1.5708,  -2.6000, -2.6000, -3.9000, -5.0000, 3.1416]
-  W3High: [4.7124,  2.6000,   2.6000,  2.3800, -5.0000, 3.1416]
-  W4Low : [1.5708,  -2.6000, -2.6000, -3.9000, -5.0000, 3.1416]
-  W4High: [4.7124,  2.6000,   2.6000,  2.3800,  1.2831, 3.1416]
+  W0Low : [3.1416,  0.0000,  0.0000, -0.7615, -1.8584, 3.1416]
+  W0High: [3.1416,  0.0000,  0.0000, -0.7615, -1.8584, 3.1416]
+  W1Low : [2.9671, -0.1745, -0.1745, -0.9360, -2.0329, 3.1416]
+  W1High: [3.3161,  0.1745,  0.1745, -0.5870, -1.6839, 3.1416]
+  W2Low : [2.7489, -0.6327, -0.6327, -1.5469, -2.6438, 3.1416]
+  W2High: [3.5343,  0.6327,  0.6327,  0.0239, -1.0730, 3.1416]
+  W3Low : [2.3562, -1.2654, -1.2654, -2.3323, -3.4292, 3.1416]
+  W3High: [3.9270,  1.2654,  1.2654,  0.8093, -0.2876, 3.1416]
+  W4Low : [1.9635, -1.8980, -1.8980, -3.1177, -4.2146, 3.1416]
+  W4High: [4.3197,  1.8980,  1.8980,  1.5947,  0.4978, 3.1416]
+  W5Low:  [1.5708, -2.6000, -2.6000, -3.9031, -5.0000, 3.1416]
+  W5High: [4.7124,  2.6000,  2.6000,  2.3800,  1.2831, 3.1416]
 
 # This is for creating random Goals
 jointLimitLow:  [1.5708, -2.6000, -2.6000, -3.9031, -5.0000, 3.1416]
