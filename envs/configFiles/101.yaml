@@ -18,7 +18,7 @@ baseLinkName: 'j2n6s300_link_base'    # The name of the base link of a robot
 eeLinkName: 'j2n6s300_end_effector'        # The name of the ee link of a robot
 base_position: [-0.0, 0.0, 0.0]       # Base position of the base link
 total_timesteps: !!float 32768000     # Total timesteps for training
-mode: False                           # True: Training, False: Testing
+mode: True                           # True: Training, False: Testing
 algorithm: "PPO"                      # Name of the algorithm
 policy: "MultiInputPolicy"            # Policy network
 render: False                          # True: Render the sim, False: No Rendering
@@ -34,12 +34,12 @@ evalFreqOnTraining: 2000000           # Number of timesteps per evaluation (Curr
 max_episode_steps: 800                # Episode length
 verbose: 1                            # Visualize the log of training
 pseudoI: True                         # Use PseudoInverse to calculate q_dot (Note that there are Position Only and FullJacobian methods)
-networkOutput: False                  # Use Network output
+networkOutput: True                  # Use Network output
 save_freq: !!float 100e6              # Number of timesteps for saving checkpoints
 sampleJointAnglesGoal: True           # Sample random goals(Position+Orientation). If this is FALSE, then you should determine goal_range value
 goal_range: 0.5                       # Goal range for sampling the goals(desired points)
-randomStart: False                     # Sample random starting goals(Position+Orientation) If this is FALSE, then you should determine neutral_joint_values below
-neutral_joint_values: [3.1416, 0.5236, -2, 2.38, -5, 3.1416]
+randomStart: True                     # Sample random starting goals(Position+Orientation) If this is FALSE, then you should determine neutral_joint_values below
+neutral_joint_values: [3.1416, 0.5236, -2, -2.38, -5, 3.1416]
 lambdaErr: 100.0                      # One of the parameters for reward function exp(-k*d*d)
 orientationConstant: 1                # One of the parameters for reward function exp(-k*d*d)
 addOrientation: True                 # Use orientation information as states. If FALSE, do not use
@@ -50,9 +50,9 @@ thresholdConstant: 0.0
 alpha: 1.0                            # One of the parameters for reward function k*norm(jntVelocity)/(1+alpha*d)
 activation_fn: 0                      # Activation Function: Tanh: 0, RELU:1
 hiddenUnits: 128                      # The number of neurons in the hidden layers
-CurriLearning: True                  # Use Curriculum Learning or not. If this is FALSE, then you should edit the variables below
-jointLimitLowStartID: 'W0Low'         # This low limit is used for random start. Starting ee pose
-jointLimitHighStartID: 'W0High'       # This high limit is used for random start. Starting ee pose
+CurriLearning: False                  # Use Curriculum Learning or not. If this is FALSE, then you should edit the variables below
+jointLimitLowStartID: 'W3Low'         # This low limit is used for random start. Starting ee pose
+jointLimitHighStartID: 'W3High'       # This high limit is used for random start. Starting ee pose
 rmseThreshold: 0.012                  # RMSE threshold to go to the next Workspace (Curriculum Learning)
 maeThreshold: 0.012                   # MAE threshold to go to the next Workspace (Curriculum Learning)
 avgJntVelThreshold: 0.1               # AverageJntVel threshold to go to the next Workspace (Curriculum Learning)
