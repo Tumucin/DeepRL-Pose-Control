@@ -80,17 +80,20 @@ class Reach(Task):
         goal = self.np_random_reach.uniform(goal_range_low, goal_range_high)
         if self.config['sampleJointAnglesGoal']==True:
             sampledAngles = self.np_random_reach.uniform(self.jointLimitLow, self.jointLimitHigh)
-            #print("sampledAngles in reach.py:", sampledAngles)            
             q_in = PyKDL.JntArray(self.kinematics.numbOfJoints)
             for i in range(self.kinematics.numbOfJoints):
                 q_in[i] = sampledAngles[i]
-            #q_in[0], q_in[1], q_in[2], q_in[3] =sampledAngles[0], sampledAngles[1], sampledAngles[2], sampledAngles[3]
-            #q_in[4], q_in[5], q_in[6] = sampledAngles[4], sampledAngles[5], sampledAngles[6]
             goalFrame = self.kinematics.forwardKinematicsPoseSolv(q_in)
             goalFrame.p[0] = goalFrame.p[0] #+0.6
             goal[0], goal[1], goal[2] = goalFrame.p[0], goalFrame.p[1], goalFrame.p[2]
-        #goal[0], goal[1], goal[2] = 0.5, -0.3, 0.3
         self.goalFrame = goalFrame
+        calculatedRadius = np.sqrt(self.goalFrame.p[0]**2 + self.goalFrame.p[1]**2)
+        if not (calculatedRadius < 0.20 and self.goalFrame.p[2] < 0.5):
+            pass
+        else:
+            print("here")
+            self._sample_goal()
+            
         
         return goal
 

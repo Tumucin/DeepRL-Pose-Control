@@ -110,7 +110,8 @@ class MYROBOT(PyBulletRobot):
             action = action/5
         action = np.clip(action, self.action_space.low, self.action_space.high)
         #action = 0 * action
-        #action[4] = 0.4
+        #action[5] = 0.4
+        #print(self.get_obs())
         self.finalAction = action
         if self.control_type == "ee":
             ee_displacement = self.finalAction[:3]
@@ -198,6 +199,14 @@ class MYROBOT(PyBulletRobot):
             self.set_joint_angles(sampledAngles)
         else:
             self.set_joint_angles(self.neutral_joint_values)
+        
+        startingPose = self.get_ee_position()
+        calculatedRadius = np.sqrt(startingPose[0]**2 + startingPose[1]**2)
+        if not (calculatedRadius < 0.20 and startingPose[2] < 0.5):
+            pass
+        else:
+            self.set_joint_neutral()
+        
 
     def get_fingers_width(self) -> float:
         """Get the distance between the fingers."""
