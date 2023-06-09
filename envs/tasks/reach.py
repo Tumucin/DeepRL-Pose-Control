@@ -39,9 +39,14 @@ class Reach(Task):
         self.thresholdConstant = self.config['thresholdConstant']
         self.alpha = self.config['alpha']
         self.orientationConstant = self.config['orientationConstant']
+        self.workspacesdict = self.config['workspacesdict']
         self.np_random_reach, _ = gym.utils.seeding.np_random()
-        self.jointLimitLow = np.array(self.config['jointLimitLow'])
-        self.jointLimitHigh = np.array(self.config['jointLimitHigh'])
+        if self.config['CurriLearning'] == True:
+            self.jointLimitLow = self.workspacesdict[self.config['jointLimitLowStartID']]
+            self.jointLimitHigh = self.workspacesdict[self.config['jointLimitHighStartID']]
+        else:
+            self.jointLimitLow = np.array(self.config['jointLimitLow'])
+            self.jointLimitHigh = np.array(self.config['jointLimitHigh'])
         with self.sim.no_rendering():
             self._create_scene()
             self.sim.place_visualizer(target_position=np.zeros(3), distance=0.9, yaw=45, pitch=-30)
@@ -80,6 +85,8 @@ class Reach(Task):
         goal = self.np_random_reach.uniform(goal_range_low, goal_range_high)
         if self.config['sampleJointAnglesGoal']==True:
             sampledAngles = self.np_random_reach.uniform(self.jointLimitLow, self.jointLimitHigh)
+            #print("low in reach.py",self.jointLimitLow)
+            #print("high in reach.py",self.jointLimitHigh)
             q_in = PyKDL.JntArray(self.kinematics.numbOfJoints)
             for i in range(self.kinematics.numbOfJoints):
                 q_in[i] = sampledAngles[i]
@@ -91,7 +98,6 @@ class Reach(Task):
         if not (calculatedRadius < 0.20 and self.goalFrame.p[2] < 0.5):
             pass
         else:
-            print("here")
             self._sample_goal()
             
         

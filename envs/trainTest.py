@@ -118,8 +118,10 @@ class TRAINTEST():
         avgQuaternionDistance=avgQuaternionDistance/numberOfSteps
         avgQuaternionAngle = avgQuaternionAngle/numberOfSteps
 
-        print("Testing environment jointLimitLow is:", env.robot.jointLimitLow)
-        print("Testing environment jointLimitHigh is:", env.robot.jointLimitHigh)
+        print("(robot)Testing environment jointLimitLow is:", env.robot.jointLimitLow)
+        print("(robot)Testing environment jointLimitHigh is:", env.robot.jointLimitHigh)
+        print("(task)Testing environment jointLimitLow is:", env.task.jointLimitLow)
+        print("(task)Testing environment jointLimitHigh is:", env.task.jointLimitHigh)
         print("RMSE:", rmse)
         print("MAE:", mae)
         print("Success Rate 1 cm:", successRate1)
@@ -139,6 +141,8 @@ class TRAINTEST():
         ## Random start        
         env.robot.jointLimitLow = env.robot.workspacesdict[str(list(env.robot.workspacesdict)[-2])]
         env.robot.jointLimitHigh = env.robot.workspacesdict[str(list(env.robot.workspacesdict)[-1])]  
+        env.task.jointLimitLow = env.robot.workspacesdict[str(list(env.robot.workspacesdict)[-2])]
+        env.task.jointLimitHigh = env.robot.workspacesdict[str(list(env.robot.workspacesdict)[-1])] 
         env.task.np_random_reach, _ = gym.utils.seeding.np_random(200)
         env.robot.np_random_start, _ = gym.utils.seeding.np_random(100)
         self.evaluatePolicy(self.config['testSamples'], model, env)

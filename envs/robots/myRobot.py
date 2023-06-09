@@ -195,6 +195,8 @@ class MYROBOT(PyBulletRobot):
             #seed=None
             #np_random, seed = gym.utils.seeding.np_random(seed)
             sampledAngles = self.np_random_start.uniform(self.jointLimitLow, self.jointLimitHigh)
+            #print("low in myrobot:", self.jointLimitLow)
+            #print("high in myrobot:", self.jointLimitHigh)
             #print("sampledAngles in myRobot.py:", sampledAngles)
             self.set_joint_angles(sampledAngles)
         else:
