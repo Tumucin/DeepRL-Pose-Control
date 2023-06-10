@@ -39,14 +39,12 @@ class Reach(Task):
         self.thresholdConstant = self.config['thresholdConstant']
         self.alpha = self.config['alpha']
         self.orientationConstant = self.config['orientationConstant']
-        self.workspacesdict = self.config['workspacesdict']
         self.np_random_reach, _ = gym.utils.seeding.np_random()
         if self.config['CurriLearning'] == True:
-            self.jointLimitLow = self.workspacesdict[self.config['jointLimitLowStartID']]
-            self.jointLimitHigh = self.workspacesdict[self.config['jointLimitHighStartID']]
+            self.datasetFileName = self.config['datasetPath'] + "/" + self.config['body_name'] + "_" + self.config['curriculumFirstWorkspaceId']+".csv"
         else:
-            self.jointLimitLow = np.array(self.config['jointLimitLow'])
-            self.jointLimitHigh = np.array(self.config['jointLimitHigh'])
+            self.datasetFileName = self.config['datasetPath'] + "/" + self.config['body_name'] + "_" + self.config['finalWorkspaceID']+".csv"
+        self.dataset = np.genfromtxt(self.datasetFileName, delimiter=',', skip_header=1)
         with self.sim.no_rendering():
             self._create_scene()
             self.sim.place_visualizer(target_position=np.zeros(3), distance=0.9, yaw=45, pitch=-30)
@@ -80,13 +78,14 @@ class Reach(Task):
         
     def _sample_goal(self) -> np.ndarray:
         """Randomize goal."""
+        print("datasetFileName in reach.py:", self.datasetFileName)
         goal_range_low = np.array([-self.config['goal_range'] / 2, -self.config['goal_range'] / 2, 0])
         goal_range_high = np.array([self.config['goal_range'] / 2, self.config['goal_range'] / 2, self.config['goal_range']])
         goal = self.np_random_reach.uniform(goal_range_low, goal_range_high)
         if self.config['sampleJointAnglesGoal']==True:
-            sampledAngles = self.np_random_reach.uniform(self.jointLimitLow, self.jointLimitHigh)
-            #print("low in reach.py",self.jointLimitLow)
-            #print("high in reach.py",self.jointLimitHigh)
+            random_indices = self.np_random_reach.choice(self.dataset.shape[0], size=1, replace=False)
+            sampledAngles = self.dataset[random_indices][0]
+            #print("sampledAngles in reach.py:", sampledAngles)
             q_in = PyKDL.JntArray(self.kinematics.numbOfJoints)
             for i in range(self.kinematics.numbOfJoints):
                 q_in[i] = sampledAngles[i]
@@ -94,12 +93,6 @@ class Reach(Task):
             goalFrame.p[0] = goalFrame.p[0] #+0.6
             goal[0], goal[1], goal[2] = goalFrame.p[0], goalFrame.p[1], goalFrame.p[2]
         self.goalFrame = goalFrame
-        calculatedRadius = np.sqrt(self.goalFrame.p[0]**2 + self.goalFrame.p[1]**2)
-        if not (calculatedRadius < 0.20 and self.goalFrame.p[2] < 0.5):
-            pass
-        else:
-            self._sample_goal()
-            
         
         return goal
 

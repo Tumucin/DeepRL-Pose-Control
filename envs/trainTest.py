@@ -32,6 +32,8 @@ class TRAINTEST():
         self.tbFileNameToSave = self.tbParentFolderToSave+"/"+self.config['envName']+"_"+self.config['algorithm']+"/"+str(self.config['expNumber'])
         self.modelParentFolderToSave = self.config['modelSavePath']
         self.modelFileNameToSave = self.modelParentFolderToSave+"/"+self.config['envName']+""+self.config['algorithm']+"_"+str(self.config['expNumber'])
+        self.datasetFileName = self.config['datasetPath'] + "/" + self.config['body_name'] + "_" + self.config['finalWorkspaceID']+".csv"
+        self.dataset = np.genfromtxt(self.datasetFileName, delimiter=',', skip_header=1)
 
     def train(self,algorithm,env):
         checkpoint_callback = CheckpointCallback(save_freq=self.config['save_freq'], save_path=self.config['modelSavePath'],
@@ -118,10 +120,8 @@ class TRAINTEST():
         avgQuaternionDistance=avgQuaternionDistance/numberOfSteps
         avgQuaternionAngle = avgQuaternionAngle/numberOfSteps
 
-        print("(robot)Testing environment jointLimitLow is:", env.robot.jointLimitLow)
-        print("(robot)Testing environment jointLimitHigh is:", env.robot.jointLimitHigh)
-        print("(task)Testing environment jointLimitLow is:", env.task.jointLimitLow)
-        print("(task)Testing environment jointLimitHigh is:", env.task.jointLimitHigh)
+        print(env.robot.datasetFileName + " has been used by robot.py")
+        print(env.task.datasetFileName + " has been used by reach.py")
         print("RMSE:", rmse)
         print("MAE:", mae)
         print("Success Rate 1 cm:", successRate1)
@@ -138,11 +138,11 @@ class TRAINTEST():
     def loadAndEvaluateModel(self, algorithm,env):
         
         model = algorithm.load(self.modelFileNameToSave)         
-        ## Random start        
-        env.robot.jointLimitLow = env.robot.workspacesdict[str(list(env.robot.workspacesdict)[-2])]
-        env.robot.jointLimitHigh = env.robot.workspacesdict[str(list(env.robot.workspacesdict)[-1])]  
-        env.task.jointLimitLow = env.robot.workspacesdict[str(list(env.robot.workspacesdict)[-2])]
-        env.task.jointLimitHigh = env.robot.workspacesdict[str(list(env.robot.workspacesdict)[-1])] 
+
+        env.robot.datasetFileName = self.datasetFileName
+        env.task.datasetFileName = self.datasetFileName
+        env.task.dataset = self.dataset
+        env.robot.dataset = self.dataset
         env.task.np_random_reach, _ = gym.utils.seeding.np_random(200)
         env.robot.np_random_start, _ = gym.utils.seeding.np_random(100)
         self.evaluatePolicy(self.config['testSamples'], model, env)

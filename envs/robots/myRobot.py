@@ -50,13 +50,12 @@ class MYROBOT(PyBulletRobot):
         self.quaternionError = Quaternion(1, 0, 0, 0)
         self.finalAction = np.zeros(7)
         self.np_random_start, _ = gym.utils.seeding.np_random()
-        self.workspacesdict = self.config['workspacesdict']
         self.pseudoAction = np.zeros(self.kinematic.numbOfJoints)
-        for key, value in self.workspacesdict.items():
-            self.workspacesdict[key] = np.array(value)
-        self.jointLimitLow = self.workspacesdict[self.config['jointLimitLowStartID']]
-        self.jointLimitHigh = self.workspacesdict[self.config['jointLimitHighStartID']]
-        
+        if self.config['CurriLearning'] == True:
+            self.datasetFileName = self.config['datasetPath'] + "/" + self.config['body_name'] + "_" + self.config['curriculumFirstWorkspaceId']+".csv"
+        else:
+            self.datasetFileName = self.config['datasetPath'] + "/" + self.config['body_name'] + "_" + self.config['finalWorkspaceID']+".csv"
+        self.dataset = np.genfromtxt(self.datasetFileName, delimiter=',', skip_header=1)
         #self.q_in = PyKDL.JntArray(self.kinematic.numbOfJoints)
         self.j_kdl = PyKDL.Jacobian(self.kinematic.numbOfJoints)
         if self.config['body_name'] == 'j2n6s300':
@@ -191,23 +190,17 @@ class MYROBOT(PyBulletRobot):
 
     def set_joint_neutral(self) -> None:
         """Set the robot to its neutral pose."""
+        print("datasetFileName in myRobot.py:", self.datasetFileName)
         if self.config['randomStart']==True:
-            #seed=None
-            #np_random, seed = gym.utils.seeding.np_random(seed)
-            sampledAngles = self.np_random_start.uniform(self.jointLimitLow, self.jointLimitHigh)
-            #print("low in myrobot:", self.jointLimitLow)
-            #print("high in myrobot:", self.jointLimitHigh)
-            #print("sampledAngles in myRobot.py:", sampledAngles)
+            random_indices = self.np_random_start.choice(self.dataset.shape[0], size=1, replace=False)
+            sampledAngles = self.dataset[random_indices][0]
+            #print("sampledAngles in myrobot.py:", sampledAngles)
             self.set_joint_angles(sampledAngles)
         else:
             self.set_joint_angles(self.neutral_joint_values)
         
         startingPose = self.get_ee_position()
-        calculatedRadius = np.sqrt(startingPose[0]**2 + startingPose[1]**2)
-        if not (calculatedRadius < 0.20 and startingPose[2] < 0.5):
-            pass
-        else:
-            self.set_joint_neutral()
+        #print("startingPose in myrobot.py:", startingPose)
         
 
     def get_fingers_width(self) -> float:
