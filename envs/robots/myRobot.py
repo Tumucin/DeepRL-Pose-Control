@@ -190,7 +190,7 @@ class MYROBOT(PyBulletRobot):
 
     def set_joint_neutral(self) -> None:
         """Set the robot to its neutral pose."""
-        print("datasetFileName in myRobot.py:", self.datasetFileName)
+        #print("datasetFileName in myRobot.py:", self.datasetFileName)
         if self.config['randomStart']==True:
             random_indices = self.np_random_start.choice(self.dataset.shape[0], size=1, replace=False)
             sampledAngles = self.dataset[random_indices][0]

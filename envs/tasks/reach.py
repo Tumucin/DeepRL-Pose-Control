@@ -78,7 +78,7 @@ class Reach(Task):
         
     def _sample_goal(self) -> np.ndarray:
         """Randomize goal."""
-        print("datasetFileName in reach.py:", self.datasetFileName)
+        #print("datasetFileName in reach.py:", self.datasetFileName)
         goal_range_low = np.array([-self.config['goal_range'] / 2, -self.config['goal_range'] / 2, 0])
         goal_range_high = np.array([self.config['goal_range'] / 2, self.config['goal_range'] / 2, self.config['goal_range']])
         goal = self.np_random_reach.uniform(goal_range_low, goal_range_high)
