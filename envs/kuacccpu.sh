@@ -22,7 +22,7 @@
 
 # -= Resources =-
 #
-#SBATCH --job-name=PPOexp667
+#SBATCH --job-name=PPOexp707
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 ##SBATCH --partition=short
@@ -67,7 +67,7 @@ echo "Running Python script..."
 # Put Python script command below
 
 #export PYTHONPATH="/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/utils"
-python3 trainTest.py --expNumber 667 --total_timesteps 30000000 --n_steps 4096 --batch_size 2048 --n_envs 32 --testSamples 1000 --evalFreqOnTraining 3000000 --lambdaErr 100.0 --velocityConstant 0.1 --orientationConstant 50 --maeThreshold 0.01 --configName "133.yaml"
+python3 trainTest.py --expNumber 707 --total_timesteps 30000000 --n_steps 4096 --batch_size 2048 --n_envs 32 --testSamples 1000 --evalFreqOnTraining 2000000 --lambdaErr 25.0 --velocityConstant 0.0 --orientationConstant 50 --maeThreshold 0.01 --configName "133.yaml"
 # Command 2 for matrix
 echo "Running G++ compiler..."
 # Put g++ compiler command below

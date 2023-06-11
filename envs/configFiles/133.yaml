@@ -54,8 +54,8 @@ activation_fn: 0                      # Activation Function: Tanh: 0, RELU:1
 hiddenUnits: 128                      # The number of neurons in the hidden layers
 CurriLearning: True                  # Use Curriculum Learning or not. If this is FALSE, then you should edit the variables below
 curriculumFirstWorkspaceId: "W1"
-finalWorkspaceID: "W5"
-workspaceLen: 5
+finalWorkspaceID: "W6"
+workspaceLen: 6
 rmseThreshold: 0.012                  # RMSE threshold to go to the next Workspace (Curriculum Learning)
 maeThreshold: 0.012                   # MAE threshold to go to the next Workspace (Curriculum Learning)
 avgJntVelThreshold: 0.1               # AverageJntVel threshold to go to the next Workspace (Curriculum Learning)
