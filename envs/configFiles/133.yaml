@@ -1,16 +1,16 @@
 #################### PATHS - LOCAL- ####################
-#modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
-#logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
-#urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf'
-#file_name: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf"
-#datasetPath: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/version4"
+modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
+logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
+urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf'
+file_name: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf"
+datasetPath: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/version1"
 
 #################### PATHS - HPC- ####################
-modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
-logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
-urdfPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf'
-file_name: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf'
-datasetPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/version4'
+#modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
+#logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
+#urdfPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf'
+#file_name: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf'
+#datasetPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/version1'
 
 expNumber: 999                        # Experiement Number
 envName: "PandaReach-v2"              # Environment Name 
@@ -46,7 +46,7 @@ lambdaErr: 100.0                      # One of the parameters for reward functio
 orientationConstant: 1                # One of the parameters for reward function exp(-k*d*d)
 addOrientation: False                 # Use orientation information as states. If FALSE, do not use
 accelerationConstant: 0.0             # One of the parameters for reward function k*norm(jntAcceleration)
-velocityConstant: 0.1                 # One of the parameters for reward function k*norm(jntVelocity)
+velocityConstant: 0.0                 # One of the parameters for reward function k*norm(jntVelocity)
 velocityNormThreshold: 0.05
 thresholdConstant: 0.0
 alpha: 1.0                            # One of the parameters for reward function k*norm(jntVelocity)/(1+alpha*d)
@@ -54,11 +54,11 @@ activation_fn: 0                      # Activation Function: Tanh: 0, RELU:1
 hiddenUnits: 128                      # The number of neurons in the hidden layers
 CurriLearning: True                  # Use Curriculum Learning or not. If this is FALSE, then you should edit the variables below
 curriculumFirstWorkspaceId: "W1"
-finalWorkspaceID: "W4"
-workspaceLen: 4
+finalWorkspaceID: "W5"
+workspaceLen: 5
 rmseThreshold: 0.012                  # RMSE threshold to go to the next Workspace (Curriculum Learning)
 maeThreshold: 0.012                   # MAE threshold to go to the next Workspace (Curriculum Learning)
 avgJntVelThreshold: 0.1               # AverageJntVel threshold to go to the next Workspace (Curriculum Learning)
 
-net_arch: [{'pi': [128, 128],
-            'vf': [128, 128]}]        # Network Architecture
+net_arch: [{'pi': [128, 128, 128],
+            'vf': [128, 128, 128]}]        # Network Architecture

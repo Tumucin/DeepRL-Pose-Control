@@ -32,13 +32,6 @@ class Reach(Task):
         self.goalFrame = None
         self.quaternionAngleError = 0.0
         self.quaternionDistanceError = 0.00
-        self.lambdaErr = self.config['lambdaErr']
-        self.accelerationConstant = self.config['accelerationConstant']
-        self.velocityConst = self.config['velocityConstant']
-        self.velocityNormThreshold = self.config['velocityNormThreshold']
-        self.thresholdConstant = self.config['thresholdConstant']
-        self.alpha = self.config['alpha']
-        self.orientationConstant = self.config['orientationConstant']
         self.np_random_reach, _ = gym.utils.seeding.np_random()
         if self.config['CurriLearning'] == True:
             self.datasetFileName = self.config['datasetPath'] + "/" + self.config['body_name'] + "_" + self.config['curriculumFirstWorkspaceId']+".csv"
@@ -103,19 +96,20 @@ class Reach(Task):
     def compute_reward(self,achieved_goal,desired_goal, info: Dict[str, Any]) -> Union[np.ndarray, float]:        
         d = distance(achieved_goal, desired_goal)
         currentJointVelocities = np.array([self.sim.get_joint_velocity(self.sim.body_name,joint=i) for i in range(7)])
+        #print("current jnt vel in reach.py:", currentJointVelocities)
         currentJointAccelerations = (currentJointVelocities - self.previousJointVelocities)/(self.sim.timestep)
         self.previousJointVelocities = currentJointVelocities
         currentJointVelocitiesNorm = np.linalg.norm(currentJointVelocities)
         self.sim.drawInfosOnScreen(d, currentJointVelocitiesNorm, self.quaternionAngleError)
         
         if self.reward_type == "sparse":
-            return np.exp(-(self.lambdaErr)*(d*d)) - self.accelerationConstant*currentJointVelocitiesNorm
+            return np.exp(-(self.config['lambdaErr'])*(d*d)) - self.config['accelerationConstant']*currentJointVelocitiesNorm
         else:
             if self.config['addOrientation'] == True:
 
-                return np.exp(-(self.lambdaErr)*(d*d)) - self.accelerationConstant*np.linalg.norm(currentJointAccelerations) - (self.velocityConst*currentJointVelocitiesNorm)/(1+self.alpha*d)+ \
-                    self.thresholdConstant*np.array(d < self.distance_threshold, dtype=np.float64)*np.array(currentJointVelocitiesNorm < self.velocityNormThreshold, dtype=np.float64)+\
-                    np.exp(-(self.orientationConstant)*(self.quaternionAngleError**2))     
+                return np.exp(-(self.config['lambdaErr'])*(d*d)) - self.config['accelerationConstant']*np.linalg.norm(currentJointAccelerations) - (self.config['velocityConstant']*currentJointVelocitiesNorm)/(1+self.config['alpha']*d)+ \
+                    self.config['thresholdConstant']*np.array(d < self.distance_threshold, dtype=np.float64)*np.array(currentJointVelocitiesNorm < self.config['velocityNormThreshold'], dtype=np.float64)+\
+                    np.exp(-(self.config['orientationConstant'])*(self.quaternionAngleError**2))     
             else:
-                return np.exp(-(self.lambdaErr)*(d*d)) - self.accelerationConstant*np.linalg.norm(currentJointAccelerations) - (self.velocityConst*currentJointVelocitiesNorm)/(1+self.alpha*d)+ \
-                    self.thresholdConstant*np.array(d < self.distance_threshold, dtype=np.float64)*np.array(currentJointVelocitiesNorm < self.velocityNormThreshold, dtype=np.float64)
+                return np.exp(-(self.config['lambdaErr'])*(d*d)) - self.config['accelerationConstant']*np.linalg.norm(currentJointAccelerations) - (self.config['velocityConstant']*currentJointVelocitiesNorm)/(1+self.config['alpha']*d)+ \
+                    self.config['thresholdConstant']*np.array(d < self.distance_threshold, dtype=np.float64)*np.array(currentJointVelocitiesNorm < self.config['velocityNormThreshold'], dtype=np.float64)

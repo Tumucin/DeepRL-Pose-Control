@@ -97,7 +97,9 @@ class TRAINTEST():
             error = abs(obs['achieved_goal'] - obs['desired_goal'])
             mae = np.linalg.norm(error) + mae
             squaredError += np.sum(error**2)
-            avgJntVel = np.linalg.norm(env.robot.finalAction) + avgJntVel
+            currentJntVel = np.array([env.task.sim.get_joint_velocity(env.task.sim.body_name,joint=i) for i in range(7)])
+            #print("current vel in traintest.py:", currentJntVel)
+            avgJntVel = np.linalg.norm(currentJntVel) + avgJntVel
             d1 = env.robot.goalFrame.M.GetQuaternion()
             c1 = env.sim.get_link_orientation(env.sim.body_name, self.config['ee_link'])
             desiredQuaternion = Quaternion(d1[3], d1[0], d1[1], d1[2])

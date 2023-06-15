@@ -93,10 +93,10 @@ class MYROBOT(PyBulletRobot):
         if self.config['pseudoI']==True and self.config['networkOutput']==True:
             if self.config['addOrientation'] == True:
                 self.pseudoAction = self.calculateqdotFullJac(obs)
-                action =  self.pseudoAction+ action/5
+                action =  self.pseudoAction+ action
             else:
                 self.pseudoAction = self.calculateqdotOnlyPosition(obs)
-                action =  self.pseudoAction+ action/5
+                action =  self.pseudoAction+ action
 
         elif self.config['pseudoI']==True and self.config['networkOutput']==False:
             if self.config['addOrientation'] == True:
@@ -106,7 +106,7 @@ class MYROBOT(PyBulletRobot):
                 self.pseudoAction = self.calculateqdotOnlyPosition(obs)
                 action = self.pseudoAction
         else:
-            action = action/5
+            action = action
         action = np.clip(action, self.action_space.low, self.action_space.high)
         #action = 0 * action
         #action[5] = 0.4
@@ -163,7 +163,7 @@ class MYROBOT(PyBulletRobot):
         Returns:
             np.ndarray: Target arm angles, as the angles of the 7 arm joints.
         """
-        arm_joint_ctrl = arm_joint_ctrl * 0.05  # limit maximum change in position
+        arm_joint_ctrl = arm_joint_ctrl * 0.009  # limit maximum change in position
         # get the current position and the target position
         current_arm_joint_angles = np.array([self.get_joint_angle(joint=i) for i in range(self.kinematic.numbOfJoints)])
         target_arm_angles = current_arm_joint_angles + arm_joint_ctrl

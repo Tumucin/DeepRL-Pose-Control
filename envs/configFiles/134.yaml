@@ -1,16 +1,16 @@
 #################### PATHS - LOCAL- ####################
-#modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
-#logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
-#urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf'
-#file_name: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf"
-#datasetPath: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/version4"
+modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
+logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
+urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf'
+file_name: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf"
+datasetPath: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/version1"
 
 #################### PATHS - HPC- ####################
-modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
-logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
-urdfPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf'
-file_name: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf'
-datasetPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/version4'
+#modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
+#logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
+#urdfPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf'
+#file_name: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf'
+#datasetPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/version1'
 
 expNumber: 999                        # Experiement Number
 envName: "PandaReach-v2"              # Environment Name 
@@ -23,7 +23,7 @@ total_timesteps: !!float 32768000     # Total timesteps for training
 mode: False                           # True: Training, False: Testing
 algorithm: "PPO"                      # Name of the algorithm
 policy: "MultiInputPolicy"            # Policy network
-render: False                          # True: Render the sim, False: No Rendering
+render: True                          # True: Render the sim, False: No Rendering
 gamma: 0.95                           # Discount Factor
 n_steps: 4096                         # The number of steps to run for each environment per update
 n_epochs: 10                          # Number of epoch when optimizing the surrogate loss
@@ -54,8 +54,8 @@ activation_fn: 0                      # Activation Function: Tanh: 0, RELU:1
 hiddenUnits: 128                      # The number of neurons in the hidden layers
 CurriLearning: True                  # Use Curriculum Learning or not. If this is FALSE, then you should edit the variables below
 curriculumFirstWorkspaceId: "W1"
-finalWorkspaceID: "W4"
-workspaceLen: 6
+finalWorkspaceID: "W5"
+workspaceLen: 5
 rmseThreshold: 0.012                  # RMSE threshold to go to the next Workspace (Curriculum Learning)
 maeThreshold: 0.012                   # MAE threshold to go to the next Workspace (Curriculum Learning)
 avgJntVelThreshold: 0.1               # AverageJntVel threshold to go to the next Workspace (Curriculum Learning)
