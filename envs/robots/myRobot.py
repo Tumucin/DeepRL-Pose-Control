@@ -163,7 +163,7 @@ class MYROBOT(PyBulletRobot):
         Returns:
             np.ndarray: Target arm angles, as the angles of the 7 arm joints.
         """
-        arm_joint_ctrl = arm_joint_ctrl * 0.009  # limit maximum change in position
+        arm_joint_ctrl = arm_joint_ctrl * 0.01  # limit maximum change in position
         # get the current position and the target position
         current_arm_joint_angles = np.array([self.get_joint_angle(joint=i) for i in range(self.kinematic.numbOfJoints)])
         target_arm_angles = current_arm_joint_angles + arm_joint_ctrl
