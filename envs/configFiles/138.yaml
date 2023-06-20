@@ -20,7 +20,7 @@ baseLinkName: 'j2n6s300_link_base'    # The name of the base link of a robot
 eeLinkName: 'j2n6s300_end_effector'        # The name of the ee link of a robot
 base_position: [-0.0, 0.0, 0.0]       # Base position of the base link
 total_timesteps: !!float 32768000     # Total timesteps for training
-mode: True                           # True: Training, False: Testing
+mode: False                           # True: Training, False: Testing
 algorithm: "PPO"                      # Name of the algorithm
 policy: "MultiInputPolicy"            # Policy network
 render: False                          # True: Render the sim, False: No Rendering
@@ -35,7 +35,7 @@ testSampleOnTraining: 500             # Number of samples for evaluation while t
 evalFreqOnTraining: 2000000           # Number of timesteps per evaluation (Curriculum Learning)
 max_episode_steps: 800                # Episode length
 verbose: 1                            # Visualize the log of training
-pseudoI: False                         # Use PseudoInverse to calculate q_dot (Note that there are Position Only and FullJacobian methods)
+pseudoI: True                         # Use PseudoInverse to calculate q_dot (Note that there are Position Only and FullJacobian methods)
 networkOutput: True                  # Use Network output
 save_freq: !!float 100e6              # Number of timesteps for saving checkpoints
 sampleJointAnglesGoal: True           # Sample random goals(Position+Orientation). If this is FALSE, then you should determine goal_range value

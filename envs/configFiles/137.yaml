@@ -35,7 +35,7 @@ testSampleOnTraining: 500             # Number of samples for evaluation while t
 evalFreqOnTraining: 2000000           # Number of timesteps per evaluation (Curriculum Learning)
 max_episode_steps: 800                # Episode length
 verbose: 1                            # Visualize the log of training
-pseudoI: False                         # Use PseudoInverse to calculate q_dot (Note that there are Position Only and FullJacobian methods)
+pseudoI: True                         # Use PseudoInverse to calculate q_dot (Note that there are Position Only and FullJacobian methods)
 networkOutput: True                  # Use Network output
 save_freq: !!float 100e6              # Number of timesteps for saving checkpoints
 sampleJointAnglesGoal: True           # Sample random goals(Position+Orientation). If this is FALSE, then you should determine goal_range value
