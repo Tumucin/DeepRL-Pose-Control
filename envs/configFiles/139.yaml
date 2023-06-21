@@ -37,7 +37,7 @@ testSampleOnTraining: 500             # Number of samples for evaluation while t
 evalFreqOnTraining: 2000000           # Number of timesteps per evaluation (Curriculum Learning)
 max_episode_steps: 800                # Episode length
 verbose: 1                            # Visualize the log of training
-pseudoI: False                         # Use PseudoInverse to calculate q_dot (Note that there are Position Only and FullJacobian methods)
+pseudoI: True                         # Use PseudoInverse to calculate q_dot (Note that there are Position Only and FullJacobian methods)
 networkOutput: True                  # Use Network output
 save_freq: !!float 100e6              # Number of timesteps for saving checkpoints
 sampleJointAnglesGoal: True           # Sample random goals(Position+Orientation). If this is FALSE, then you should determine goal_range value
@@ -48,7 +48,7 @@ lambdaErr: 100.0                      # One of the parameters for reward functio
 orientationConstant: 1                # One of the parameters for reward function exp(-k*d*d)
 addOrientation: False                 # Use orientation information as states. If FALSE, do not use
 accelerationConstant: 0.0             # One of the parameters for reward function k*norm(jntAcceleration)
-velocityConstant: 0.0                 # One of the parameters for reward function k*norm(jntVelocity)
+velocityConstant: 0.1                 # One of the parameters for reward function k*norm(jntVelocity)
 velocityNormThreshold: 0.05
 thresholdConstant: 0.0
 alpha: 1.0                            # One of the parameters for reward function k*norm(jntVelocity)/(1+alpha*d)

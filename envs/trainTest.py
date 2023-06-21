@@ -21,7 +21,9 @@ import matplotlib.pyplot as plt
 from CustomCallback import CUSTOMCALLBACK
 from pyquaternion import Quaternion
 import gym.utils.seeding
-
+import csv
+import PyKDL
+import random
 
 class TRAINTEST():
     def __init__(self, config):
@@ -85,9 +87,10 @@ class TRAINTEST():
         avgJntVel = 0.0
         avgQuaternionDistance = 0.0
         avgQuaternionAngle = 0.0
+        failedAngles = {'startAngle': [], 'targetAngle': []}
         for step in range(numberOfSteps):
-            obs = env.reset()
             print("step: ", step)
+            obs = env.reset()
             done = False
             
             episode_reward = 0.0
@@ -112,8 +115,12 @@ class TRAINTEST():
             
             if np.linalg.norm(error) <=0.05:
                 successRate5+=1
+            else:
+                failedAngles['startAngle'].append(env.robot.currentSampledAnglesStart)
+                failedAngles['targetAngle'].append(env.task.currentSampledAnglesReach)
 
                 #episode_reward+=reward
+       #print("unvalidAngles: ", unsuccessAngles)
         rmse = np.sqrt((squaredError)/(numberOfSteps))
         mae = mae/numberOfSteps
         successRate1 = successRate1/numberOfSteps
@@ -135,18 +142,36 @@ class TRAINTEST():
         with open("metrics"+str(self.config['expNumber'])+".txt", 'w') as f:
             f.write('{}\n{}\n{}\n{}\n{}\n{}\n{}'.format(rmse, mae, successRate1, successRate5, avgJntVel, 
                                                         avgQuaternionDistance, avgQuaternionAngle))
-        
-
+        f.close()
+        if self.config['visualizeFailedSamples'] == False:
+            fig, (ax1, ax2) = plt.subplots(1, 2, subplot_kw={'projection': '3d'})
+            with open(self.config['failedSamplesSavePath']+"/failedStart"+str(self.config['expNumber'])+".csv", 'w', newline='') as csvfile1:
+                for startAngles in failedAngles['startAngle']:
+                    writer = csv.writer(csvfile1)
+                    writer.writerow(startAngles)
+            
+            with open(self.config['failedSamplesSavePath']+"/failedTarget"+str(self.config['expNumber'])+".csv", 'w', newline='') as csvfile2:
+                for targetAngles in failedAngles['targetAngle']:
+                    writer2 = csv.writer(csvfile2)
+                    writer2.writerow(targetAngles)
+    
     def loadAndEvaluateModel(self, algorithm,env):
         
         model = algorithm.load(self.modelFileNameToSave)         
 
-        env.robot.datasetFileName = self.datasetFileName
-        env.task.datasetFileName = self.datasetFileName
-        env.task.dataset = self.dataset
-        env.robot.dataset = self.dataset
         env.task.np_random_reach, _ = gym.utils.seeding.np_random(200)
         env.robot.np_random_start, _ = gym.utils.seeding.np_random(100)
+
+        if self.config['visualizeFailedSamples'] == True:
+            env.robot.datasetFileName = self.config['failedSamplesSavePath']+"/failedStart"+str(self.config['expNumber'])+".csv"
+            env.task.datasetFileName = self.config['failedSamplesSavePath']+"/failedTarget"+str(self.config['expNumber'])+".csv"
+            env.robot.dataset = self.dataset = np.genfromtxt(env.robot.datasetFileName, delimiter=',', skip_header=1)
+            env.task.dataset = self.dataset = np.genfromtxt(env.task.datasetFileName, delimiter=',', skip_header=1)
+        else:
+            env.robot.datasetFileName = self.datasetFileName
+            env.task.datasetFileName = self.datasetFileName
+            env.task.dataset = self.dataset
+            env.robot.dataset = self.dataset
         self.evaluatePolicy(self.config['testSamples'], model, env)
         
         

@@ -51,6 +51,7 @@ class MYROBOT(PyBulletRobot):
         self.finalAction = np.zeros(7)
         self.np_random_start, _ = gym.utils.seeding.np_random()
         self.pseudoAction = np.zeros(self.kinematic.numbOfJoints)
+        self.currentSampledAnglesStart = None
         if self.config['CurriLearning'] == True:
             self.datasetFileName = self.config['datasetPath'] + "/" + self.config['body_name'] + "_" + self.config['curriculumFirstWorkspaceId']+".csv"
         else:
@@ -108,9 +109,7 @@ class MYROBOT(PyBulletRobot):
         else:
             action = action
         action = np.clip(action, self.action_space.low, self.action_space.high)
-        #action = 0 * action
-        #action[5] = 0.4
-        #print(self.get_obs())
+        
         self.finalAction = action
         if self.control_type == "ee":
             ee_displacement = self.finalAction[:3]
@@ -194,6 +193,10 @@ class MYROBOT(PyBulletRobot):
         if self.config['randomStart']==True:
             random_indices = self.np_random_start.choice(self.dataset.shape[0], size=1, replace=False)
             sampledAngles = self.dataset[random_indices][0]
+            self.currentSampledAnglesStart = sampledAngles
+            #print("sampled angles:", sampledAngles)
+            #print("sampled angles type in myrobot.py", type(sampledAngles))
+            #print("Random start angles in myrobot.py :", sampledAngles)
             #print("sampledAngles in myrobot.py:", sampledAngles)
             self.set_joint_angles(sampledAngles)
         else:
@@ -202,7 +205,6 @@ class MYROBOT(PyBulletRobot):
         startingPose = self.get_ee_position()
         #print("startingPose in myrobot.py:", startingPose)
         
-
     def get_fingers_width(self) -> float:
         """Get the distance between the fingers."""
         finger1 = self.sim.get_joint_angle(self.body_name, self.fingers_indices[0])

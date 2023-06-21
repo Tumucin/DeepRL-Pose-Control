@@ -1,16 +1,18 @@
 #################### PATHS - LOCAL- ####################
 #modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
 #logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
+#failedSamplesSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/failedSamples'
 #urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf'
 #file_name: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf"
-#datasetPath: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/version4"
+#datasetPath: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/jaco6dofversion4"
 
 #################### PATHS - HPC- ####################
 modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
 logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
+failedSamplesSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/failedSamples'
 urdfPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf'
 file_name: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf'
-datasetPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/version4'
+datasetPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/jaco6dofversion4'
 
 expNumber: 999                        # Experiement Number
 envName: "PandaReach-v2"              # Environment Name 
@@ -58,6 +60,6 @@ finalWorkspaceID: "W4"
 rmseThreshold: 0.012                  # RMSE threshold to go to the next Workspace (Curriculum Learning)
 maeThreshold: 0.012                   # MAE threshold to go to the next Workspace (Curriculum Learning)
 avgJntVelThreshold: 0.1               # AverageJntVel threshold to go to the next Workspace (Curriculum Learning)
-
+visualizeFailedSamples: False
 net_arch: [{'pi': [128, 128],
             'vf': [128, 128]}]        # Network Architecture
