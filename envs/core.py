@@ -250,7 +250,8 @@ class RobotTaskEnv(gym.GoalEnv):
         task_obs = self.task.get_obs()  # object position, velococity, etc...
         observation = np.concatenate([robot_obs, task_obs])
         deltax = self.task.get_goal() - self.task.get_achieved_goal()
-        observation = np.concatenate([observation, deltax])
+        
+        observation = np.concatenate([observation, self.task.get_achieved_goal(), self.task.get_goal(), deltax])
         achieved_goal = self.task.get_achieved_goal()
         isSuccess = self.task.is_success(self.task.get_achieved_goal(), self.task.get_goal())
         isSuccess = isSuccess[...,np.newaxis]
