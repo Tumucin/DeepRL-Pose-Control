@@ -15,7 +15,7 @@ for reward_type in ["sparse", "dense"]:
             id="PandaReach{}{}-v2".format(control_suffix, reward_suffix),
             entry_point="panda_gym.envs:PandaReachEnv",
             kwargs=kwargs,
-            max_episode_steps=800,
+            max_episode_steps=1000,
         )
 
         register(
