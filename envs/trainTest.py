@@ -24,7 +24,7 @@ import gym.utils.seeding
 import csv
 import PyKDL
 import random
-
+import seaborn as sns
 class TRAINTEST():
     def __init__(self, config):
         self.config = config
@@ -79,6 +79,111 @@ class TRAINTEST():
             print("REPLAY BUFFER IS SAVED--NORMAL LEARNING")
             model.save_replay_buffer(self.config['bufferPath']+str(self.config['expNumber']))   
 
+    def saveMetrics(self, env, rmse, mae, successRate1, successRate5, avgJntVel, avgQuaternionDistance, avgQuaternionAngle):
+        print(env.robot.datasetFileName + " has been used by robot.py")
+        print(env.task.datasetFileName + " has been used by reach.py")
+        print("RMSE:", rmse)
+        print("MAE:", mae)
+        print("Success Rate 1 cm:", successRate1)
+        print("Success Rate 5 cm:", successRate5)
+        print("Average joint velocities:", avgJntVel)
+        print("Average quaternion distance:", avgQuaternionDistance)
+        print("Average quaternion angle:", avgQuaternionAngle)
+        
+        with open("metrics"+str(self.config['expNumber'])+".txt", 'w') as f:
+            f.write('{}\n{}\n{}\n{}\n{}\n{}\n{}'.format(rmse, mae, successRate1, successRate5, avgJntVel, 
+                                                        avgQuaternionDistance, avgQuaternionAngle))
+        f.close()
+        print("Metrics results have been saved!!!")
+
+    def saveFailedSamples(self, failedAngles):
+        with open(self.config['failedSamplesSavePath']+"/failedStart"+str(self.config['expNumber'])+".csv", 'w', newline='') as csvfile1:
+            for startAngles in failedAngles['startAngle']:
+                writer = csv.writer(csvfile1)
+                writer.writerow(startAngles)
+        
+        with open(self.config['failedSamplesSavePath']+"/failedTarget"+str(self.config['expNumber'])+".csv", 'w', newline='') as csvfile2:
+            for targetAngles in failedAngles['targetAngle']:
+                writer2 = csv.writer(csvfile2)
+                writer2.writerow(targetAngles)
+        
+        print("Failed samples have been saved!!!")
+
+    def plotFailedSamples(self, failedAngles, env):
+        fig = plt.figure()
+        ax1_2d = fig.add_subplot(221)
+        ax2_2d = fig.add_subplot(222)
+        ax3_3d = fig.add_subplot(223, projection='3d')
+        ax4_3d = fig.add_subplot(224, projection='3d')
+        
+        xfailedPointsStart = []
+        yfailedPointsStart = []
+        zfailedPointsStart = []
+        xfailedPointsTarget = []
+        yfailedPointsTarget = []
+        zfailedPointsTarget = []
+        
+        for startAngle in failedAngles['startAngle']:
+            q_in = PyKDL.JntArray(env.task.kinematics.numbOfJoints)
+            for i in range(env.task.kinematics.numbOfJoints):
+                q_in[i] = startAngle[i]
+            goalFrame = env.task.kinematics.forwardKinematicsPoseSolv(q_in)
+            xfailedPointsStart.append(goalFrame.p[0])
+            yfailedPointsStart.append(goalFrame.p[1])
+            zfailedPointsStart.append(goalFrame.p[2])
+        unique_colors = sns.color_palette(n_colors=len(xfailedPointsStart))
+        ax1_2d.scatter(xfailedPointsStart, yfailedPointsStart,c=unique_colors)
+        ax3_3d.scatter(xfailedPointsStart, yfailedPointsStart, zfailedPointsStart,c=unique_colors)
+
+        # Add the index as text for each point
+        for i, (x, y) in enumerate(zip(xfailedPointsStart, yfailedPointsStart)):
+            ax1_2d.text(x, y, str(i), ha='center', va='bottom', fontsize = 7)
+        
+        
+        for targetAngle in failedAngles['targetAngle']:
+            q_in = PyKDL.JntArray(env.task.kinematics.numbOfJoints)
+            for i in range(env.task.kinematics.numbOfJoints):
+                q_in[i] = targetAngle[i]
+            goalFrame = env.task.kinematics.forwardKinematicsPoseSolv(q_in)
+            xfailedPointsTarget.append(goalFrame.p[0])
+            yfailedPointsTarget.append(goalFrame.p[1])
+            zfailedPointsTarget.append(goalFrame.p[2])
+        
+        for i, (x, y) in enumerate(zip(xfailedPointsTarget, yfailedPointsTarget)):
+            ax2_2d.text(x, y, str(i), ha='center', va='bottom', fontsize = 7)
+
+        ax2_2d.scatter(xfailedPointsTarget, yfailedPointsTarget,c=unique_colors)
+        ax4_3d.scatter(xfailedPointsTarget, yfailedPointsTarget, zfailedPointsTarget,c=unique_colors)
+
+        ax1_2d.set_xlabel('X [m]')
+        ax1_2d.set_ylabel('Y [m]')
+        ax1_2d.set_title('Start Points')
+
+        ax2_2d.set_xlabel('X [m]')
+        ax2_2d.set_ylabel('Y [m]')
+        ax2_2d.set_title('Target Points')
+
+        ax3_3d.set_xlabel('X [m]')
+        ax3_3d.set_ylabel('Y [m]')
+        ax3_3d.set_zlabel('Z [m]')
+        ax3_3d.set_title('Start Points')
+
+        ax4_3d.set_xlabel('X [m]')
+        ax4_3d.set_ylabel('Y [m]')
+        ax4_3d.set_zlabel('Z [m]')
+        ax4_3d.set_title('Target Points')
+
+        ax1_2d.set_xlim([-0.2,1])
+        ax1_2d.set_ylim([-1.2,1.2])
+        ax2_2d.set_xlim([-0.2,1])
+        ax2_2d.set_ylim([-1.2,1.2])
+
+        fig.set_size_inches(18.5, 10.5)  # Adjust the size as needed
+        fig.tight_layout()
+
+        plt.savefig(self.config['failedSamplesSavePath']+"/failedSamplesPlot"+str(self.config['expNumber'])+".png")
+        print("Failed samples have been plotted!!!")
+
     def evaluatePolicy(self, numberOfSteps, model, env):
         mae = 0.0
         squaredError = 0.0
@@ -129,31 +234,10 @@ class TRAINTEST():
         avgQuaternionDistance=avgQuaternionDistance/numberOfSteps
         avgQuaternionAngle = avgQuaternionAngle/numberOfSteps
 
-        print(env.robot.datasetFileName + " has been used by robot.py")
-        print(env.task.datasetFileName + " has been used by reach.py")
-        print("RMSE:", rmse)
-        print("MAE:", mae)
-        print("Success Rate 1 cm:", successRate1)
-        print("Success Rate 5 cm:", successRate5)
-        print("Average joint velocities:", avgJntVel)
-        print("Average quaternion distance:", avgQuaternionDistance)
-        print("Average quaternion angle:", avgQuaternionAngle)
-        
-        with open("metrics"+str(self.config['expNumber'])+".txt", 'w') as f:
-            f.write('{}\n{}\n{}\n{}\n{}\n{}\n{}'.format(rmse, mae, successRate1, successRate5, avgJntVel, 
-                                                        avgQuaternionDistance, avgQuaternionAngle))
-        f.close()
         if self.config['visualizeFailedSamples'] == False:
-            fig, (ax1, ax2) = plt.subplots(1, 2, subplot_kw={'projection': '3d'})
-            with open(self.config['failedSamplesSavePath']+"/failedStart"+str(self.config['expNumber'])+".csv", 'w', newline='') as csvfile1:
-                for startAngles in failedAngles['startAngle']:
-                    writer = csv.writer(csvfile1)
-                    writer.writerow(startAngles)
-            
-            with open(self.config['failedSamplesSavePath']+"/failedTarget"+str(self.config['expNumber'])+".csv", 'w', newline='') as csvfile2:
-                for targetAngles in failedAngles['targetAngle']:
-                    writer2 = csv.writer(csvfile2)
-                    writer2.writerow(targetAngles)
+            self.saveMetrics(env, rmse, mae, successRate1, successRate5, avgJntVel, avgQuaternionDistance, avgQuaternionAngle)
+            self.saveFailedSamples(failedAngles)
+            self.plotFailedSamples(failedAngles, env)
     
     def loadAndEvaluateModel(self, algorithm,env):
         

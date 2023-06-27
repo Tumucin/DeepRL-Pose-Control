@@ -57,9 +57,10 @@ hiddenUnits: 128                      # The number of neurons in the hidden laye
 CurriLearning: True                  # Use Curriculum Learning or not. If this is FALSE, then you should edit the variables below
 curriculumFirstWorkspaceId: "W1"
 finalWorkspaceID: "W4"
+workspaceLen: 4
 rmseThreshold: 0.012                  # RMSE threshold to go to the next Workspace (Curriculum Learning)
 maeThreshold: 0.012                   # MAE threshold to go to the next Workspace (Curriculum Learning)
 avgJntVelThreshold: 0.1               # AverageJntVel threshold to go to the next Workspace (Curriculum Learning)
 visualizeFailedSamples: False
-net_arch: [{'pi': [128, 128],
-            'vf': [128, 128]}]        # Network Architecture
+net_arch: [{'pi': [128, 128, 128],
+            'vf': [128, 128, 128]}]        # Network Architecture

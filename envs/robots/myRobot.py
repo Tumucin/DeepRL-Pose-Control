@@ -109,7 +109,6 @@ class MYROBOT(PyBulletRobot):
         else:
             action = action
         action = np.clip(action, self.action_space.low, self.action_space.high)
-        
         self.finalAction = action
         if self.control_type == "ee":
             ee_displacement = self.finalAction[:3]
@@ -179,7 +178,7 @@ class MYROBOT(PyBulletRobot):
             if self.config['addOrientation']==True:
                 obs = np.concatenate((currentJointAngles, currentJoinVelocities, self.quaternionError.elements))
             else:
-                obs = np.concatenate((currentJointAngles, currentJoinVelocities))  
+                obs = np.concatenate((currentJointAngles, currentJoinVelocities, self.pseudoAction))  
         return obs
 
     def reset(self) -> None:
@@ -194,10 +193,6 @@ class MYROBOT(PyBulletRobot):
             random_indices = self.np_random_start.choice(self.dataset.shape[0], size=1, replace=False)
             sampledAngles = self.dataset[random_indices][0]
             self.currentSampledAnglesStart = sampledAngles
-            #print("sampled angles:", sampledAngles)
-            #print("sampled angles type in myrobot.py", type(sampledAngles))
-            #print("Random start angles in myrobot.py :", sampledAngles)
-            #print("sampledAngles in myrobot.py:", sampledAngles)
             self.set_joint_angles(sampledAngles)
         else:
             self.set_joint_angles(self.neutral_joint_values)

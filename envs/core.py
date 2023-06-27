@@ -7,8 +7,7 @@ import gym.utils.seeding
 import numpy as np
 
 from panda_gym.pybullet import PyBullet
-
-
+import pybullet as p 
 class PyBulletRobot(ABC):
     """Base class for robot env.
 
@@ -251,7 +250,7 @@ class RobotTaskEnv(gym.GoalEnv):
         observation = np.concatenate([robot_obs, task_obs])
         deltax = self.task.get_goal() - self.task.get_achieved_goal()
         
-        observation = np.concatenate([observation, self.task.get_achieved_goal(), self.task.get_goal(), deltax])
+        observation = np.concatenate([observation, deltax])
         achieved_goal = self.task.get_achieved_goal()
         isSuccess = self.task.is_success(self.task.get_achieved_goal(), self.task.get_goal())
         isSuccess = isSuccess[...,np.newaxis]
