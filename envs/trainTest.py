@@ -249,8 +249,8 @@ class TRAINTEST():
         if self.config['visualizeFailedSamples'] == True:
             env.robot.datasetFileName = self.config['failedSamplesSavePath']+"/failedStart"+str(self.config['expNumber'])+".csv"
             env.task.datasetFileName = self.config['failedSamplesSavePath']+"/failedTarget"+str(self.config['expNumber'])+".csv"
-            env.robot.dataset = self.dataset = np.genfromtxt(env.robot.datasetFileName, delimiter=',', skip_header=1)
-            env.task.dataset = self.dataset = np.genfromtxt(env.task.datasetFileName, delimiter=',', skip_header=1)
+            env.robot.dataset = self.dataset = np.genfromtxt(env.robot.datasetFileName, delimiter=',')
+            env.task.dataset = self.dataset = np.genfromtxt(env.task.datasetFileName, delimiter=',')
         else:
             env.robot.datasetFileName = self.datasetFileName
             env.task.datasetFileName = self.datasetFileName

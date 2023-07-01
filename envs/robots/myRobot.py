@@ -52,6 +52,7 @@ class MYROBOT(PyBulletRobot):
         self.np_random_start, _ = gym.utils.seeding.np_random()
         self.pseudoAction = np.zeros(self.kinematic.numbOfJoints)
         self.currentSampledAnglesStart = None
+        self.currentSampleIndex = 0
         if self.config['CurriLearning'] == True:
             self.datasetFileName = self.config['datasetPath'] + "/" + self.config['body_name'] + "_" + self.config['curriculumFirstWorkspaceId']+".csv"
         else:
@@ -108,6 +109,10 @@ class MYROBOT(PyBulletRobot):
                 action = self.pseudoAction
         else:
             action = action
+        
+        error = np.linalg.norm(abs(obs['achieved_goal'] - obs['desired_goal']))
+        if error < 0.05:
+            action = self.pseudoAction
         action = np.clip(action, self.action_space.low, self.action_space.high)
         self.finalAction = action
         if self.control_type == "ee":
@@ -191,8 +196,12 @@ class MYROBOT(PyBulletRobot):
         #print("datasetFileName in myRobot.py:", self.datasetFileName)
         if self.config['randomStart']==True:
             random_indices = self.np_random_start.choice(self.dataset.shape[0], size=1, replace=False)
+            if self.config['visualizeFailedSamples'] == True :
+                random_indices[0] = self.currentSampleIndex
+                self.currentSampleIndex +=1
             sampledAngles = self.dataset[random_indices][0]
             self.currentSampledAnglesStart = sampledAngles
+            #print("current start angle:", sampledAngles)
             self.set_joint_angles(sampledAngles)
         else:
             self.set_joint_angles(self.neutral_joint_values)

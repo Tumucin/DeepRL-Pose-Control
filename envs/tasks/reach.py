@@ -34,6 +34,7 @@ class Reach(Task):
         self.quaternionDistanceError = 0.00
         self.currentSampledAnglesReach = None
         self.np_random_reach, _ = gym.utils.seeding.np_random()
+        self.currentSampleIndex = 0
         if self.config['CurriLearning'] == True:
             self.datasetFileName = self.config['datasetPath'] + "/" + self.config['body_name'] + "_" + self.config['curriculumFirstWorkspaceId']+".csv"
         else:
@@ -78,10 +79,13 @@ class Reach(Task):
         goal = self.np_random_reach.uniform(goal_range_low, goal_range_high)
         if self.config['sampleJointAnglesGoal']==True:
             random_indices = self.np_random_reach.choice(self.dataset.shape[0], size=1, replace=False)
+            if self.config['visualizeFailedSamples'] == True :
+                random_indices[0] = self.currentSampleIndex
+                self.currentSampleIndex +=1
+
             sampledAngles = self.dataset[random_indices][0]
             self.currentSampledAnglesReach = sampledAngles
-            #print("Random target angles in reach.py :", sampledAngles)
-            #print("sampledAngles in reach.py:", sampledAngles)
+            #print("current target angle:", sampledAngles)
             q_in = PyKDL.JntArray(self.kinematics.numbOfJoints)
             for i in range(self.kinematics.numbOfJoints):
                 q_in[i] = sampledAngles[i]
