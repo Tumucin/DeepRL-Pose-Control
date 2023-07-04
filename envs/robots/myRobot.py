@@ -184,7 +184,10 @@ class MYROBOT(PyBulletRobot):
             if self.config['addOrientation']==True:
                 obs = np.concatenate((currentJointAngles, currentJoinVelocities, self.quaternionError.elements))
             else:
-                obs = np.concatenate((currentJointAngles, currentJoinVelocities, self.pseudoAction))  
+                if self.config['pseudoI'] == True:
+                    obs = np.concatenate((currentJointAngles, currentJoinVelocities, self.pseudoAction))  
+                else:
+                    obs = np.concatenate((currentJointAngles, currentJoinVelocities))
         return obs
 
     def reset(self) -> None:
