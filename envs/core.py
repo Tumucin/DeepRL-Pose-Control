@@ -49,6 +49,8 @@ class PyBulletRobot(ABC):
             fileName=file_name,
             basePosition=base_position,
             useFixedBase=True,
+            #flags = p.URDF_USE_SELF_COLLISION|p.URDF_USE_SELF_COLLISION_EXCLUDE_PARENT
+            #flags = p.URDF_USE_SELF_COLLISION
         )
 
     def setup(self) -> None:

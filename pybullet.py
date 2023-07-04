@@ -64,6 +64,12 @@ class PyBullet:
 
     def step(self) -> None:
         """Step the simulation."""
+        #cont_pts1 =self.physics_client.getContactPoints(self._bodies_idx[self.body_name],self._bodies_idx[self.body_name])
+        #print("points:", cont_pts1)
+        #print("length:",len(cont_pts1))
+        #if len(cont_pts1) > 2:
+        #    print("COLLISION!!!")
+
         if self.counter%100==0:
             self.drawFrameForCurrentPose()
         for _ in range(self.n_substeps):
@@ -454,7 +460,25 @@ class PyBullet:
         """
         self._bodies_idx[body_name] = self.physics_client.loadURDF(**kwargs)
 
-    def create_box(
+        links = [idx for idx in range(-1, 13)]
+        #for link in links:
+        #    self.physics_client.setCollisionFilterGroupMask(self._bodies_idx[body_name], link, 0, 1)
+        #    self.physics_client.setCollisionFilterGroupMask(self._bodies_idx[body_name], link, 1, 1)
+        #    self.physics_client.setCollisionFilterGroupMask(self._bodies_idx[body_name], link, 2, 1)
+
+        #for link in links:
+        #    if link != 1:
+        #        self.physics_client.setCollisionFilterPair(self._bodies_idx[body_name], self._bodies_idx[body_name], link, 1, enableCollision=False)
+
+        #self.physics_client.setCollisionFilterGroupMask(self._bodies_idx[body_name], 13, 0, 0)
+        #self.physics_client.setCollisionFilterGroupMask(self._bodies_idx[body_name], 12, 0, 0)
+        #self.physics_client.setCollisionFilterGroupMask(self._bodies_idx[body_name], 11, 0, 0)
+        #self.physics_client.setCollisionFilterGroupMask(self._bodies_idx[body_name], 10, 0, 0)
+        #self.physics_client.setCollisionFilterGroupMask(self._bodies_idx[body_name], 9, 0, 0)
+        #self.physics_client.setCollisionFilterGroupMask(self._bodies_idx[body_name], 8, 0, 0)
+        #self.physics_client.setCollisionFilterGroupMask(self._bodies_idx[body_name], 7, 0, 0)
+
+    def create_box( 
         self,
         body_name: str,
         half_extents: np.ndarray,

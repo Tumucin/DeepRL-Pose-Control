@@ -110,9 +110,10 @@ class MYROBOT(PyBulletRobot):
         else:
             action = action
         
-        error = np.linalg.norm(abs(obs['achieved_goal'] - obs['desired_goal']))
-        if error < 0.05:
-            action = self.pseudoAction
+        #error = np.linalg.norm(abs(obs['achieved_goal'] - obs['desired_goal']))
+        #if error < 0.05:
+        #    action = self.pseudoAction
+        #action[3] = -4
         action = np.clip(action, self.action_space.low, self.action_space.high)
         self.finalAction = action
         if self.control_type == "ee":

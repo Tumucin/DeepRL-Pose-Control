@@ -1,14 +1,18 @@
 #################### PATHS - LOCAL- ####################
 #modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
 #logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
+#failedSamplesSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/failedSamples'
 #urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco7DOF.urdf'
 #file_name: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco7DOF.urdf"
+#datasetPath: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/jaco7dofversion1"
 
 #################### PATHS - HPC- ####################
 modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
 logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
+failedSamplesSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/failedSamples'
 urdfPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco7DOF.urdf'
 file_name: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco7DOF.urdf'
+datasetPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/jaco7dofversion1'
 
 expNumber: 999                        # Experiement Number
 envName: "PandaReach-v2"              # Environment Name 
@@ -33,7 +37,7 @@ testSampleOnTraining: 500             # Number of samples for evaluation while t
 evalFreqOnTraining: 2000000           # Number of timesteps per evaluation (Curriculum Learning)
 max_episode_steps: 800                # Episode length
 verbose: 1                            # Visualize the log of training
-pseudoI: False                         # Use PseudoInverse to calculate q_dot (Note that there are Position Only and FullJacobian methods)
+pseudoI: True                         # Use PseudoInverse to calculate q_dot (Note that there are Position Only and FullJacobian methods)
 networkOutput: True                  # Use Network output
 save_freq: !!float 100e6              # Number of timesteps for saving checkpoints
 sampleJointAnglesGoal: True           # Sample random goals(Position+Orientation). If this is FALSE, then you should determine goal_range value
@@ -42,7 +46,7 @@ randomStart: True                     # Sample random starting goals(Position+Or
 neutral_joint_values: [-1.5708, 3.9, 0, 1.0472, 0.0, 1.5708, 3.14]
 lambdaErr: 100.0                      # One of the parameters for reward function exp(-k*d*d)
 orientationConstant: 1                # One of the parameters for reward function exp(-k*d*d)
-addOrientation: False                 # Use orientation information as states. If FALSE, do not use
+addOrientation: True                 # Use orientation information as states. If FALSE, do not use
 accelerationConstant: 0.0             # One of the parameters for reward function k*norm(jntAcceleration)
 velocityConstant: 0.1                 # One of the parameters for reward function k*norm(jntVelocity)
 velocityNormThreshold: 0.05
@@ -50,34 +54,13 @@ thresholdConstant: 0.0
 alpha: 1.0                            # One of the parameters for reward function k*norm(jntVelocity)/(1+alpha*d)
 activation_fn: 0                      # Activation Function: Tanh: 0, RELU:1
 hiddenUnits: 128                      # The number of neurons in the hidden layers
-CurriLearning: True                  # Use Curriculum Learning or not. If this is FALSE, then you should edit the variables below
-jointLimitLowStartID: 'W0Low'         # This low limit is used for random start. Starting ee pose
-jointLimitHighStartID: 'W0High'       # This high limit is used for random start. Starting ee pose
+CurriLearning: False                  # Use Curriculum Learning or not. If this is FALSE, then you should edit the variables below
+curriculumFirstWorkspaceId: "W1"
+finalWorkspaceID: "W4"
+workspaceLen: 4
 rmseThreshold: 0.012                  # RMSE threshold to go to the next Workspace (Curriculum Learning)
 maeThreshold: 0.012                   # MAE threshold to go to the next Workspace (Curriculum Learning)
 avgJntVelThreshold: 0.1               # AverageJntVel threshold to go to the next Workspace (Curriculum Learning)
-
-net_arch: [{'pi': [128, 128],
-            'vf': [128, 128]}]        # Network Architecture
-
-################################### WORKSPACE - V3 - JACO ##############################
-# Each Wi represents the sub workspace of the entire workspace. And these boundaries are 
-# used for creating a random robot starting pose
-
-workspacesdict:
-  W0Low : [-1.5708, 3.9270, 0.0000, 1.0472, 0.0000, 3.1416, 6.2831]
-  W0High: [-1.5708, 3.9270, 0.0000, 1.0472, 0.0000, 3.1416, 6.2831]
-  W1Low : [-1.7453, 3.7525, -0.1745, 1.6581, -0.1745, 2.9671, 6.2831]
-  W1High: [-1.3963, 4.1015,  0.1745, 2.0071,  0.1745, 3.3161, 6.2831]
-  W2Low : [-1.9635, 3.7306, -0.7854, 1.6362, -0.7854, 2.7489, 6.2831]
-  W2High: [-1.1781, 4.1233,  0.7854, 2.0289,  0.7854, 3.5343, 6.2831]
-  W3Low : [-2.3562, 3.5343, -1.5708, 1.4399, -1.5708, 2.3562, 6.2831]
-  W3High: [-0.7854, 4.3197,  1.5708, 2.2235,  1.5708, 3.9270, 6.2831]
-  W4Low : [-2.7489, 3.3379, -2.3562, 1.2435, -2.3562, 1.9635, 6.2831]
-  W4High: [-0.3927, 4.5160,  2.3562, 2.4216,  2.3562, 4.3197, 6.2831]
-  W5Low:  [-3.1416, 3.1416, -3.1416, 1.0472, -3.1416, 1.5708, 6.2831]
-  W5High: [ 0.0000, 4.7124,  3.1416, 2.6180,  3.1416, 4.7124, 6.2831]
-
-# This is for creating random Goals
-jointLimitLow:  [-3.1416, 3.1416, -3.1416, 1.0472, -3.1416, 1.5708, 6.2831]
-jointLimitHigh: [ 0.0000, 4.7124,  3.1416, 2.6180,  3.1416, 4.7124, 6.2831]
+visualizeFailedSamples: False
+net_arch: [{'pi': [128, 128, 128],
+            'vf': [128, 128, 128]}]        # Network Architecture
