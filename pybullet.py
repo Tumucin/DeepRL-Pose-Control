@@ -57,6 +57,10 @@ class PyBullet:
         self.angleErrorText = None
         self.body_name = config['body_name']
         self.ee_link = config['ee_link']
+
+
+        self.consecutive_link_pairs={(4,6):True,(9,10):True,(6,8):True}
+
     @property
     def dt(self):
         """Timestep."""
@@ -65,11 +69,18 @@ class PyBullet:
     def step(self) -> None:
         """Step the simulation."""
         #cont_pts1 =self.physics_client.getContactPoints(self._bodies_idx[self.body_name],self._bodies_idx[self.body_name])
-        #print("points:", cont_pts1)
+        ##print("points:", cont_pts1)
         #print("length:",len(cont_pts1))
-        #if len(cont_pts1) > 2:
-        #    print("COLLISION!!!")
-
+        #
+        #tmp=[]
+        #for cont in cont_pts1:
+        #    if (cont[3],cont[4]) not in self.consecutive_link_pairs:
+        #        tmp.append((cont[3],cont[4]))
+        #        p.changeVisualShape(cont[1], cont[3], rgbaColor=[0.8, 0.6, 0.4, 1])
+        #        p.changeVisualShape(cont[2], cont[4], rgbaColor=[0.8, 0.6, 0.4, 1])
+        ##if len(cont_pts1) > 2:
+        ##    print("COLLISION!!!")
+        #print("pairs:",tmp)
         if self.counter%100==0:
             self.drawFrameForCurrentPose()
         for _ in range(self.n_substeps):
