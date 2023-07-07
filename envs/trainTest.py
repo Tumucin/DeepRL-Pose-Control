@@ -302,7 +302,6 @@ def main():
     parser.add_argument('--configName', type=str, help="")
     args = parser.parse_args()
 
-
     with open("currentConfigNumber"+".txt", 'w') as f:
             f.write('{}'.format(args.configName))
             

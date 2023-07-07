@@ -113,7 +113,6 @@ class MYROBOT(PyBulletRobot):
         #error = np.linalg.norm(abs(obs['achieved_goal'] - obs['desired_goal']))
         #if error < 0.05:
         #    action = self.pseudoAction
-        #action[3] = -4
         action = np.clip(action, self.action_space.low, self.action_space.high)
         self.finalAction = action
         if self.control_type == "ee":
@@ -184,10 +183,10 @@ class MYROBOT(PyBulletRobot):
             if self.config['addOrientation']==True:
                 obs = np.concatenate((currentJointAngles, currentJoinVelocities, self.quaternionError.elements))
             else:
-                if self.config['pseudoI'] == True:
-                    obs = np.concatenate((currentJointAngles, currentJoinVelocities, self.pseudoAction))
-                else:
-                    obs = np.concatenate((currentJointAngles, currentJoinVelocities))
+                obs = np.concatenate((currentJointAngles, currentJoinVelocities))
+
+            if self.config['pseudoI'] == True:
+                obs = np.concatenate((obs, self.pseudoAction))
         return obs
 
     def reset(self) -> None:

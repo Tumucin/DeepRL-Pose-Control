@@ -58,8 +58,15 @@ class PyBullet:
         self.body_name = config['body_name']
         self.ee_link = config['ee_link']
 
+        self.isCollision = False
+        if self.body_name == "panda":
+            self.consecutive_link_pairs={(4,6):True,(9,10):True,(6,8):True}
+        
+        if self.body_name == "j2s7s300":
+            self.consecutive_link_pairs={(4,9):True,(11,15):True,(13,17):True,(3,5):True,(6,9):True}
 
-        self.consecutive_link_pairs={(4,6):True,(9,10):True,(6,8):True}
+        if self.body_name == "j2n6s300":
+            self.consecutive_link_pairs={(14,19):True}
 
     @property
     def dt(self):
@@ -68,23 +75,35 @@ class PyBullet:
 
     def step(self) -> None:
         """Step the simulation."""
-        #cont_pts1 =self.physics_client.getContactPoints(self._bodies_idx[self.body_name],self._bodies_idx[self.body_name])
-        ##print("points:", cont_pts1)
-        #print("length:",len(cont_pts1))
-        #
-        #tmp=[]
-        #for cont in cont_pts1:
-        #    if (cont[3],cont[4]) not in self.consecutive_link_pairs:
-        #        tmp.append((cont[3],cont[4]))
-        #        p.changeVisualShape(cont[1], cont[3], rgbaColor=[0.8, 0.6, 0.4, 1])
-        #        p.changeVisualShape(cont[2], cont[4], rgbaColor=[0.8, 0.6, 0.4, 1])
-        ##if len(cont_pts1) > 2:
-        ##    print("COLLISION!!!")
-        #print("pairs:",tmp)
         if self.counter%100==0:
             self.drawFrameForCurrentPose()
         for _ in range(self.n_substeps):
             self.physics_client.stepSimulation()
+
+        #self.changeLinkColorOnCollision()
+
+    def changeLinkColorOnCollision(self):
+        contactPoints =self.physics_client.getContactPoints(self._bodies_idx[self.body_name],self._bodies_idx[self.body_name])
+        coloredLinksList=[]
+        for contact in contactPoints:
+            if (contact[3],contact[4]) not in self.consecutive_link_pairs:
+                #print("first link:", cont[3]+1)
+                #print("second link:", cont[4]+1)
+                coloredLinksList.append((contact[3],contact[4]))
+                visualShapes = p.getVisualShapeData(0)
+                p.changeVisualShape(contact[1], contact[3], rgbaColor=[1.0, 0.0, 0.0, 1])
+                p.changeVisualShape(contact[2], contact[4], rgbaColor=[1.0, 0.0, 0.0, 1])
+                self.isCollision = True
+                time.sleep(4)
+                
+        if len(coloredLinksList)>0:
+            print("Collied pairs:", coloredLinksList)
+            #time.sleep(3)
+            pass
+
+        for pairedLinks in coloredLinksList:
+            p.changeVisualShape(0, pairedLinks[0], rgbaColor=[visualShapes[0][7][0], visualShapes[0][7][1], visualShapes[0][7][2], visualShapes[0][7][3]])
+            p.changeVisualShape(0, pairedLinks[1], rgbaColor=[visualShapes[0][7][0], visualShapes[0][7][1], visualShapes[0][7][2], visualShapes[0][7][3]])
 
     def drawInfosOnScreen(self, positionError, currentJointVelocitiesNorm, angleError)-> None:
         text_pos1 = [0, 0, -0.1] # Position of the text in world coordinates
