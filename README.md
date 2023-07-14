@@ -1,3 +1,3 @@
 # panda-gym
-- [X] new branch test
+- [X] This branch was tested until exp 983
 
