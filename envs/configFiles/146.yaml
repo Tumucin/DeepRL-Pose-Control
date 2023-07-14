@@ -64,3 +64,4 @@ avgJntVelThreshold: 0.1               # AverageJntVel threshold to go to the nex
 visualizeFailedSamples: False
 net_arch: [{'pi': [128, 128, 128],
             'vf': [128, 128, 128]}]        # Network Architecture
+collisionConstant: 100

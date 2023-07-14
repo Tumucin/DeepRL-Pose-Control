@@ -300,6 +300,7 @@ def main():
     parser.add_argument('--ee_link', type=int, help="")
     parser.add_argument('--body_name', type=str, help="")
     parser.add_argument('--configName', type=str, help="")
+    parser.add_argument('--collisionConstant', type=int, help="")
     args = parser.parse_args()
 
     with open("currentConfigNumber"+".txt", 'w') as f:
