@@ -50,7 +50,7 @@ class PyBulletRobot(ABC):
             basePosition=base_position,
             useFixedBase=True,
             #flags = p.URDF_USE_SELF_COLLISION|p.URDF_USE_SELF_COLLISION_EXCLUDE_PARENT
-            #flags = p.URDF_USE_SELF_COLLISION
+            flags = p.URDF_USE_SELF_COLLISION
         )
 
     def setup(self) -> None:
@@ -282,11 +282,11 @@ class RobotTaskEnv(gym.GoalEnv):
         self.task.quaternionAngleError = self.robot.quaternionAngleError
         self.task.quaternionDistanceError = self.robot.quaternionDistanceError
         reward = self.task.compute_reward(obs["achieved_goal"],self.task.get_goal(), info)
-        #if self.sim.isCollision == True:
-        #    #print("reset the simulation in core.py")
-        #    self.reset()
-        #    self.sim.isCollision = False
-        #    done = True
+        if self.sim.isCollision == True:
+            #print("reset the simulation in core.py")
+            self.reset()
+            self.sim.isCollision = False
+            done = True
         assert isinstance(reward, float)  # needed for pytype cheking
         return obs, reward, done, info
 

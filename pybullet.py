@@ -80,7 +80,7 @@ class PyBullet:
         for _ in range(self.n_substeps):
             self.physics_client.stepSimulation()
 
-        #self.changeLinkColorOnCollision()
+        self.changeLinkColorOnCollision()
 
     def changeLinkColorOnCollision(self):
         contactPoints =self.physics_client.getContactPoints(self._bodies_idx[self.body_name],self._bodies_idx[self.body_name])
