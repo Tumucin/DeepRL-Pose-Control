@@ -283,7 +283,6 @@ class RobotTaskEnv(gym.GoalEnv):
         self.task.quaternionDistanceError = self.robot.quaternionDistanceError
         reward = self.task.compute_reward(obs["achieved_goal"],self.task.get_goal(), info)
         if self.sim.isCollision == True:
-            #print("reset the simulation in core.py")
             reward = reward - self.robot.config['collisionConstant']
             self.reset()
             self.sim.isCollision = False
