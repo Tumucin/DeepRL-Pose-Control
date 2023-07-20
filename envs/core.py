@@ -282,7 +282,13 @@ class RobotTaskEnv(gym.GoalEnv):
         self.task.quaternionAngleError = self.robot.quaternionAngleError
         self.task.quaternionDistanceError = self.robot.quaternionDistanceError
         reward = self.task.compute_reward(obs["achieved_goal"],self.task.get_goal(), info)
+        error = abs(obs['achieved_goal'] - obs['desired_goal'])
+        #print("error in core.py:", )
         if self.sim.isCollision == True:
+            if np.linalg.norm(error) <0.05:
+                self.sim.numberOfCollisionsBelow5cm+=1
+            else:
+                self.sim.numberOfCollisionsAbove5cm+=1
             reward = reward - self.robot.config['collisionConstant']
             self.reset()
             self.sim.isCollision = False

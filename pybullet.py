@@ -59,6 +59,8 @@ class PyBullet:
         self.ee_link = config['ee_link']
 
         self.isCollision = False
+        self.numberOfCollisionsBelow5cm = 0
+        self.numberOfCollisionsAbove5cm = 0
         if self.body_name == "panda":
             self.consecutive_link_pairs={(4,6):True,(9,10):True,(6,8):True}
         

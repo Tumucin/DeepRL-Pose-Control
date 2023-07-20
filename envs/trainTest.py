@@ -89,10 +89,12 @@ class TRAINTEST():
         print("Average joint velocities:", avgJntVel)
         print("Average quaternion distance:", avgQuaternionDistance)
         print("Average quaternion angle:", avgQuaternionAngle)
-        
+        print("numberOfCollisionBelow5cm:", env.sim.numberOfCollisionsBelow5cm)
+        print("numberOfCollisionAbove5cm:", env.sim.numberOfCollisionsAbove5cm)
         with open("metrics"+str(self.config['expNumber'])+".txt", 'w') as f:
-            f.write('{}\n{}\n{}\n{}\n{}\n{}\n{}'.format(rmse, mae, successRate1, successRate5, avgJntVel, 
-                                                        avgQuaternionDistance, avgQuaternionAngle))
+            f.write('{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}'.format(rmse, mae, successRate1, successRate5, avgJntVel, 
+                                                        avgQuaternionDistance, avgQuaternionAngle, env.sim.numberOfCollisionsBelow5cm,
+                                                        env.sim.numberOfCollisionsAbove5cm))
         f.close()
         print("Metrics results have been saved!!!")
 
@@ -225,7 +227,11 @@ class TRAINTEST():
                 failedAngles['targetAngle'].append(env.task.currentSampledAnglesReach)
 
                 #episode_reward+=reward
+            #print("numberOfCollisionsbelow5cm:", env.sim.numberOfCollisionsBelow5cm)
+            #print("numberOfCollisionsabove5cm:", env.sim.numberOfCollisionsAbove5cm)
+            #print("error in traintest.py:", np.linalg.norm(error))
        #print("unvalidAngles: ", unsuccessAngles)
+        
         rmse = np.sqrt((squaredError)/(numberOfSteps))
         mae = mae/numberOfSteps
         successRate1 = successRate1/numberOfSteps
@@ -233,7 +239,7 @@ class TRAINTEST():
         avgJntVel = avgJntVel/numberOfSteps
         avgQuaternionDistance=avgQuaternionDistance/numberOfSteps
         avgQuaternionAngle = avgQuaternionAngle/numberOfSteps
-
+        
         if self.config['visualizeFailedSamples'] == False:
             self.saveMetrics(env, rmse, mae, successRate1, successRate5, avgJntVel, avgQuaternionDistance, avgQuaternionAngle)
             self.saveFailedSamples(failedAngles)
