@@ -62,10 +62,10 @@ class PyBullet:
         self.numberOfCollisionsBelow5cm = 0
         self.numberOfCollisionsAbove5cm = 0
         if self.body_name == "panda":
-            self.consecutive_link_pairs={(4,6):True,(9,10):True,(6,8):True}
+            self.consecutive_link_pairs={(4,6):True,(9,10):True,(6,8):True, (4,8):True}
         
         if self.body_name == "j2s7s300":
-            self.consecutive_link_pairs={(4,9):True,(11,15):True,(13,17):True,(3,5):True,(6,9):True, (12,16):True}
+            self.consecutive_link_pairs={(4,9):True,(11,15):True,(13,17):True,(3,5):True,(6,9):True, (12,16):True, (9,13):True, (15,17):True}
 
         if self.body_name == "j2n6s300":
             self.consecutive_link_pairs={(14,19):True}
@@ -87,7 +87,7 @@ class PyBullet:
     def changeLinkColorOnCollision(self):
         contactPoints =self.physics_client.getContactPoints(self._bodies_idx[self.body_name],self._bodies_idx[self.body_name])
         coloredLinksList=[]
-        for contact in contactPoints:
+        for contact in contactPoints:     
             if (contact[3],contact[4]) not in self.consecutive_link_pairs:
                 #print("first link:", cont[3]+1)
                 #print("second link:", cont[4]+1)
@@ -97,7 +97,8 @@ class PyBullet:
                 p.changeVisualShape(contact[2], contact[4], rgbaColor=[1.0, 0.0, 0.0, 1])
                 self.isCollision = True
                 #time.sleep(4)
-                
+        #p.changeVisualShape(contact[1], 9, rgbaColor=[1.0, 1.0, 0.0, 1])
+        #p.changeVisualShape(contact[2], 4, rgbaColor=[1.0, 0.0, 0.0, 1])
         if len(coloredLinksList)>0:
             print("Collied pairs:", coloredLinksList)
             #time.sleep(3)
@@ -127,7 +128,7 @@ class PyBullet:
             self.velocityNormText = p.addUserDebugText("VELOCITYNORM [rad/s]:   "+str(currentJointVelocitiesNorm), text_pos4, text_color, text_size)
             
         self.counter +=1
-        if self.counter==800:
+        if self.counter==1000:
             self.counter=0
     def close(self) -> None:
         """Close the simulation."""
