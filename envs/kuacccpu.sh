@@ -68,7 +68,7 @@ echo "Running Python script..."
 # Put Python script command below
 
 #export PYTHONPATH="/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/utils"
-python3 trainTest.py --expNumber 1039 --total_timesteps 18000000 --n_steps 1000 --batch_size 2048 --n_envs 100 --testSamples 1 --evalFreqOnTraining 3000000 --lambdaErr 100.0 --velocityConstant 0.1 --orientationConstant 50 --maeThreshold 1.0 --configName "7.yaml" --avgJntVelThreshold 10.0 --collisionConstant 0.0
+python3 trainTest.py --expNumber 1103 --total_timesteps 18000000 --n_steps 1000 --batch_size 2048 --n_envs 100 --testSamples 1 --evalFreqOnTraining 3000000 --lambdaErr 100.0 --velocityConstant 0.1 --orientationConstant 50 --maeThreshold 1.0 --configName "150.yaml" --avgJntVelThreshold 10.0 --collisionConstant 0.0
 # Command 2 for matrix
 echo "Running G++ compiler..."
 # Put g++ compiler command below

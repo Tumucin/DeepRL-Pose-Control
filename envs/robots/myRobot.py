@@ -60,12 +60,13 @@ class MYROBOT(PyBulletRobot):
         self.dataset = np.genfromtxt(self.datasetFileName, delimiter=',', skip_header=1)
         #self.q_in = PyKDL.JntArray(self.kinematic.numbOfJoints)
         self.j_kdl = PyKDL.Jacobian(self.kinematic.numbOfJoints)
-        if self.config['body_name'] == 'j2n6s300':
+        if self.config['body_name'] == 'j2n6s300' or self.config['body_name'] == 'ur5':
             joint_indices = np.array([0, 1, 2, 3, 4, 5])
             joint_forces = np.array([87.0, 87.0, 87.0, 87.0, 12.0, 120.0])
         else:
             joint_indices = np.array([0, 1, 2, 3, 4, 5, 6, 9, 10])
             joint_forces = np.array([87.0, 87.0, 87.0, 87.0, 12.0, 120.0, 120.0, 170.0, 170.0])
+        
         super().__init__(
             sim,
             body_name=config['body_name'],
@@ -130,8 +131,10 @@ class MYROBOT(PyBulletRobot):
 
         target_angles = np.concatenate((target_arm_angles, [target_fingers_width / 2, target_fingers_width / 2]))
         
-        if self.config['body_name'] == 'j2n6s300':
+        if self.config['body_name'] == 'j2n6s300' or self.config['body_name'] == 'ur5':
+            #print("target angles before",target_angles)
             target_angles = target_angles[0:6]
+            #print("target angles after",target_angles)
         self.control_joints(target_angles=target_angles)
 
     def ee_displacement_to_target_arm_angles(self, ee_displacement: np.ndarray) -> np.ndarray:

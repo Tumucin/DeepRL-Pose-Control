@@ -61,6 +61,7 @@ class PyBullet:
         self.isCollision = False
         self.numberOfCollisionsBelow5cm = 0
         self.numberOfCollisionsAbove5cm = 0
+        self.visualShape = None
         if self.body_name == "panda":
             self.consecutive_link_pairs={(4,6):True,(9,10):True,(6,8):True, (4,8):True}
         
@@ -70,6 +71,9 @@ class PyBullet:
 
         if self.body_name == "j2n6s300":
             self.consecutive_link_pairs={(14,19):True}
+
+        if self.body_name == "ur5":
+            self.consecutive_link_pairs={(1,-1):True, (2,4):True}
 
     @property
     def dt(self):
@@ -86,6 +90,8 @@ class PyBullet:
         self.changeLinkColorOnCollision()
 
     def changeLinkColorOnCollision(self):
+        if self.visualShape == None:
+            self.visualShape = p.getVisualShapeData(0)
         contactPoints =self.physics_client.getContactPoints(self._bodies_idx[self.body_name],self._bodies_idx[self.body_name])
         coloredLinksList=[]
         for contact in contactPoints:     
@@ -93,7 +99,7 @@ class PyBullet:
                 #print("first link:", cont[3]+1)
                 #print("second link:", cont[4]+1)
                 coloredLinksList.append((contact[3],contact[4]))
-                visualShapes = p.getVisualShapeData(0)
+                
                 p.changeVisualShape(contact[1], contact[3], rgbaColor=[1.0, 0.0, 0.0, 1])
                 p.changeVisualShape(contact[2], contact[4], rgbaColor=[1.0, 0.0, 0.0, 1])
                 self.isCollision = True
@@ -102,12 +108,12 @@ class PyBullet:
         #p.changeVisualShape(contact[2], 17, rgbaColor=[1.0, 0.0, 0.0, 1])
         if len(coloredLinksList)>0:
             print("Collied pairs:", coloredLinksList)
-            #time.sleep(3)
+            #time.sleep(5)
             pass
 
         for pairedLinks in coloredLinksList:
-            p.changeVisualShape(0, pairedLinks[0], rgbaColor=[visualShapes[0][7][0], visualShapes[0][7][1], visualShapes[0][7][2], visualShapes[0][7][3]])
-            p.changeVisualShape(0, pairedLinks[1], rgbaColor=[visualShapes[0][7][0], visualShapes[0][7][1], visualShapes[0][7][2], visualShapes[0][7][3]])
+            p.changeVisualShape(0, pairedLinks[0], rgbaColor=[self.visualShape[0][7][0], self.visualShape[0][7][1], self.visualShape[0][7][2], self.visualShape[0][7][3]])
+            p.changeVisualShape(0, pairedLinks[1], rgbaColor=[self.visualShape[0][7][0], self.visualShape[0][7][1], self.visualShape[0][7][2], self.visualShape[0][7][3]])
 
     def drawInfosOnScreen(self, positionError, currentJointVelocitiesNorm, angleError)-> None:
         text_pos1 = [0, 0, -0.1] # Position of the text in world coordinates
