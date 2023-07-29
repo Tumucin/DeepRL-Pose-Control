@@ -73,7 +73,7 @@ class PyBullet:
             self.consecutive_link_pairs={(14,19):True}
 
         if self.body_name == "ur5":
-            self.consecutive_link_pairs={(1,-1):True, (2,4):True}
+            self.consecutive_link_pairs={(1,-1):True, (2,4):True, (2,5):True}
 
     @property
     def dt(self):
@@ -104,8 +104,8 @@ class PyBullet:
                 p.changeVisualShape(contact[2], contact[4], rgbaColor=[1.0, 0.0, 0.0, 1])
                 self.isCollision = True
                 #time.sleep(4)
-        #p.changeVisualShape(contact[1], 11, rgbaColor=[1.0, 1.0, 0.0, 1])
-        #p.changeVisualShape(contact[2], 17, rgbaColor=[1.0, 0.0, 0.0, 1])
+        #p.changeVisualShape(0, 1, rgbaColor=[1.0, 1.0, 0.0, 1])
+        #p.changeVisualShape(0, 5, rgbaColor=[1.0, 0.0, 0.0, 1])
         if len(coloredLinksList)>0:
             print("Collied pairs:", coloredLinksList)
             #time.sleep(5)
