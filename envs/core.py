@@ -267,8 +267,10 @@ class RobotTaskEnv(gym.GoalEnv):
 
     def reset(self) -> Dict[str, np.ndarray]:
         with self.sim.no_rendering():
+            self.sim.checkRandomSampleAngles(self.robot.kinematic.numbOfJoints)
             self.robot.reset()
             self.task.reset()
+            self.sim.isCollision = False
             self.robot.goalFrame = self.task.goalFrame
         return self._get_obs()
 
@@ -284,15 +286,15 @@ class RobotTaskEnv(gym.GoalEnv):
         reward = self.task.compute_reward(obs["achieved_goal"],self.task.get_goal(), info)
         error = abs(obs['achieved_goal'] - obs['desired_goal'])
         #print("error in core.py:", )
-        if self.sim.isCollision == True:
-            if np.linalg.norm(error) <0.05:
-                self.sim.numberOfCollisionsBelow5cm+=1
-            else:
-                self.sim.numberOfCollisionsAbove5cm+=1
-            reward = reward - self.robot.config['collisionConstant']
-            self.reset()
-            self.sim.isCollision = False
-            done = True
+        #if self.sim.isCollision == True:
+        #    if np.linalg.norm(error) <0.05:
+        #        self.sim.numberOfCollisionsBelow5cm+=1
+        #    else:
+        #        self.sim.numberOfCollisionsAbove5cm+=1
+        #    reward = reward - self.robot.config['collisionConstant']
+        #    self.reset()
+        #    self.sim.isCollision = False
+        #    done = True
         assert isinstance(reward, float)  # needed for pytype cheking
         return obs, reward, done, info
 

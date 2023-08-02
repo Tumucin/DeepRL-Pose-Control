@@ -53,6 +53,10 @@ class MYROBOT(PyBulletRobot):
         self.pseudoAction = np.zeros(self.kinematic.numbOfJoints)
         self.currentSampledAnglesStart = None
         self.currentSampleIndex = 0
+        self.q_actual = None
+        self.q_actual_list = []
+        self.q_desired = None
+        self.q_desired_list = []
         if self.config['CurriLearning'] == True:
             self.datasetFileName = self.config['datasetPath'] + "/" + self.config['body_name'] + "_" + self.config['curriculumFirstWorkspaceId']+".csv"
         else:
@@ -113,6 +117,7 @@ class MYROBOT(PyBulletRobot):
         #error = np.linalg.norm(abs(obs['achieved_goal'] - obs['desired_goal']))
         #if error < 0.05:
         #    action = self.pseudoAction
+        action = 0*action
         action = np.clip(action, self.action_space.low, self.action_space.high)
         self.finalAction = action
         if self.control_type == "ee":
@@ -133,8 +138,18 @@ class MYROBOT(PyBulletRobot):
         
         if self.config['body_name'] == 'j2n6s300' or self.config['body_name'] == 'ur5':
             #print("target angles before",target_angles)
-            target_angles = target_angles[0:6]
+            target_angles = target_angles[0:self.kinematic.numbOfJoints]
             #print("target angles after",target_angles)
+        self.q_desired = target_angles
+        self.q_actual = np.array([self.sim.get_joint_angle(self.sim.body_name,joint=i) for i in range(self.kinematic.numbOfJoints)])
+        
+        if self.q_desired_list == []:
+            self.q_desired_list = self.q_desired
+            self.q_actual_list = self.q_actual
+        else:
+            self.q_desired_list = np.vstack((self.q_desired_list, self.q_desired))
+            self.q_actual_list = np.vstack((self.q_actual_list, self.q_actual))
+
         self.control_joints(target_angles=target_angles)
 
     def ee_displacement_to_target_arm_angles(self, ee_displacement: np.ndarray) -> np.ndarray:
@@ -205,6 +220,7 @@ class MYROBOT(PyBulletRobot):
                 random_indices[0] = self.currentSampleIndex
                 self.currentSampleIndex +=1
             sampledAngles = self.dataset[random_indices][0]
+            #sampledAngles = [-1.3752308  , 0.97254075 , 4.25507331,  1.35478544 ,-1.97200273 ,-3.72854775]
             self.currentSampledAnglesStart = sampledAngles
             #print("current start angle:", sampledAngles)
             self.set_joint_angles(sampledAngles)

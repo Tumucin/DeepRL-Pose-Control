@@ -102,6 +102,7 @@ class Reach(Task):
 
     def compute_reward(self,achieved_goal,desired_goal, info: Dict[str, Any]) -> Union[np.ndarray, float]:        
         d = distance(achieved_goal, desired_goal)
+        #print("achieved_goal in reach.py:", achieved_goal)
         currentJointVelocities = np.array([self.sim.get_joint_velocity(self.sim.body_name,joint=i) for i in range(7)])
         #print("current jnt vel in reach.py:", currentJointVelocities)
         currentJointAccelerations = (currentJointVelocities - self.previousJointVelocities)/(self.sim.timestep)

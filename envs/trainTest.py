@@ -25,6 +25,7 @@ import csv
 import PyKDL
 import random
 import seaborn as sns
+import matplotlib.pyplot as plt
 class TRAINTEST():
     def __init__(self, config):
         self.config = config
@@ -230,8 +231,12 @@ class TRAINTEST():
             #print("numberOfCollisionsbelow5cm:", env.sim.numberOfCollisionsBelow5cm)
             #print("numberOfCollisionsabove5cm:", env.sim.numberOfCollisionsAbove5cm)
             #print("error in traintest.py:", np.linalg.norm(error))
-       #print("unvalidAngles: ", unsuccessAngles)
         
+        #self.plotDesiredAndActualJntAngles(env)
+        self.plot2D3DCreatedDatasetPoints(env, "ur5_robot_W1_2D.png", "ur5_robot_W1_3D.png")
+        self.saveCreatedDataset(env, 'ur5_robot_W1.csv')
+        
+    #plt.show()
         rmse = np.sqrt((squaredError)/(numberOfSteps))
         mae = mae/numberOfSteps
         successRate1 = successRate1/numberOfSteps
@@ -244,7 +249,64 @@ class TRAINTEST():
             self.saveMetrics(env, rmse, mae, successRate1, successRate5, avgJntVel, avgQuaternionDistance, avgQuaternionAngle)
             self.saveFailedSamples(failedAngles)
             self.plotFailedSamples(failedAngles, env)
-    
+
+    def saveCreatedDataset(self, env, csvFileName):
+
+        with open(csvFileName, 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            #print(env.sim.anglesForDatasetList)
+            for angle in env.sim.anglesForDatasetList:
+                writer.writerow(angle)
+    def plotDesiredAndActualJntAngles(self, env):
+        fig, axs = plt.subplots(env.robot.kinematic.numbOfJoints)
+        for i, ax in enumerate(axs):
+            ax.plot(env.robot.q_actual_list[:,i], linewidth = 3)
+            ax.plot(env.robot.q_desired_list[:,i])
+            ax.set_title('Joint {}'.format(i))
+        plt.show()
+
+    def plot2D3DCreatedDatasetPoints(self, env, plotFileName2d, plotFileName3d):
+        plt.subplot(1,2,1)
+        plt.plot(env.sim.xPointsForDataset, env.sim.yPointsForDataset, 'o')
+        plt.xlabel('x [m]')
+        plt.ylabel('y [m]')
+        plt.xlim([-1,1])
+        plt.ylim([-1,1])
+        plt.subplot(1,2,2)
+        plt.plot(env.sim.xPointsForDataset, env.sim.zPointsForDataset, 'o')
+        plt.xlabel('x [m]')
+        plt.ylabel('z [m]')
+        plt.xlim([-1,1])
+        plt.ylim([-1,1.5])
+        plt.savefig(plotFileName2d)
+        xPoints = env.sim.xPointsForDataset
+        yPoints = env.sim.yPointsForDataset
+        zPoints = env.sim.zPointsForDataset
+
+        distances = np.sqrt(np.array(xPoints)**2 + np.array(yPoints)**2 + np.array(zPoints)**2)
+        colormap = plt.cm.get_cmap('jet')
+        normalize = plt.Normalize(vmin=min(distances), vmax=max(distances))
+        print("minimum distance:", min(distances))
+        print("max distance:", max(distances))
+        fig = plt.figure()
+        ax = fig.add_subplot(projection='3d')
+        zPoints_array = np.array(zPoints)
+        mask = (-10<zPoints_array) & (zPoints_array< 10)
+        #scatter = ax.scatter(xPoints, yPoints, zPoints, c=distances, cmap = colormap, norm = normalize)
+        scatter = ax.scatter(np.array(xPoints)[mask], 
+                            np.array(yPoints)[mask], 
+                            np.array(zPoints)[mask], c=np.array(distances)[mask], cmap = colormap, norm = normalize)
+        cbar = fig.colorbar(scatter)
+        cbar.set_label('Distance')
+        ax.set_xlabel('X [m]')
+        #threshold = 0.2
+        #ax.axes.set_xlim3d(left=-threshold, right=threshold)
+        #ax.axes.set_ylim3d(bottom=-threshold, top=threshold)
+        #ax.axes.set_zlim3d(bottom=-threshold, top=threshold)
+        ax.set_ylabel('Y [m]')
+        ax.set_zlabel('Z [m]')
+        plt.savefig(plotFileName3d, dpi=300)
+
     def loadAndEvaluateModel(self, algorithm,env):
         
         model = algorithm.load(self.modelFileNameToSave)         
