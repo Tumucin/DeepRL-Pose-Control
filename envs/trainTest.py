@@ -233,8 +233,8 @@ class TRAINTEST():
             #print("error in traintest.py:", np.linalg.norm(error))
         
         #self.plotDesiredAndActualJntAngles(env)
-        self.plot2D3DCreatedDatasetPoints(env, "ur5_robot_W1_2D.png", "ur5_robot_W1_3D.png")
-        self.saveCreatedDataset(env, 'ur5_robot_W1.csv')
+        #self.plot2D3DCreatedDatasetPoints(env, "ur5_robot_W1_2D.png", "ur5_robot_W1_3D.png")
+        #self.saveCreatedDataset(env, 'ur5_robot_W1.csv')
         
     #plt.show()
         rmse = np.sqrt((squaredError)/(numberOfSteps))

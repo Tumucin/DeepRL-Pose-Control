@@ -452,11 +452,11 @@ class PyBullet:
             angles (np.ndarray): List of target angles, as a list of floats.
         """
         #angles = [0,0,0,0,0,0]
-        #for joint, angle in zip(joints, angles):
-        #    self.set_joint_angle(body=body, joint=joint, angle=angle)
+        for joint, angle in zip(joints, angles):
+            self.set_joint_angle(body=body, joint=joint, angle=angle)
         #print(self.get_link_position(self.body_name, self.ee_link))
 
-        self.createDataset(body, joints)
+        #self.createDataset(body, joints)
 
     def createDataset(self, body, joints):
         urdfFileName = 'ur5_robot.urdf'
