@@ -4,7 +4,7 @@
 #failedSamplesSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/failedSamples'
 #urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/ur5_robot.urdf'
 #file_name: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/ur5_robot.urdf"
-#datasetPath: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/ur5"
+#datasetPath: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/new_ur5"
 
 #################### PATHS - HPC- ####################
 modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
@@ -12,7 +12,7 @@ logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc
 failedSamplesSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/failedSamples'
 urdfPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/ur5_robot.urdf'
 file_name: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/ur5_robot.urdf'
-datasetPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/ur5'
+datasetPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/new_ur5'
 
 expNumber: 999                        # Experiement Number
 envName: "PandaReach-v2"              # Environment Name 
