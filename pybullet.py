@@ -100,17 +100,23 @@ class PyBullet:
 
     def checkRandomSampleAngles(self, numberOfJoints):
         eePositionForDataset = self.get_link_position(self.body_name, self.ee_link)
+        if self.body_name == "panda":
+            eePositionForDataset[0] = eePositionForDataset[0] + 0.6
+        #print("eePosition in pybullet.py", eePositionForDataset)
+
         angleForDataset = [self.get_joint_angle(self.body_name, joint=i) for i in range(numberOfJoints) ]
         #print("current ee position in pybullet.py:", self.initialeePositionForDataset)
         calculatedRadius = np.sqrt(eePositionForDataset[0]**2 + eePositionForDataset[1]**2)
+        
         theta = math.atan2(eePositionForDataset[1], eePositionForDataset[0])
         thetaDegree = math.degrees(theta)
-        if (0.20<calculatedRadius < 1) and (abs(thetaDegree)<20) and (eePositionForDataset[2] > -0.1) and (eePositionForDataset[2] < 0.9) and self.isCollision==False:
+        if (0.20<calculatedRadius < 1) and (abs(thetaDegree)<90) and (eePositionForDataset[2] > -0.1) and (eePositionForDataset[2] < 0.9) and self.isCollision==False:
             self.xPointsForDataset.append(eePositionForDataset[0])
             self.yPointsForDataset.append(eePositionForDataset[1])
             self.zPointsForDataset.append(eePositionForDataset[2])
             #print("angles for dataset:", self.anglesForDataset)
             self.anglesForDatasetList.append(angleForDataset)
+            print("calculated radius:",calculatedRadius)
             print("This random angles can be used for the dataset.")
 
     def changeLinkColorOnCollision(self):
@@ -452,16 +458,25 @@ class PyBullet:
             angles (np.ndarray): List of target angles, as a list of floats.
         """
         #angles = [0,0,0,0,0,0]
-        for joint, angle in zip(joints, angles):
-            self.set_joint_angle(body=body, joint=joint, angle=angle)
+        #for joint, angle in zip(joints, angles):
+        #    self.set_joint_angle(body=body, joint=joint, angle=angle)
         #print(self.get_link_position(self.body_name, self.ee_link))
 
-        #self.createDataset(body, joints)
+        self.createDataset(body, joints)
 
     def createDataset(self, body, joints):
-        urdfFileName = 'ur5_robot.urdf'
-        jointLimitLow = np.array([ -6.2831, -6.2831, -6.2831, -6.2831, -6.2831, -6.2831])
-        jointLimitHigh = np.array([6.2831,  6.2831,  6.2831,  6.2831, 6.2831, 6.2831])
+        if body == 'j2n6s300':
+            urdfFileName = 'jaco6DOF.urdf'
+            jointLimitLow = np.array([ 1.5708, -2.4000, -2.4000, -3.7000, -4.8000, 0.2000])
+            jointLimitHigh = np.array([4.7124,  2.4000,  2.4000,  2.1800, 1.08000, 6.0800])
+        if body == 'panda':
+            urdfFileName = 'panda.urdf'
+            jointLimitLow = np.array([ -1.5708, -1.8300, -2.96, -3.1416, -2.9600, 0.0000, -2.9600])
+            jointLimitHigh = np.array([ 1.5708,  1.8300,  2.96,  0.0000,  2.9600, 3.8200,  2.9600])
+        if body == 'j2s7s300':
+            urdfFileName = 'jaco7DOF.urdf'
+            jointLimitLow = np.array([ -3.1416, 0.52, -6.28, 0.52, -6.28, 0.52, -6.28])
+            jointLimitHigh = np.array([ 0.00,  5.75,  6.28,  5.75,  6.28, 5.75,  6.28])
         goal = np.empty(3)
         self.anglesForDataset = self.np_random_start.uniform(jointLimitLow, jointLimitHigh)
         #self.anglesForDataset = [-1.3752308  , 0.97254075 , 4.25507331,  1.35478544 ,-1.97200273 ,-3.72854775]
