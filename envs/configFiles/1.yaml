@@ -1,18 +1,18 @@
 #################### PATHS - LOCAL- ####################
-modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
-logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
-failedSamplesSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/failedSamples'
-urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
-file_name: "franka_panda/panda.urdf"
-datasetPath: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/pandaversion1"
+#modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
+#logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
+#failedSamplesSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/failedSamples'
+#urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
+#file_name: "franka_panda/panda.urdf"
+#datasetPath: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/pandaversion1"
 
 #################### PATHS - HPC- ####################
-#modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
-#logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
-#failedSamplesSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/failedSamples'
-#urdfPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
-#file_name: "franka_panda/panda.urdf"
-#datasetPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/pandaversion1'
+modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
+logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
+failedSamplesSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/failedSamples'
+urdfPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
+file_name: "franka_panda/panda.urdf"
+datasetPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/pandaversion1'
 
 expNumber: 229                        # Experiement Number  
 envName: "PandaReach-v2"              # Environment Name    

@@ -1,18 +1,18 @@
 #################### PATHS - LOCAL- ####################
-modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
-logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
-failedSamplesSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/failedSamples'
-urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco7DOF.urdf'
-file_name: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco7DOF.urdf"
-datasetPath: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/jaco7dofversion1"
+#modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
+#logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
+#failedSamplesSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/failedSamples'
+#urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco7DOF.urdf'
+#file_name: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco7DOF.urdf"
+#datasetPath: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/jaco7dofversion1"
 
 #################### PATHS - HPC- ####################
-#modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
-#logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
-#failedSamplesSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/failedSamples'
-#urdfPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco7DOF.urdf'
-#file_name: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco7DOF.urdf'
-#datasetPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/jaco7dofversion1'
+modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
+logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
+failedSamplesSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/failedSamples'
+urdfPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco7DOF.urdf'
+file_name: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco7DOF.urdf'
+datasetPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/jaco7dofversion1'
 
 expNumber: 999                        # Experiement Number
 envName: "PandaReach-v2"              # Environment Name 
