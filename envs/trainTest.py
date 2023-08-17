@@ -80,7 +80,8 @@ class TRAINTEST():
             print("REPLAY BUFFER IS SAVED--NORMAL LEARNING")
             model.save_replay_buffer(self.config['bufferPath']+str(self.config['expNumber']))   
 
-    def saveMetrics(self, env, rmse, mae, successRate1, successRate5, avgJntVel, avgQuaternionDistance, avgQuaternionAngle):
+    def saveMetrics(self, env, rmse, mae, successRate1, successRate5, avgJntVel, avgQuaternionDistance, avgQuaternionAngle,
+                        successRate1030, successRate1020, successRate1010, successRate530, successRate520, successRate510):
         print(env.robot.datasetFileName + " has been used by robot.py")
         print(env.task.datasetFileName + " has been used by reach.py")
         print("RMSE:", rmse)
@@ -92,10 +93,18 @@ class TRAINTEST():
         print("Average quaternion angle:", avgQuaternionAngle)
         print("numberOfCollisionBelow5cm:", env.sim.numberOfCollisionsBelow5cm)
         print("numberOfCollisionAbove5cm:", env.sim.numberOfCollisionsAbove5cm)
+        print("successRate 10cm 30 degrees:", successRate1030)
+        print("successRate 10cm 20 degrees:", successRate1020)
+        print("successRate 10cm 10 degrees:", successRate1010)
+        print("successRate 5cm 30 degrees:", successRate530)
+        print("successRate 5cm 20 degrees:", successRate520)
+        print("successRate 5cm 10 degrees:", successRate510)
         with open("metrics"+str(self.config['expNumber'])+".txt", 'w') as f:
-            f.write('{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}'.format(rmse, mae, successRate1, successRate5, avgJntVel, 
+            f.write('{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}'.format(rmse, mae, successRate1, successRate5, avgJntVel, 
                                                         avgQuaternionDistance, avgQuaternionAngle, env.sim.numberOfCollisionsBelow5cm,
-                                                        env.sim.numberOfCollisionsAbove5cm))
+                                                        env.sim.numberOfCollisionsAbove5cm,
+                                                        successRate1030, successRate1020, successRate1010,
+                                                        successRate530, successRate520, successRate510))
         f.close()
         print("Metrics results have been saved!!!")
 
@@ -195,6 +204,12 @@ class TRAINTEST():
         avgJntVel = 0.0
         avgQuaternionDistance = 0.0
         avgQuaternionAngle = 0.0
+        successRate1030 = 0
+        successRate1020 = 0
+        successRate1010 = 0
+        successRate530 = 0
+        successRate520 = 0
+        successRate510 = 0
         failedAngles = {'startAngle': [], 'targetAngle': []}
         for step in range(numberOfSteps):
             print("step: ", step)
@@ -227,6 +242,21 @@ class TRAINTEST():
                 failedAngles['startAngle'].append(env.robot.currentSampledAnglesStart)
                 failedAngles['targetAngle'].append(env.task.currentSampledAnglesReach)
 
+            if np.linalg.norm(error) <=0.1:
+                if abs(quaternionError.angle) <= 0.523:
+                    successRate1030+=1 
+                if abs(quaternionError.angle) <= 0.349:
+                    successRate1020+=1 
+                if abs(quaternionError.angle) <= 0.174:
+                    successRate1010+=1  
+            if np.linalg.norm(error) <=0.05:
+                if abs(quaternionError.angle) <= 0.523:
+                    successRate530+=1 
+                if abs(quaternionError.angle) <= 0.349:
+                    successRate520+=1 
+                if abs(quaternionError.angle) <= 0.174:
+                    successRate510+=1       
+
                 #episode_reward+=reward
             #print("numberOfCollisionsbelow5cm:", env.sim.numberOfCollisionsBelow5cm)
             #print("numberOfCollisionsabove5cm:", env.sim.numberOfCollisionsAbove5cm)
@@ -244,9 +274,15 @@ class TRAINTEST():
         avgJntVel = avgJntVel/numberOfSteps
         avgQuaternionDistance=avgQuaternionDistance/numberOfSteps
         avgQuaternionAngle = avgQuaternionAngle/numberOfSteps
-        
+        successRate1030 = successRate1030/numberOfSteps
+        successRate1020 = successRate1020/numberOfSteps
+        successRate1010 = successRate1010/numberOfSteps
+        successRate530 = successRate530/numberOfSteps
+        successRate520 = successRate520/numberOfSteps
+        successRate510 = successRate510/numberOfSteps
         if self.config['visualizeFailedSamples'] == False:
-            self.saveMetrics(env, rmse, mae, successRate1, successRate5, avgJntVel, avgQuaternionDistance, avgQuaternionAngle)
+            self.saveMetrics(env, rmse, mae, successRate1, successRate5, avgJntVel, avgQuaternionDistance, avgQuaternionAngle,
+                             successRate1030, successRate1020, successRate1010, successRate530, successRate520, successRate510)
             self.saveFailedSamples(failedAngles)
             self.plotFailedSamples(failedAngles, env)
 
