@@ -114,10 +114,13 @@ class MYROBOT(PyBulletRobot):
                 action = self.pseudoAction
         else:
             action = action
-        #error = np.linalg.norm(abs(obs['achieved_goal'] - obs['desired_goal']))
-        #if error < 0.05:
-        #    action = self.pseudoAction
-        #action = 0*action
+
+        error = np.linalg.norm(abs(obs['achieved_goal'] - obs['desired_goal']))
+        if error < 0.1:
+            #action = self.pseudoAction
+            self.config['addOrientation'] = True
+        else:
+            self.config['addOrientation'] = False
         action = np.clip(action, self.action_space.low, self.action_space.high)
         self.finalAction = action
         if self.control_type == "ee":
