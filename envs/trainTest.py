@@ -193,6 +193,7 @@ class TRAINTEST():
         print("Failed samples have been plotted!!!")
 
     def evaluatePolicy(self, numberOfSteps, model, env):
+        modelOrientation =PPO.load('/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc/PandaReach-v2PPO_1210.zip') 
         mae = 0.0
         squaredError = 0.0
         successRate1 = 0.0
@@ -214,7 +215,11 @@ class TRAINTEST():
             
             episode_reward = 0.0
             while not done:
-                action, _states = model.predict(obs, deterministic=True)
+                print(env.robot.config['addOrientation'])
+                if env.robot.config['addOrientation']:
+                    action, _states = modelOrientation.predict(obs, deterministic=True)
+                else:
+                    action, _states = model.predict(obs, deterministic=True)   
                 obs, reward, done, info = env.step(action)
             error = abs(obs['achieved_goal'] - obs['desired_goal'])
             mae = np.linalg.norm(error) + mae

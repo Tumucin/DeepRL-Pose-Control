@@ -259,6 +259,7 @@ class RobotTaskEnv(gym.GoalEnv):
         observation = np.concatenate([observation, isSuccess])
         #self.sim.drawInfosOnScreen(deltax)
         #print("observation in core.py", observation)
+        #print("len(obs) in core.py", len(observation))
         return {
             "observation": observation,
             "achieved_goal": achieved_goal,
