@@ -25,7 +25,7 @@ class PyBullet:
     """
 
     def __init__(
-        self, render: bool = False, n_substeps: int = 20, background_color: np.ndarray = np.array([223.0, 54.0, 45.0]), config=None
+        self, render: bool = False, n_substeps: int = 20, background_color: np.ndarray = np.array([255.0, 255.0, 255.0]), config=None
     ) -> None:
         self.background_color = background_color.astype(np.float64) / 255
         options = "--background_color_red={} \
@@ -152,16 +152,16 @@ class PyBullet:
         text_pos2 = [0, 0, -0.15] # Position of the text in world coordinates
         text_pos3 = [0, 0, -0.2] # Position of the text in world coordinates
         text_pos4 = [0, 0, -0.25] # Position of the text in world coordinates
-        text_color = [1, 0, -0.3] # Blue color
+        text_color = [0, 1, 0] # Blue color
         text_size = 1 # Text size in pixels
 
         if self.counter%100 == 0:
             if self.velocityNormText!=None:
-                p.removeUserDebugItem(self.timeStepText)
+                #p.removeUserDebugItem(self.timeStepText)
                 p.removeUserDebugItem(self.positionErrorText)
                 p.removeUserDebugItem(self.angleErrorText)
                 p.removeUserDebugItem(self.velocityNormText)
-            self.timeStepText = p.addUserDebugText("TIMESTEP:   "+str(self.counter), text_pos1, text_color, text_size)
+            #self.timeStepText = p.addUserDebugText("TIMESTEP:   "+str(self.counter), text_pos1, text_color, text_size)
             self.positionErrorText = p.addUserDebugText("POSITION ERROR [m]:   "+str(positionError), text_pos2, text_color, text_size)
             self.angleErrorText = p.addUserDebugText("ANGLE ERROR [rad]:   "+str(angleError), text_pos3, text_color, text_size)
             self.velocityNormText = p.addUserDebugText("VELOCITYNORM [rad/s]:   "+str(currentJointVelocitiesNorm), text_pos4, text_color, text_size)
