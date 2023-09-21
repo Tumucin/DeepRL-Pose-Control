@@ -215,11 +215,12 @@ class TRAINTEST():
             print("step: ", step)
             obs = env.reset()
             done = False
-            
+            countTimeStep = 0
             episode_reward = 0.0
             while not done:
                 action, _states = model.predict(obs, deterministic=True)
                 obs, reward, done, info = env.step(action)
+                countTimeStep+=1
             error = abs(obs['achieved_goal'] - obs['desired_goal'])
             mae = np.linalg.norm(error) + mae
             squaredError += np.sum(error**2)
@@ -233,12 +234,14 @@ class TRAINTEST():
             avgQuaternionDistance+=Quaternion.distance(desiredQuaternion, currentQuaternion)
             quaternionError = desiredQuaternion*currentQuaternion.conjugate
             avgQuaternionAngle+=quaternionError.angle
+            print("last timestep:", countTimeStep)
             if np.linalg.norm(error) <=0.01:
                 successRate1+=1
             
             if np.linalg.norm(error) <=0.05:
                 successRate5+=1
-            else:
+            if np.linalg.norm(error) >0.05 or countTimeStep < 1000:
+                #print(env.robot.currentSampledAnglesStart)
                 failedAngles['startAngle'].append(env.robot.currentSampledAnglesStart)
                 failedAngles['targetAngle'].append(env.task.currentSampledAnglesReach)
 

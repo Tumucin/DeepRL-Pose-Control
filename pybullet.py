@@ -148,12 +148,12 @@ class PyBullet:
             p.changeVisualShape(0, pairedLinks[1], rgbaColor=[self.visualShape[0][7][0], self.visualShape[0][7][1], self.visualShape[0][7][2], self.visualShape[0][7][3]])
 
     def drawInfosOnScreen(self, positionError, currentJointVelocitiesNorm, angleError)-> None:
-        text_pos1 = [0, 0, -0.1] # Position of the text in world coordinates
-        text_pos2 = [0, 0, -0.15] # Position of the text in world coordinates
-        text_pos3 = [0, 0, -0.2] # Position of the text in world coordinates
-        text_pos4 = [0, 0, -0.25] # Position of the text in world coordinates
-        text_color = [0, 1, 0] # Blue color
-        text_size = 1 # Text size in pixels
+        #text_pos1 = [0, 0, -0.1] # Position of the text in world coordinates
+        text_pos2 = [0, 0, 0.4] # Position of the text in world coordinates
+        text_pos3 = [0, 0, 0.3] # Position of the text in world coordinates
+        text_pos4 = [0, 0, 0.2] # Position of the text in world coordinates
+        text_color = [1, 0.64, 0] # Blue color
+        text_size = 1.25 # Text size in pixels
 
         if self.counter%100 == 0:
             if self.velocityNormText!=None:
@@ -162,9 +162,9 @@ class PyBullet:
                 p.removeUserDebugItem(self.angleErrorText)
                 p.removeUserDebugItem(self.velocityNormText)
             #self.timeStepText = p.addUserDebugText("TIMESTEP:   "+str(self.counter), text_pos1, text_color, text_size)
-            self.positionErrorText = p.addUserDebugText("POSITION ERROR [m]:   "+str(positionError), text_pos2, text_color, text_size)
-            self.angleErrorText = p.addUserDebugText("ANGLE ERROR [rad]:   "+str(angleError), text_pos3, text_color, text_size)
-            self.velocityNormText = p.addUserDebugText("VELOCITYNORM [rad/s]:   "+str(currentJointVelocitiesNorm), text_pos4, text_color, text_size)
+            self.positionErrorText = p.addUserDebugText("Position error [m]:   "+str(positionError), text_pos2, text_color, text_size)
+            self.angleErrorText = p.addUserDebugText("Orientation error [rad]:   "+str(angleError), text_pos3, text_color, text_size)
+            self.velocityNormText = p.addUserDebugText("Joint velocities norm[rad/s]:   "+str(currentJointVelocitiesNorm), text_pos4, text_color, text_size)
             
         self.counter +=1
         if self.counter==1000:

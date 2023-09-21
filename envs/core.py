@@ -292,7 +292,7 @@ class RobotTaskEnv(gym.GoalEnv):
             else:
                 self.sim.numberOfCollisionsAbove5cm+=1
             reward = reward - self.robot.config['collisionConstant']
-            self.reset()
+            #self.reset()
             self.sim.isCollision = False
             done = True
         assert isinstance(reward, float)  # needed for pytype cheking
