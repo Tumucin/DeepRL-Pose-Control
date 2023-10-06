@@ -14,3 +14,11 @@ If you find this study useful, please cite using the following citation:
    pdf = {$pdf$}
  }
 ```
+
+## Requirements
+
+To install requirements:
+
+```setup
+pip install -r requirements.txt
+```
