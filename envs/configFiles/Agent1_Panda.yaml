@@ -1,18 +1,10 @@
-#################### PATHS - LOCAL- ####################
+#################### PATHS ####################
 modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
 logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
 failedSamplesSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/failedSamples'
 urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
 file_name: "franka_panda/panda.urdf"
 datasetPath: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/pandaversion1"
-
-#################### PATHS - HPC- ####################
-#modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
-#logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
-#failedSamplesSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/failedSamples'
-#urdfPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
-#file_name: "franka_panda/panda.urdf"
-#datasetPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/pandaversion1'
 
 expNumber: 229                        # Experiement Number  
 envName: "PandaReach-v2"              # Environment Name    
@@ -26,8 +18,8 @@ mode: False                           # True: Training, False: Testing
 algorithm: "PPO"                      # Name of the algorithm
 policy: "MultiInputPolicy"            # Policy network
 render: True                          # True: Render the sim, False: No Rendering
-enableSelfCollision: False 
-switching: False
+enableSelfCollision: False            # Self-Collision
+switching: False                      # Switching modification as described in the paper
 gamma: 0.95                           # Discount Factor
 n_steps: 1000                         # The number of steps to run for each environment per update
 n_epochs: 10                          # Number of epoch when optimizing the surrogate loss
