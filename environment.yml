@@ -53,7 +53,6 @@ dependencies:
     - imageio==2.25.0
     - importlib-metadata==4.13.0
     - jax-jumpy==0.2.0
-    - kdl-parser-py==1.14.2
     - kiwisolver==1.4.4
     - lxml==4.9.2
     - markdown==3.4.1
@@ -94,7 +93,7 @@ dependencies:
     - rospkg==1.4.0
     - rsa==4.9
     - ruamel-yaml-clib==0.2.7
-    - sb3-contrib==1.7.0a4
+    - sb3-contrib==1.7.0
     - scipy==1.9.3
     - seaborn==0.12.2
     - shimmy==0.1.0
