@@ -23,7 +23,7 @@ class PandaReachEnv(RobotTaskEnv):
         #    lines = f.readlines()
         #with open('/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/configFiles/'+lines[0]) as f:
         #    config = yaml.load(f, Loader=SafeLoader)
-
+        
         with open('/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/currentConfigNumber.txt') as f:
             lines = f.readlines()
         with open('/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/configFiles/'+lines[0]) as f:
