@@ -101,7 +101,7 @@ dependencies:
     - six==1.16.0
     - smmap==5.0.0
     - snakeviz==2.1.1
-    - stable-baselines3==1.7.0a4
+    - stable-baselines3==1.7.0
     - tensorboard==2.11.0
     - tensorboard-data-server==0.6.1
     - tensorboard-plugin-customizable-plots==1.1.3
