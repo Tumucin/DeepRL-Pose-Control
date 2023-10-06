@@ -59,7 +59,7 @@ class PyBullet:
         self.angleErrorText = None
         self.body_name = config['body_name']
         self.ee_link = config['ee_link']
-
+        self.enableSelfCollision = config['enableSelfCollision']
         self.isCollision = False
         self.numberOfCollisionsBelow5cm = 0
         self.numberOfCollisionsAbove5cm = 0
@@ -96,7 +96,8 @@ class PyBullet:
         for _ in range(self.n_substeps):
             self.physics_client.stepSimulation()
 
-        self.changeLinkColorOnCollision()
+        if self.enableSelfCollision:
+            self.changeLinkColorOnCollision()
 
     def checkRandomSampleAngles(self, numberOfJoints):
         eePositionForDataset = self.get_link_position(self.body_name, self.ee_link)
@@ -549,22 +550,6 @@ class PyBullet:
         self._bodies_idx[body_name] = self.physics_client.loadURDF(**kwargs)
 
         links = [idx for idx in range(-1, 13)]
-        #for link in links:
-        #    self.physics_client.setCollisionFilterGroupMask(self._bodies_idx[body_name], link, 0, 1)
-        #    self.physics_client.setCollisionFilterGroupMask(self._bodies_idx[body_name], link, 1, 1)
-        #    self.physics_client.setCollisionFilterGroupMask(self._bodies_idx[body_name], link, 2, 1)
-
-        #for link in links:
-        #    if link != 1:
-        #        self.physics_client.setCollisionFilterPair(self._bodies_idx[body_name], self._bodies_idx[body_name], link, 1, enableCollision=False)
-
-        #self.physics_client.setCollisionFilterGroupMask(self._bodies_idx[body_name], 13, 0, 0)
-        #self.physics_client.setCollisionFilterGroupMask(self._bodies_idx[body_name], 12, 0, 0)
-        #self.physics_client.setCollisionFilterGroupMask(self._bodies_idx[body_name], 11, 0, 0)
-        #self.physics_client.setCollisionFilterGroupMask(self._bodies_idx[body_name], 10, 0, 0)
-        #self.physics_client.setCollisionFilterGroupMask(self._bodies_idx[body_name], 9, 0, 0)
-        #self.physics_client.setCollisionFilterGroupMask(self._bodies_idx[body_name], 8, 0, 0)
-        #self.physics_client.setCollisionFilterGroupMask(self._bodies_idx[body_name], 7, 0, 0)
 
     def create_box( 
         self,

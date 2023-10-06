@@ -84,21 +84,21 @@ class TRAINTEST():
                         successRate1030, successRate1020, successRate1010, successRate530, successRate520, successRate510):
         print(env.robot.datasetFileName + " has been used by robot.py")
         print(env.task.datasetFileName + " has been used by reach.py")
-        print("RMSE:", rmse)
-        print("MAE:", mae)
-        print("Success Rate 1 cm:", successRate1)
-        print("Success Rate 5 cm:", successRate5)
-        print("Average joint velocities:", avgJntVel)
-        print("Average quaternion distance:", avgQuaternionDistance)
-        print("Average quaternion angle:", avgQuaternionAngle)
-        print("numberOfCollisionBelow5cm:", env.sim.numberOfCollisionsBelow5cm)
-        print("numberOfCollisionAbove5cm:", env.sim.numberOfCollisionsAbove5cm)
-        print("successRate 10cm 30 degrees:", successRate1030)
-        print("successRate 10cm 20 degrees:", successRate1020)
-        print("successRate 10cm 10 degrees:", successRate1010)
-        print("successRate 5cm 30 degrees:", successRate530)
-        print("successRate 5cm 20 degrees:", successRate520)
-        print("successRate 5cm 10 degrees:", successRate510)
+        #print("RMSE:", rmse)
+        #print("MAE:", mae)
+        #print("Success Rate 1 cm:", successRate1)
+        #print("Success Rate 5 cm:", successRate5)
+        #print("Average joint velocities:", avgJntVel)
+        #print("Average quaternion distance:", avgQuaternionDistance)
+        #print("Average quaternion angle:", avgQuaternionAngle)
+        #print("numberOfCollisionBelow5cm:", env.sim.numberOfCollisionsBelow5cm)
+        #print("numberOfCollisionAbove5cm:", env.sim.numberOfCollisionsAbove5cm)
+        #print("successRate 10cm 30 degrees:", successRate1030)
+        #print("successRate 10cm 20 degrees:", successRate1020)
+        #print("successRate 10cm 10 degrees:", successRate1010)
+        #print("successRate 5cm 30 degrees:", successRate530)
+        #print("successRate 5cm 20 degrees:", successRate520)
+        #print("successRate 5cm 10 degrees:", successRate510)
         with open("metrics"+str(self.config['expNumber'])+".txt", 'w') as f:
             f.write('{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}'.format(rmse, mae, successRate1, successRate5, avgJntVel, 
                                                         avgQuaternionDistance, avgQuaternionAngle, env.sim.numberOfCollisionsBelow5cm,
@@ -440,7 +440,7 @@ def main():
                 env.envs[i].robot.config = config
                 env.envs[i].task.config = config
                 #env.envs[i]._max_episode_steps = trainTest.config['max_episode_steps']
-
+                
         trainTest.train(algorithm, env)
         env = gym.make(trainTest.config['envName'], render=trainTest.config['render'])
         env.robot.config = config

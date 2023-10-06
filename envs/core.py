@@ -44,14 +44,21 @@ class PyBulletRobot(ABC):
             file_name (str): The URDF file name of the robot.
             base_position (np.ndarray): The position of the robot, as (x, y, z).
         """
-        self.sim.loadURDF(
-            body_name=self.body_name,
-            fileName=file_name,
-            basePosition=base_position,
-            useFixedBase=True,
-            #flags = p.URDF_USE_SELF_COLLISION|p.URDF_USE_SELF_COLLISION_EXCLUDE_PARENT
-            flags = p.URDF_USE_SELF_COLLISION
-        )
+        if self.sim.enableSelfCollision:
+            self.sim.loadURDF(
+                body_name=self.body_name,
+                fileName=file_name,
+                basePosition=base_position,
+                useFixedBase=True,
+                flags = p.URDF_USE_SELF_COLLISION
+            )
+        else:
+            self.sim.loadURDF(
+                body_name=self.body_name,
+                fileName=file_name,
+                basePosition=base_position,
+                useFixedBase=True,
+            )
 
     def setup(self) -> None:
         """Called after robot loading."""
