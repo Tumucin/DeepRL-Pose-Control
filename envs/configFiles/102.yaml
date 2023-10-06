@@ -1,0 +1,79 @@
+#################### PATHS - LOCAL- ####################
+#modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
+#logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
+#urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf'
+#file_name: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf"
+
+#################### PATHS - HPC- ####################
+modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
+logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
+urdfPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf'
+file_name: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/jaco6DOF.urdf'
+
+expNumber: 999                        # Experiement Number
+envName: "PandaReach-v2"              # Environment Name 
+ee_link: 6                           # End effector link ID
+body_name: 'j2n6s300'                 # Name of the robot
+baseLinkName: 'j2n6s300_link_base'    # The name of the base link of a robot
+eeLinkName: 'j2n6s300_end_effector'        # The name of the ee link of a robot
+base_position: [-0.0, 0.0, 0.0]       # Base position of the base link
+total_timesteps: !!float 32768000     # Total timesteps for training
+mode: False                           # True: Training, False: Testing
+algorithm: "PPO"                      # Name of the algorithm
+policy: "MultiInputPolicy"            # Policy network
+render: False                          # True: Render the sim, False: No Rendering
+gamma: 0.95                           # Discount Factor
+n_steps: 4096                         # The number of steps to run for each environment per update
+n_epochs: 10                          # Number of epoch when optimizing the surrogate loss
+batch_size: 2048                      # Mini-batch size
+learning_rate: 0.0003                 # The learning rate
+n_envs: 16                            # Number of environments
+testSamples: 1000                     # Number of samples for evaluation
+testSampleOnTraining: 500             # Number of samples for evaluation while training (Curriculum Learning)
+evalFreqOnTraining: 2000000           # Number of timesteps per evaluation (Curriculum Learning)
+max_episode_steps: 800                # Episode length
+verbose: 1                            # Visualize the log of training
+pseudoI: True                         # Use PseudoInverse to calculate q_dot (Note that there are Position Only and FullJacobian methods)
+networkOutput: True                  # Use Network output
+save_freq: !!float 100e6              # Number of timesteps for saving checkpoints
+sampleJointAnglesGoal: True           # Sample random goals(Position+Orientation). If this is FALSE, then you should determine goal_range value
+goal_range: 0.5                       # Goal range for sampling the goals(desired points)
+randomStart: True                     # Sample random starting goals(Position+Orientation) If this is FALSE, then you should determine neutral_joint_values below
+neutral_joint_values: [3.1416, 0.5236, -2, -2.38, -5, 3.1416]
+lambdaErr: 100.0                      # One of the parameters for reward function exp(-k*d*d)
+orientationConstant: 1                # One of the parameters for reward function exp(-k*d*d)
+addOrientation: True                 # Use orientation information as states. If FALSE, do not use
+accelerationConstant: 0.0             # One of the parameters for reward function k*norm(jntAcceleration)
+velocityConstant: 0.1                 # One of the parameters for reward function k*norm(jntVelocity)
+velocityNormThreshold: 0.05
+thresholdConstant: 0.0
+alpha: 1.0                            # One of the parameters for reward function k*norm(jntVelocity)/(1+alpha*d)
+activation_fn: 0                      # Activation Function: Tanh: 0, RELU:1
+hiddenUnits: 128                      # The number of neurons in the hidden layers
+CurriLearning: False                  # Use Curriculum Learning or not. If this is FALSE, then you should edit the variables below
+jointLimitLowStartID: 'W3Low'         # This low limit is used for random start. Starting ee pose
+jointLimitHighStartID: 'W3High'       # This high limit is used for random start. Starting ee pose
+rmseThreshold: 0.012                  # RMSE threshold to go to the next Workspace (Curriculum Learning)
+maeThreshold: 0.012                   # MAE threshold to go to the next Workspace (Curriculum Learning)
+avgJntVelThreshold: 0.1               # AverageJntVel threshold to go to the next Workspace (Curriculum Learning)
+
+net_arch: [{'pi': [128, 128],
+            'vf': [128, 128]}]        # Network Architecture
+
+################################### WORKSPACE - V4 - JACO - 6 DOF# #############################
+# Each Wi represents the sub workspace of the entire workspace. And these boundaries are 
+# used for creating a random robot starting pose
+
+workspacesdict:
+  W0Low : [1.5708, 0.0000, -2.0000, 2.3800, -5.0000, 3.3100]
+  W0High: [4.7124, 1.5708, -2.0000, 2.3800, -5.0000, 3.3100]
+  W1Low : [1.5708, 0.0000, -2.0000, 2.3800, -5.0000, 3.3100]
+  W1High: [4.7124, 1.5708, -0.0000, 2.3800, -5.0000, 3.3100]
+  W2Low : [1.5708, 0.0000, -2.0000, 0.3800, -5.0000, 3.3100]
+  W2High: [4.7124, 1.5708,  0.0000, 2.3800, -5.0000, 3.3100]
+  W3Low : [1.5708, 0.0000, -2.0000, 0.3800, -5.0000, 3.3100]
+  W3High: [4.7124, 1.5708,  0.0000, 2.3800, -1.8500, 3.3100]
+
+# This is for creating random Goals
+jointLimitLow:  [1.5708, 0.0000, -2.0000, 2.3800, -5.0000, 3.3100]
+jointLimitHigh: [4.7124, 1.5708, -2.0000, 2.3800, -5.0000, 3.3100]

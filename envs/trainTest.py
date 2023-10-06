@@ -21,8 +21,11 @@ import matplotlib.pyplot as plt
 from CustomCallback import CUSTOMCALLBACK
 from pyquaternion import Quaternion
 import gym.utils.seeding
-
-
+import csv
+import PyKDL
+import random
+import seaborn as sns
+import matplotlib.pyplot as plt
 class TRAINTEST():
     def __init__(self, config):
         self.config = config
@@ -32,6 +35,8 @@ class TRAINTEST():
         self.tbFileNameToSave = self.tbParentFolderToSave+"/"+self.config['envName']+"_"+self.config['algorithm']+"/"+str(self.config['expNumber'])
         self.modelParentFolderToSave = self.config['modelSavePath']
         self.modelFileNameToSave = self.modelParentFolderToSave+"/"+self.config['envName']+""+self.config['algorithm']+"_"+str(self.config['expNumber'])
+        self.datasetFileName = self.config['datasetPath'] + "/" + self.config['body_name'] + "_" + self.config['finalWorkspaceID']+".csv"
+        self.dataset = np.genfromtxt(self.datasetFileName, delimiter=',', skip_header=1)
 
     def train(self,algorithm,env):
         checkpoint_callback = CheckpointCallback(save_freq=self.config['save_freq'], save_path=self.config['modelSavePath'],
@@ -75,6 +80,122 @@ class TRAINTEST():
             print("REPLAY BUFFER IS SAVED--NORMAL LEARNING")
             model.save_replay_buffer(self.config['bufferPath']+str(self.config['expNumber']))   
 
+    def saveMetrics(self, env, rmse, mae, successRate1, successRate5, avgJntVel, avgQuaternionDistance, avgQuaternionAngle,
+                        successRate1030, successRate1020, successRate1010, successRate530, successRate520, successRate510):
+        print(env.robot.datasetFileName + " has been used by robot.py")
+        print(env.task.datasetFileName + " has been used by reach.py")
+        #print("RMSE:", rmse)
+        #print("MAE:", mae)
+        #print("Success Rate 1 cm:", successRate1)
+        #print("Success Rate 5 cm:", successRate5)
+        #print("Average joint velocities:", avgJntVel)
+        #print("Average quaternion distance:", avgQuaternionDistance)
+        #print("Average quaternion angle:", avgQuaternionAngle)
+        #print("numberOfCollisionBelow5cm:", env.sim.numberOfCollisionsBelow5cm)
+        #print("numberOfCollisionAbove5cm:", env.sim.numberOfCollisionsAbove5cm)
+        #print("successRate 10cm 30 degrees:", successRate1030)
+        #print("successRate 10cm 20 degrees:", successRate1020)
+        #print("successRate 10cm 10 degrees:", successRate1010)
+        #print("successRate 5cm 30 degrees:", successRate530)
+        #print("successRate 5cm 20 degrees:", successRate520)
+        #print("successRate 5cm 10 degrees:", successRate510)
+        with open("metrics"+str(self.config['expNumber'])+".txt", 'w') as f:
+            f.write('{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}'.format(rmse, mae, successRate1, successRate5, avgJntVel, 
+                                                        avgQuaternionDistance, avgQuaternionAngle, env.sim.numberOfCollisionsBelow5cm,
+                                                        env.sim.numberOfCollisionsAbove5cm,
+                                                        successRate1030, successRate1020, successRate1010,
+                                                        successRate530, successRate520, successRate510))
+        f.close()
+        print("Metrics results have been saved!!!")
+
+    def saveFailedSamples(self, failedAngles):
+        with open(self.config['failedSamplesSavePath']+"/failedStart"+str(self.config['expNumber'])+".csv", 'w', newline='') as csvfile1:
+            for startAngles in failedAngles['startAngle']:
+                writer = csv.writer(csvfile1)
+                writer.writerow(startAngles)
+        
+        with open(self.config['failedSamplesSavePath']+"/failedTarget"+str(self.config['expNumber'])+".csv", 'w', newline='') as csvfile2:
+            for targetAngles in failedAngles['targetAngle']:
+                writer2 = csv.writer(csvfile2)
+                writer2.writerow(targetAngles)
+        
+        print("Failed samples have been saved!!!")
+
+    def plotFailedSamples(self, failedAngles, env):
+        fig = plt.figure()
+        ax1_2d = fig.add_subplot(221)
+        ax2_2d = fig.add_subplot(222)
+        ax3_3d = fig.add_subplot(223, projection='3d')
+        ax4_3d = fig.add_subplot(224, projection='3d')
+        
+        xfailedPointsStart = []
+        yfailedPointsStart = []
+        zfailedPointsStart = []
+        xfailedPointsTarget = []
+        yfailedPointsTarget = []
+        zfailedPointsTarget = []
+        
+        for startAngle in failedAngles['startAngle']:
+            q_in = PyKDL.JntArray(env.task.kinematics.numbOfJoints)
+            for i in range(env.task.kinematics.numbOfJoints):
+                q_in[i] = startAngle[i]
+            goalFrame = env.task.kinematics.forwardKinematicsPoseSolv(q_in)
+            xfailedPointsStart.append(goalFrame.p[0])
+            yfailedPointsStart.append(goalFrame.p[1])
+            zfailedPointsStart.append(goalFrame.p[2])
+        unique_colors = sns.color_palette(n_colors=len(xfailedPointsStart))
+        ax1_2d.scatter(xfailedPointsStart, yfailedPointsStart,c=unique_colors)
+        ax3_3d.scatter(xfailedPointsStart, yfailedPointsStart, zfailedPointsStart,c=unique_colors)
+
+        # Add the index as text for each point
+        for i, (x, y) in enumerate(zip(xfailedPointsStart, yfailedPointsStart)):
+            ax1_2d.text(x, y, str(i), ha='center', va='bottom', fontsize = 7)
+        
+        
+        for targetAngle in failedAngles['targetAngle']:
+            q_in = PyKDL.JntArray(env.task.kinematics.numbOfJoints)
+            for i in range(env.task.kinematics.numbOfJoints):
+                q_in[i] = targetAngle[i]
+            goalFrame = env.task.kinematics.forwardKinematicsPoseSolv(q_in)
+            xfailedPointsTarget.append(goalFrame.p[0])
+            yfailedPointsTarget.append(goalFrame.p[1])
+            zfailedPointsTarget.append(goalFrame.p[2])
+        
+        for i, (x, y) in enumerate(zip(xfailedPointsTarget, yfailedPointsTarget)):
+            ax2_2d.text(x, y, str(i), ha='center', va='bottom', fontsize = 7)
+
+        ax2_2d.scatter(xfailedPointsTarget, yfailedPointsTarget,c=unique_colors)
+        ax4_3d.scatter(xfailedPointsTarget, yfailedPointsTarget, zfailedPointsTarget,c=unique_colors)
+
+        ax1_2d.set_xlabel('X [m]')
+        ax1_2d.set_ylabel('Y [m]')
+        ax1_2d.set_title('Start Points')
+
+        ax2_2d.set_xlabel('X [m]')
+        ax2_2d.set_ylabel('Y [m]')
+        ax2_2d.set_title('Target Points')
+
+        ax3_3d.set_xlabel('X [m]')
+        ax3_3d.set_ylabel('Y [m]')
+        ax3_3d.set_zlabel('Z [m]')
+        ax3_3d.set_title('Start Points')
+
+        ax4_3d.set_xlabel('X [m]')
+        ax4_3d.set_ylabel('Y [m]')
+        ax4_3d.set_zlabel('Z [m]')
+        ax4_3d.set_title('Target Points')
+
+        ax1_2d.set_xlim([-0.2,1])
+        ax1_2d.set_ylim([-1.2,1.2])
+        ax2_2d.set_xlim([-0.2,1])
+        ax2_2d.set_ylim([-1.2,1.2])
+
+        fig.set_size_inches(18.5, 10.5)  # Adjust the size as needed
+        fig.tight_layout()
+
+        plt.savefig(self.config['failedSamplesSavePath']+"/failedSamplesPlot"+str(self.config['expNumber'])+".png")
+        print("Failed samples have been plotted!!!")
+
     def evaluatePolicy(self, numberOfSteps, model, env):
         mae = 0.0
         squaredError = 0.0
@@ -83,19 +204,29 @@ class TRAINTEST():
         avgJntVel = 0.0
         avgQuaternionDistance = 0.0
         avgQuaternionAngle = 0.0
+        successRate1030 = 0
+        successRate1020 = 0
+        successRate1010 = 0
+        successRate530 = 0
+        successRate520 = 0
+        successRate510 = 0
+        failedAngles = {'startAngle': [], 'targetAngle': []}
         for step in range(numberOfSteps):
-            obs = env.reset()
             print("step: ", step)
+            obs = env.reset()
             done = False
-            
+            countTimeStep = 0
             episode_reward = 0.0
             while not done:
                 action, _states = model.predict(obs, deterministic=True)
                 obs, reward, done, info = env.step(action)
+                countTimeStep+=1
             error = abs(obs['achieved_goal'] - obs['desired_goal'])
             mae = np.linalg.norm(error) + mae
             squaredError += np.sum(error**2)
-            avgJntVel = np.linalg.norm(env.robot.finalAction) + avgJntVel
+            currentJntVel = np.array([env.task.sim.get_joint_velocity(env.task.sim.body_name,joint=i) for i in range(7)])
+            #print("current vel in traintest.py:", currentJntVel)
+            avgJntVel = np.linalg.norm(currentJntVel) + avgJntVel
             d1 = env.robot.goalFrame.M.GetQuaternion()
             c1 = env.sim.get_link_orientation(env.sim.body_name, self.config['ee_link'])
             desiredQuaternion = Quaternion(d1[3], d1[0], d1[1], d1[2])
@@ -103,13 +234,42 @@ class TRAINTEST():
             avgQuaternionDistance+=Quaternion.distance(desiredQuaternion, currentQuaternion)
             quaternionError = desiredQuaternion*currentQuaternion.conjugate
             avgQuaternionAngle+=quaternionError.angle
+            print("last timestep:", countTimeStep)
             if np.linalg.norm(error) <=0.01:
                 successRate1+=1
             
             if np.linalg.norm(error) <=0.05:
                 successRate5+=1
+            if np.linalg.norm(error) >0.05 or countTimeStep < 1000:
+                #print(env.robot.currentSampledAnglesStart)
+                failedAngles['startAngle'].append(env.robot.currentSampledAnglesStart)
+                failedAngles['targetAngle'].append(env.task.currentSampledAnglesReach)
+
+            if np.linalg.norm(error) <=0.1:
+                if abs(quaternionError.angle) <= 0.523:
+                    successRate1030+=1 
+                if abs(quaternionError.angle) <= 0.349:
+                    successRate1020+=1 
+                if abs(quaternionError.angle) <= 0.174:
+                    successRate1010+=1  
+            if np.linalg.norm(error) <=0.05:
+                if abs(quaternionError.angle) <= 0.523:
+                    successRate530+=1 
+                if abs(quaternionError.angle) <= 0.349:
+                    successRate520+=1 
+                if abs(quaternionError.angle) <= 0.174:
+                    successRate510+=1       
 
                 #episode_reward+=reward
+            #print("numberOfCollisionsbelow5cm:", env.sim.numberOfCollisionsBelow5cm)
+            #print("numberOfCollisionsabove5cm:", env.sim.numberOfCollisionsAbove5cm)
+            #print("error in traintest.py:", np.linalg.norm(error))
+        
+        #self.plotDesiredAndActualJntAngles(env)
+        #self.plot2D3DCreatedDatasetPoints(env, "ur5_robot_W1_2D.png", "ur5_robot_W1_3D.png")
+        #self.saveCreatedDataset(env, 'ur5_robot_W1.csv')
+        
+    #plt.show()
         rmse = np.sqrt((squaredError)/(numberOfSteps))
         mae = mae/numberOfSteps
         successRate1 = successRate1/numberOfSteps
@@ -117,30 +277,92 @@ class TRAINTEST():
         avgJntVel = avgJntVel/numberOfSteps
         avgQuaternionDistance=avgQuaternionDistance/numberOfSteps
         avgQuaternionAngle = avgQuaternionAngle/numberOfSteps
+        successRate1030 = successRate1030/numberOfSteps
+        successRate1020 = successRate1020/numberOfSteps
+        successRate1010 = successRate1010/numberOfSteps
+        successRate530 = successRate530/numberOfSteps
+        successRate520 = successRate520/numberOfSteps
+        successRate510 = successRate510/numberOfSteps
+        if self.config['visualizeFailedSamples'] == False:
+            self.saveMetrics(env, rmse, mae, successRate1, successRate5, avgJntVel, avgQuaternionDistance, avgQuaternionAngle,
+                             successRate1030, successRate1020, successRate1010, successRate530, successRate520, successRate510)
+            self.saveFailedSamples(failedAngles)
+            self.plotFailedSamples(failedAngles, env)
 
-        print("Testing environment jointLimitLow is:", env.robot.jointLimitLow)
-        print("Testing environment jointLimitHigh is:", env.robot.jointLimitHigh)
-        print("RMSE:", rmse)
-        print("MAE:", mae)
-        print("Success Rate 1 cm:", successRate1)
-        print("Success Rate 5 cm:", successRate5)
-        print("Average joint velocities:", avgJntVel)
-        print("Average quaternion distance:", avgQuaternionDistance)
-        print("Average quaternion angle:", avgQuaternionAngle)
-        
-        with open("metrics"+str(self.config['expNumber'])+".txt", 'w') as f:
-            f.write('{}\n{}\n{}\n{}\n{}\n{}\n{}'.format(rmse, mae, successRate1, successRate5, avgJntVel, 
-                                                        avgQuaternionDistance, avgQuaternionAngle))
-        
+    def saveCreatedDataset(self, env, csvFileName):
+
+        with open(csvFileName, 'w', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            #print(env.sim.anglesForDatasetList)
+            for angle in env.sim.anglesForDatasetList:
+                writer.writerow(angle)
+    def plotDesiredAndActualJntAngles(self, env):
+        fig, axs = plt.subplots(env.robot.kinematic.numbOfJoints)
+        for i, ax in enumerate(axs):
+            ax.plot(env.robot.q_actual_list[:,i], linewidth = 3)
+            ax.plot(env.robot.q_desired_list[:,i])
+            ax.set_title('Joint {}'.format(i))
+        plt.show()
+
+    def plot2D3DCreatedDatasetPoints(self, env, plotFileName2d, plotFileName3d):
+        plt.subplot(1,2,1)
+        plt.plot(env.sim.xPointsForDataset, env.sim.yPointsForDataset, 'o')
+        plt.xlabel('x [m]')
+        plt.ylabel('y [m]')
+        plt.xlim([-1,1])
+        plt.ylim([-1,1])
+        plt.subplot(1,2,2)
+        plt.plot(env.sim.xPointsForDataset, env.sim.zPointsForDataset, 'o')
+        plt.xlabel('x [m]')
+        plt.ylabel('z [m]')
+        plt.xlim([-1,1])
+        plt.ylim([-1,1.5])
+        plt.savefig(plotFileName2d)
+        xPoints = env.sim.xPointsForDataset
+        yPoints = env.sim.yPointsForDataset
+        zPoints = env.sim.zPointsForDataset
+
+        distances = np.sqrt(np.array(xPoints)**2 + np.array(yPoints)**2 + np.array(zPoints)**2)
+        colormap = plt.cm.get_cmap('jet')
+        normalize = plt.Normalize(vmin=min(distances), vmax=max(distances))
+        print("minimum distance:", min(distances))
+        print("max distance:", max(distances))
+        fig = plt.figure()
+        ax = fig.add_subplot(projection='3d')
+        zPoints_array = np.array(zPoints)
+        mask = (-10<zPoints_array) & (zPoints_array< 10)
+        #scatter = ax.scatter(xPoints, yPoints, zPoints, c=distances, cmap = colormap, norm = normalize)
+        scatter = ax.scatter(np.array(xPoints)[mask], 
+                            np.array(yPoints)[mask], 
+                            np.array(zPoints)[mask], c=np.array(distances)[mask], cmap = colormap, norm = normalize)
+        cbar = fig.colorbar(scatter)
+        cbar.set_label('Distance')
+        ax.set_xlabel('X [m]')
+        #threshold = 0.2
+        #ax.axes.set_xlim3d(left=-threshold, right=threshold)
+        #ax.axes.set_ylim3d(bottom=-threshold, top=threshold)
+        #ax.axes.set_zlim3d(bottom=-threshold, top=threshold)
+        ax.set_ylabel('Y [m]')
+        ax.set_zlabel('Z [m]')
+        plt.savefig(plotFileName3d, dpi=300)
 
     def loadAndEvaluateModel(self, algorithm,env):
         
         model = algorithm.load(self.modelFileNameToSave)         
-        ## Random start        
-        env.robot.jointLimitLow = env.robot.workspacesdict[str(list(env.robot.workspacesdict)[-2])]
-        env.robot.jointLimitHigh = env.robot.workspacesdict[str(list(env.robot.workspacesdict)[-1])]  
+
         env.task.np_random_reach, _ = gym.utils.seeding.np_random(200)
         env.robot.np_random_start, _ = gym.utils.seeding.np_random(100)
+
+        if self.config['visualizeFailedSamples'] == True:
+            env.robot.datasetFileName = self.config['failedSamplesSavePath']+"/failedStart"+str(self.config['expNumber'])+".csv"
+            env.task.datasetFileName = self.config['failedSamplesSavePath']+"/failedTarget"+str(self.config['expNumber'])+".csv"
+            env.robot.dataset = self.dataset = np.genfromtxt(env.robot.datasetFileName, delimiter=',')
+            env.task.dataset = self.dataset = np.genfromtxt(env.task.datasetFileName, delimiter=',')
+        else:
+            env.robot.datasetFileName = self.datasetFileName
+            env.task.datasetFileName = self.datasetFileName
+            env.task.dataset = self.dataset
+            env.robot.dataset = self.dataset
         self.evaluatePolicy(self.config['testSamples'], model, env)
         
         
@@ -185,8 +407,8 @@ def main():
     parser.add_argument('--ee_link', type=int, help="")
     parser.add_argument('--body_name', type=str, help="")
     parser.add_argument('--configName', type=str, help="")
+    parser.add_argument('--collisionConstant', type=float, help="")
     args = parser.parse_args()
-
 
     with open("currentConfigNumber"+".txt", 'w') as f:
             f.write('{}'.format(args.configName))
@@ -218,7 +440,7 @@ def main():
                 env.envs[i].robot.config = config
                 env.envs[i].task.config = config
                 #env.envs[i]._max_episode_steps = trainTest.config['max_episode_steps']
-
+                
         trainTest.train(algorithm, env)
         env = gym.make(trainTest.config['envName'], render=trainTest.config['render'])
         env.robot.config = config

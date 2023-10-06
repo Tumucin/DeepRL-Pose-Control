@@ -50,21 +50,27 @@ class MYROBOT(PyBulletRobot):
         self.quaternionError = Quaternion(1, 0, 0, 0)
         self.finalAction = np.zeros(7)
         self.np_random_start, _ = gym.utils.seeding.np_random()
-        self.workspacesdict = self.config['workspacesdict']
         self.pseudoAction = np.zeros(self.kinematic.numbOfJoints)
-        for key, value in self.workspacesdict.items():
-            self.workspacesdict[key] = np.array(value)
-        self.jointLimitLow = self.workspacesdict[self.config['jointLimitLowStartID']]
-        self.jointLimitHigh = self.workspacesdict[self.config['jointLimitHighStartID']]
-        
+        self.currentSampledAnglesStart = None
+        self.currentSampleIndex = 0
+        self.q_actual = None
+        self.q_actual_list = []
+        self.q_desired = None
+        self.q_desired_list = []
+        if self.config['CurriLearning'] == True:
+            self.datasetFileName = self.config['datasetPath'] + "/" + self.config['body_name'] + "_" + self.config['curriculumFirstWorkspaceId']+".csv"
+        else:
+            self.datasetFileName = self.config['datasetPath'] + "/" + self.config['body_name'] + "_" + self.config['finalWorkspaceID']+".csv"
+        self.dataset = np.genfromtxt(self.datasetFileName, delimiter=',', skip_header=1)
         #self.q_in = PyKDL.JntArray(self.kinematic.numbOfJoints)
         self.j_kdl = PyKDL.Jacobian(self.kinematic.numbOfJoints)
-        if self.config['body_name'] == 'j2n6s300':
+        if self.config['body_name'] == 'j2n6s300' or self.config['body_name'] == 'ur5':
             joint_indices = np.array([0, 1, 2, 3, 4, 5])
             joint_forces = np.array([87.0, 87.0, 87.0, 87.0, 12.0, 120.0])
         else:
             joint_indices = np.array([0, 1, 2, 3, 4, 5, 6, 9, 10])
             joint_forces = np.array([87.0, 87.0, 87.0, 87.0, 12.0, 120.0, 120.0, 170.0, 170.0])
+        
         super().__init__(
             sim,
             body_name=config['body_name'],
@@ -94,10 +100,10 @@ class MYROBOT(PyBulletRobot):
         if self.config['pseudoI']==True and self.config['networkOutput']==True:
             if self.config['addOrientation'] == True:
                 self.pseudoAction = self.calculateqdotFullJac(obs)
-                action =  self.pseudoAction+ action/5
+                action =  self.pseudoAction+ action
             else:
                 self.pseudoAction = self.calculateqdotOnlyPosition(obs)
-                action =  self.pseudoAction+ action/5
+                action =  self.pseudoAction+ action
 
         elif self.config['pseudoI']==True and self.config['networkOutput']==False:
             if self.config['addOrientation'] == True:
@@ -107,10 +113,12 @@ class MYROBOT(PyBulletRobot):
                 self.pseudoAction = self.calculateqdotOnlyPosition(obs)
                 action = self.pseudoAction
         else:
-            action = action/5
+            action = action
+        if self.config['switching']:
+            error = np.linalg.norm(abs(obs['achieved_goal'] - obs['desired_goal']))
+            if error < 0.05:
+                action = self.pseudoAction
         action = np.clip(action, self.action_space.low, self.action_space.high)
-        #action = 0 * action
-        #action[4] = 0.4
         self.finalAction = action
         if self.control_type == "ee":
             ee_displacement = self.finalAction[:3]
@@ -128,8 +136,20 @@ class MYROBOT(PyBulletRobot):
 
         target_angles = np.concatenate((target_arm_angles, [target_fingers_width / 2, target_fingers_width / 2]))
         
-        if self.config['body_name'] == 'j2n6s300':
-            target_angles = target_angles[0:6]
+        if self.config['body_name'] == 'j2n6s300' or self.config['body_name'] == 'ur5':
+            #print("target angles before",target_angles)
+            target_angles = target_angles[0:self.kinematic.numbOfJoints]
+            #print("target angles after",target_angles)
+        self.q_desired = target_angles
+        self.q_actual = np.array([self.sim.get_joint_angle(self.sim.body_name,joint=i) for i in range(self.kinematic.numbOfJoints)])
+        
+        if self.q_desired_list == []:
+            self.q_desired_list = self.q_desired
+            self.q_actual_list = self.q_actual
+        else:
+            self.q_desired_list = np.vstack((self.q_desired_list, self.q_desired))
+            self.q_actual_list = np.vstack((self.q_actual_list, self.q_actual))
+
         self.control_joints(target_angles=target_angles)
 
     def ee_displacement_to_target_arm_angles(self, ee_displacement: np.ndarray) -> np.ndarray:
@@ -163,7 +183,7 @@ class MYROBOT(PyBulletRobot):
         Returns:
             np.ndarray: Target arm angles, as the angles of the 7 arm joints.
         """
-        arm_joint_ctrl = arm_joint_ctrl * 0.05  # limit maximum change in position
+        arm_joint_ctrl = arm_joint_ctrl * 0.01  # limit maximum change in position
         # get the current position and the target position
         current_arm_joint_angles = np.array([self.get_joint_angle(joint=i) for i in range(self.kinematic.numbOfJoints)])
         target_arm_angles = current_arm_joint_angles + arm_joint_ctrl
@@ -180,7 +200,10 @@ class MYROBOT(PyBulletRobot):
             if self.config['addOrientation']==True:
                 obs = np.concatenate((currentJointAngles, currentJoinVelocities, self.quaternionError.elements))
             else:
-                obs = np.concatenate((currentJointAngles, currentJoinVelocities))  
+                obs = np.concatenate((currentJointAngles, currentJoinVelocities))
+
+            if self.config['pseudoI'] == True:
+                obs = np.concatenate((obs, self.pseudoAction))
         return obs
 
     def reset(self) -> None:
@@ -190,15 +213,23 @@ class MYROBOT(PyBulletRobot):
 
     def set_joint_neutral(self) -> None:
         """Set the robot to its neutral pose."""
+        #print("datasetFileName in myRobot.py:", self.datasetFileName)
         if self.config['randomStart']==True:
-            #seed=None
-            #np_random, seed = gym.utils.seeding.np_random(seed)
-            sampledAngles = self.np_random_start.uniform(self.jointLimitLow, self.jointLimitHigh)
-            #print("sampledAngles in myRobot.py:", sampledAngles)
+            random_indices = self.np_random_start.choice(self.dataset.shape[0], size=1, replace=False)
+            if self.config['visualizeFailedSamples'] == True :
+                random_indices[0] = self.currentSampleIndex
+                self.currentSampleIndex +=1
+            sampledAngles = self.dataset[random_indices][0]
+            #sampledAngles = [-1.3752308  , 0.97254075 , 4.25507331,  1.35478544 ,-1.97200273 ,-3.72854775]
+            self.currentSampledAnglesStart = sampledAngles
+            #print("current start angle:", sampledAngles)
             self.set_joint_angles(sampledAngles)
         else:
             self.set_joint_angles(self.neutral_joint_values)
-
+        
+        startingPose = self.get_ee_position()
+        #print("startingPose in myrobot.py:", startingPose)
+        
     def get_fingers_width(self) -> float:
         """Get the distance between the fingers."""
         finger1 = self.sim.get_joint_angle(self.body_name, self.fingers_indices[0])

@@ -39,7 +39,7 @@ save_freq: !!float 100e6              # Number of timesteps for saving checkpoin
 sampleJointAnglesGoal: True           # Sample random goals(Position+Orientation). If this is FALSE, then you should determine goal_range value
 goal_range: 0.5                       # Goal range for sampling the goals(desired points)
 randomStart: True                     # Sample random starting goals(Position+Orientation) If this is FALSE, then you should determine neutral_joint_values below
-neutral_joint_values: [3.1416, 0.5236, -2, -2.38, -5, 3.1416]
+neutral_joint_values: [4, 0.5236, -2, 2.38, -5, 3.31]
 lambdaErr: 100.0                      # One of the parameters for reward function exp(-k*d*d)
 orientationConstant: 1                # One of the parameters for reward function exp(-k*d*d)
 addOrientation: True                 # Use orientation information as states. If FALSE, do not use

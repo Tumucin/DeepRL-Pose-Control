@@ -7,8 +7,7 @@ import gym.utils.seeding
 import numpy as np
 
 from panda_gym.pybullet import PyBullet
-
-
+import pybullet as p 
 class PyBulletRobot(ABC):
     """Base class for robot env.
 
@@ -45,12 +44,21 @@ class PyBulletRobot(ABC):
             file_name (str): The URDF file name of the robot.
             base_position (np.ndarray): The position of the robot, as (x, y, z).
         """
-        self.sim.loadURDF(
-            body_name=self.body_name,
-            fileName=file_name,
-            basePosition=base_position,
-            useFixedBase=True,
-        )
+        if self.sim.enableSelfCollision:
+            self.sim.loadURDF(
+                body_name=self.body_name,
+                fileName=file_name,
+                basePosition=base_position,
+                useFixedBase=True,
+                flags = p.URDF_USE_SELF_COLLISION
+            )
+        else:
+            self.sim.loadURDF(
+                body_name=self.body_name,
+                fileName=file_name,
+                basePosition=base_position,
+                useFixedBase=True,
+            )
 
     def setup(self) -> None:
         """Called after robot loading."""
@@ -250,6 +258,7 @@ class RobotTaskEnv(gym.GoalEnv):
         task_obs = self.task.get_obs()  # object position, velococity, etc...
         observation = np.concatenate([robot_obs, task_obs])
         deltax = self.task.get_goal() - self.task.get_achieved_goal()
+        
         observation = np.concatenate([observation, deltax])
         achieved_goal = self.task.get_achieved_goal()
         isSuccess = self.task.is_success(self.task.get_achieved_goal(), self.task.get_goal())
@@ -265,8 +274,10 @@ class RobotTaskEnv(gym.GoalEnv):
 
     def reset(self) -> Dict[str, np.ndarray]:
         with self.sim.no_rendering():
+            #self.sim.checkRandomSampleAngles(self.robot.kinematic.numbOfJoints)
             self.robot.reset()
             self.task.reset()
+            #self.sim.isCollision = False
             self.robot.goalFrame = self.task.goalFrame
         return self._get_obs()
 
@@ -277,10 +288,23 @@ class RobotTaskEnv(gym.GoalEnv):
         obs = self._get_obs()
         done = False
         info = {"is_success": self.task.is_success(obs["achieved_goal"], self.task.get_goal())}
-
         self.task.quaternionAngleError = self.robot.quaternionAngleError
         self.task.quaternionDistanceError = self.robot.quaternionDistanceError
         reward = self.task.compute_reward(obs["achieved_goal"],self.task.get_goal(), info)
+<<<<<<< HEAD
+=======
+        error = abs(obs['achieved_goal'] - obs['desired_goal'])
+        #print("error in core.py:", )
+        if self.sim.isCollision == True:
+            if np.linalg.norm(error) <0.05:
+                self.sim.numberOfCollisionsBelow5cm+=1
+            else:
+                self.sim.numberOfCollisionsAbove5cm+=1
+            reward = reward - self.robot.config['collisionConstant']
+            #self.reset()
+            self.sim.isCollision = False
+            done = True
+>>>>>>> PoseControl
         assert isinstance(reward, float)  # needed for pytype cheking
         return obs, reward, done, info
 

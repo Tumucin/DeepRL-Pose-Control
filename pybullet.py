@@ -10,7 +10,9 @@ import pybullet_data
 import pybullet_utils.bullet_client as bc
 
 import panda_gym.assets
-
+import gym.utils.seeding
+import PyKDL
+import math
 
 class PyBullet:
     """Convenient class to use PyBullet physics engine.
@@ -23,7 +25,7 @@ class PyBullet:
     """
 
     def __init__(
-        self, render: bool = False, n_substeps: int = 5, background_color: np.ndarray = np.array([223.0, 54.0, 45.0]), config=None
+        self, render: bool = False, n_substeps: int = 20, background_color: np.ndarray = np.array([255.0, 255.0, 255.0]), config=None
     ) -> None:
         self.background_color = background_color.astype(np.float64) / 255
         options = "--background_color_red={} \
@@ -37,7 +39,7 @@ class PyBullet:
         self.physics_client.configureDebugVisualizer(p.COV_ENABLE_MOUSE_PICKING, 0)
 
         self.n_substeps = n_substeps
-        self.timestep = 1.0 / 500
+        self.timestep = 1.0 / 2000
         #self.timestep = 10.0/1000.0
         self.physics_client.setTimeStep(self.timestep)
         self.physics_client.resetSimulation()
@@ -57,6 +59,30 @@ class PyBullet:
         self.angleErrorText = None
         self.body_name = config['body_name']
         self.ee_link = config['ee_link']
+        self.enableSelfCollision = config['enableSelfCollision']
+        self.isCollision = False
+        self.numberOfCollisionsBelow5cm = 0
+        self.numberOfCollisionsAbove5cm = 0
+        self.visualShape = None
+        self.np_random_start, _ = gym.utils.seeding.np_random(100)
+        self.xPointsForDataset = []
+        self.yPointsForDataset = []
+        self.zPointsForDataset = []
+        self.anglesForDataset = []
+        self.anglesForDatasetList = []
+        if self.body_name == "panda":
+            self.consecutive_link_pairs={(4,6):True,(9,10):True,(6,8):True, (4,8):True}
+        
+        if self.body_name == "j2s7s300":
+            self.consecutive_link_pairs={(4,9):True,(11,15):True,(13,17):True,(3,5):True,(6,9):True, 
+                                         (12,16):True, (9,13):True, (15,17):True, (15,16):True, (14,16):True, (14,17):True, (11,17):True}
+
+        if self.body_name == "j2n6s300":
+            self.consecutive_link_pairs={(14,19):True}
+
+        if self.body_name == "ur5":
+            self.consecutive_link_pairs={(1,-1):True, (2,4):True, (2,5):True}
+
     @property
     def dt(self):
         """Timestep."""
@@ -66,30 +92,83 @@ class PyBullet:
         """Step the simulation."""
         if self.counter%100==0:
             self.drawFrameForCurrentPose()
+            
         for _ in range(self.n_substeps):
             self.physics_client.stepSimulation()
 
+        if self.enableSelfCollision:
+            self.changeLinkColorOnCollision()
+
+    def checkRandomSampleAngles(self, numberOfJoints):
+        eePositionForDataset = self.get_link_position(self.body_name, self.ee_link)
+        angleForDataset = [self.get_joint_angle(self.body_name, joint=i) for i in range(numberOfJoints) ]
+        #print("current ee position in pybullet.py:", self.initialeePositionForDataset)
+        calculatedRadius = np.sqrt(eePositionForDataset[0]**2 + eePositionForDataset[1]**2)
+        theta = math.atan2(eePositionForDataset[1], eePositionForDataset[0])
+        thetaDegree = math.degrees(theta)
+        if (0.20<calculatedRadius < 1) and (abs(thetaDegree)<20) and (eePositionForDataset[2] > -0.1) and (eePositionForDataset[2] < 0.9) and self.isCollision==False:
+            self.xPointsForDataset.append(eePositionForDataset[0])
+            self.yPointsForDataset.append(eePositionForDataset[1])
+            self.zPointsForDataset.append(eePositionForDataset[2])
+            #print("angles for dataset:", self.anglesForDataset)
+            self.anglesForDatasetList.append(angleForDataset)
+            print("This random angles can be used for the dataset.")
+
+    def changeLinkColorOnCollision(self):
+        if self.visualShape == None:
+            self.visualShape = p.getVisualShapeData(0)
+        contactPoints =self.physics_client.getContactPoints(self._bodies_idx[self.body_name],self._bodies_idx[self.body_name])
+        coloredLinksList=[]
+        for contact in contactPoints:     
+            if (contact[3],contact[4]) not in self.consecutive_link_pairs:
+                #print("first link:", cont[3]+1)
+                #print("second link:", cont[4]+1)
+                coloredLinksList.append((contact[3],contact[4]))
+                
+                p.changeVisualShape(contact[1], contact[3], rgbaColor=[1.0, 0.0, 0.0, 1])
+                p.changeVisualShape(contact[2], contact[4], rgbaColor=[1.0, 0.0, 0.0, 1])
+                self.isCollision = True
+        #self.checkRandomSampleAngles(6)
+        #if self.isCollision == False:
+        #    eePosition = self.get_link_position(self.body_name, self.ee_link)
+        #    #print("eePosiiton after step:", self.initialeePositionForDataset)
+        #    self.xPointsForDataset.append(self.initialeePositionForDataset[0])
+        #    self.yPointsForDataset.append(self.initialeePositionForDataset[1])
+        #    self.zPointsForDataset.append(self.initialeePositionForDataset[2])
+        #    self.anglesForDatasetList.append(self.anglesForDataset)
+
+        #p.changeVisualShape(0, 1, rgbaColor=[1.0, 1.0, 0.0, 1])
+        #p.changeVisualShape(0, 5, rgbaColor=[1.0, 0.0, 0.0, 1])
+        if len(coloredLinksList)>0:
+            print("Collied pairs:", coloredLinksList)
+            #time.sleep(5)
+            pass
+
+        for pairedLinks in coloredLinksList:
+            p.changeVisualShape(0, pairedLinks[0], rgbaColor=[self.visualShape[0][7][0], self.visualShape[0][7][1], self.visualShape[0][7][2], self.visualShape[0][7][3]])
+            p.changeVisualShape(0, pairedLinks[1], rgbaColor=[self.visualShape[0][7][0], self.visualShape[0][7][1], self.visualShape[0][7][2], self.visualShape[0][7][3]])
+
     def drawInfosOnScreen(self, positionError, currentJointVelocitiesNorm, angleError)-> None:
-        text_pos1 = [0, 0, -0.1] # Position of the text in world coordinates
-        text_pos2 = [0, 0, -0.15] # Position of the text in world coordinates
-        text_pos3 = [0, 0, -0.2] # Position of the text in world coordinates
-        text_pos4 = [0, 0, -0.25] # Position of the text in world coordinates
-        text_color = [1, 0, -0.3] # Blue color
-        text_size = 1 # Text size in pixels
+        #text_pos1 = [0, 0, -0.1] # Position of the text in world coordinates
+        text_pos2 = [0, 0, 0.4] # Position of the text in world coordinates
+        text_pos3 = [0, 0, 0.3] # Position of the text in world coordinates
+        text_pos4 = [0, 0, 0.2] # Position of the text in world coordinates
+        text_color = [1, 0.64, 0] # Blue color
+        text_size = 1.25 # Text size in pixels
 
         if self.counter%100 == 0:
             if self.velocityNormText!=None:
-                p.removeUserDebugItem(self.timeStepText)
+                #p.removeUserDebugItem(self.timeStepText)
                 p.removeUserDebugItem(self.positionErrorText)
                 p.removeUserDebugItem(self.angleErrorText)
                 p.removeUserDebugItem(self.velocityNormText)
-            self.timeStepText = p.addUserDebugText("TIMESTEP:   "+str(self.counter), text_pos1, text_color, text_size)
-            self.positionErrorText = p.addUserDebugText("POSITION ERROR [m]:   "+str(positionError), text_pos2, text_color, text_size)
-            self.angleErrorText = p.addUserDebugText("ANGLE ERROR [rad]:   "+str(angleError), text_pos3, text_color, text_size)
-            self.velocityNormText = p.addUserDebugText("VELOCITYNORM [rad/s]:   "+str(currentJointVelocitiesNorm), text_pos4, text_color, text_size)
+            #self.timeStepText = p.addUserDebugText("TIMESTEP:   "+str(self.counter), text_pos1, text_color, text_size)
+            self.positionErrorText = p.addUserDebugText("Position error [m]:   "+str(positionError), text_pos2, text_color, text_size)
+            self.angleErrorText = p.addUserDebugText("Orientation error [rad]:   "+str(angleError), text_pos3, text_color, text_size)
+            self.velocityNormText = p.addUserDebugText("Joint velocities norm[rad/s]:   "+str(currentJointVelocitiesNorm), text_pos4, text_color, text_size)
             
         self.counter +=1
-        if self.counter==800:
+        if self.counter==1000:
             self.counter=0
     def close(self) -> None:
         """Close the simulation."""
@@ -373,9 +452,25 @@ class PyBullet:
             joints (np.ndarray): List of joint indices, as a list of ints.
             angles (np.ndarray): List of target angles, as a list of floats.
         """
+        #angles = [0,0,0,0,0,0]
         for joint, angle in zip(joints, angles):
             self.set_joint_angle(body=body, joint=joint, angle=angle)
+        #print(self.get_link_position(self.body_name, self.ee_link))
 
+        #self.createDataset(body, joints)
+
+    def createDataset(self, body, joints):
+        urdfFileName = 'ur5_robot.urdf'
+        jointLimitLow = np.array([ -6.2831, -6.2831, -6.2831, -6.2831, -6.2831, -6.2831])
+        jointLimitHigh = np.array([6.2831,  6.2831,  6.2831,  6.2831, 6.2831, 6.2831])
+        goal = np.empty(3)
+        self.anglesForDataset = self.np_random_start.uniform(jointLimitLow, jointLimitHigh)
+        #self.anglesForDataset = [-1.3752308  , 0.97254075 , 4.25507331,  1.35478544 ,-1.97200273 ,-3.72854775]
+        for joint, angle in zip(joints, self.anglesForDataset):
+            self.set_joint_angle(body=body, joint=joint, angle=angle)
+            #time.sleep(1)
+        
+                #print(self.anglesForDataset)
     def set_joint_angle(self, body: str, joint: int, angle: float) -> None:
         """Set the angle of the joint of the body.
 
@@ -454,7 +549,9 @@ class PyBullet:
         """
         self._bodies_idx[body_name] = self.physics_client.loadURDF(**kwargs)
 
-    def create_box(
+        links = [idx for idx in range(-1, 13)]
+
+    def create_box( 
         self,
         body_name: str,
         half_extents: np.ndarray,

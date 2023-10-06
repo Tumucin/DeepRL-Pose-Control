@@ -32,16 +32,14 @@ class Reach(Task):
         self.goalFrame = None
         self.quaternionAngleError = 0.0
         self.quaternionDistanceError = 0.00
-        self.lambdaErr = self.config['lambdaErr']
-        self.accelerationConstant = self.config['accelerationConstant']
-        self.velocityConst = self.config['velocityConstant']
-        self.velocityNormThreshold = self.config['velocityNormThreshold']
-        self.thresholdConstant = self.config['thresholdConstant']
-        self.alpha = self.config['alpha']
-        self.orientationConstant = self.config['orientationConstant']
+        self.currentSampledAnglesReach = None
         self.np_random_reach, _ = gym.utils.seeding.np_random()
-        self.jointLimitLow = np.array(self.config['jointLimitLow'])
-        self.jointLimitHigh = np.array(self.config['jointLimitHigh'])
+        self.currentSampleIndex = 0
+        if self.config['CurriLearning'] == True:
+            self.datasetFileName = self.config['datasetPath'] + "/" + self.config['body_name'] + "_" + self.config['curriculumFirstWorkspaceId']+".csv"
+        else:
+            self.datasetFileName = self.config['datasetPath'] + "/" + self.config['body_name'] + "_" + self.config['finalWorkspaceID']+".csv"
+        self.dataset = np.genfromtxt(self.datasetFileName, delimiter=',', skip_header=1)
         with self.sim.no_rendering():
             self._create_scene()
             self.sim.place_visualizer(target_position=np.zeros(3), distance=0.9, yaw=45, pitch=-30)
@@ -75,21 +73,25 @@ class Reach(Task):
         
     def _sample_goal(self) -> np.ndarray:
         """Randomize goal."""
+        #print("datasetFileName in reach.py:", self.datasetFileName)
         goal_range_low = np.array([-self.config['goal_range'] / 2, -self.config['goal_range'] / 2, 0])
         goal_range_high = np.array([self.config['goal_range'] / 2, self.config['goal_range'] / 2, self.config['goal_range']])
         goal = self.np_random_reach.uniform(goal_range_low, goal_range_high)
         if self.config['sampleJointAnglesGoal']==True:
-            sampledAngles = self.np_random_reach.uniform(self.jointLimitLow, self.jointLimitHigh)
-            #print("sampledAngles in reach.py:", sampledAngles)            
+            random_indices = self.np_random_reach.choice(self.dataset.shape[0], size=1, replace=False)
+            if self.config['visualizeFailedSamples'] == True :
+                random_indices[0] = self.currentSampleIndex
+                self.currentSampleIndex +=1
+
+            sampledAngles = self.dataset[random_indices][0]
+            self.currentSampledAnglesReach = sampledAngles
+            #print("current target angle:", sampledAngles)
             q_in = PyKDL.JntArray(self.kinematics.numbOfJoints)
             for i in range(self.kinematics.numbOfJoints):
                 q_in[i] = sampledAngles[i]
-            #q_in[0], q_in[1], q_in[2], q_in[3] =sampledAngles[0], sampledAngles[1], sampledAngles[2], sampledAngles[3]
-            #q_in[4], q_in[5], q_in[6] = sampledAngles[4], sampledAngles[5], sampledAngles[6]
             goalFrame = self.kinematics.forwardKinematicsPoseSolv(q_in)
             goalFrame.p[0] = goalFrame.p[0] #+0.6
             goal[0], goal[1], goal[2] = goalFrame.p[0], goalFrame.p[1], goalFrame.p[2]
-        #goal[0], goal[1], goal[2] = 0.5, -0.3, 0.3
         self.goalFrame = goalFrame
         
         return goal
@@ -100,20 +102,22 @@ class Reach(Task):
 
     def compute_reward(self,achieved_goal,desired_goal, info: Dict[str, Any]) -> Union[np.ndarray, float]:        
         d = distance(achieved_goal, desired_goal)
+        #print("achieved_goal in reach.py:", achieved_goal)
         currentJointVelocities = np.array([self.sim.get_joint_velocity(self.sim.body_name,joint=i) for i in range(7)])
+        #print("current jnt vel in reach.py:", currentJointVelocities)
         currentJointAccelerations = (currentJointVelocities - self.previousJointVelocities)/(self.sim.timestep)
         self.previousJointVelocities = currentJointVelocities
         currentJointVelocitiesNorm = np.linalg.norm(currentJointVelocities)
         self.sim.drawInfosOnScreen(d, currentJointVelocitiesNorm, self.quaternionAngleError)
         
         if self.reward_type == "sparse":
-            return np.exp(-(self.lambdaErr)*(d*d)) - self.accelerationConstant*currentJointVelocitiesNorm
+            return np.exp(-(self.config['lambdaErr'])*(d*d)) - self.config['accelerationConstant']*currentJointVelocitiesNorm
         else:
             if self.config['addOrientation'] == True:
 
-                return np.exp(-(self.lambdaErr)*(d*d)) - self.accelerationConstant*np.linalg.norm(currentJointAccelerations) - (self.velocityConst*currentJointVelocitiesNorm)/(1+self.alpha*d)+ \
-                    self.thresholdConstant*np.array(d < self.distance_threshold, dtype=np.float64)*np.array(currentJointVelocitiesNorm < self.velocityNormThreshold, dtype=np.float64)+\
-                    np.exp(-(self.orientationConstant)*(self.quaternionAngleError**2))     
+                return np.exp(-(self.config['lambdaErr'])*(d*d)) - self.config['accelerationConstant']*np.linalg.norm(currentJointAccelerations) - (self.config['velocityConstant']*currentJointVelocitiesNorm)/(1+self.config['alpha']*d)+ \
+                    self.config['thresholdConstant']*np.array(d < self.distance_threshold, dtype=np.float64)*np.array(currentJointVelocitiesNorm < self.config['velocityNormThreshold'], dtype=np.float64)+\
+                    np.exp(-(self.config['orientationConstant'])*(self.quaternionAngleError**2))     
             else:
-                return np.exp(-(self.lambdaErr)*(d*d)) - self.accelerationConstant*np.linalg.norm(currentJointAccelerations) - (self.velocityConst*currentJointVelocitiesNorm)/(1+self.alpha*d)+ \
-                    self.thresholdConstant*np.array(d < self.distance_threshold, dtype=np.float64)*np.array(currentJointVelocitiesNorm < self.velocityNormThreshold, dtype=np.float64)
+                return np.exp(-(self.config['lambdaErr'])*(d*d)) - self.config['accelerationConstant']*np.linalg.norm(currentJointAccelerations) - (self.config['velocityConstant']*currentJointVelocitiesNorm)/(1+self.config['alpha']*d)+ \
+                    self.config['thresholdConstant']*np.array(d < self.distance_threshold, dtype=np.float64)*np.array(currentJointVelocitiesNorm < self.config['velocityNormThreshold'], dtype=np.float64)

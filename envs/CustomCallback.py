@@ -28,7 +28,7 @@ class CUSTOMCALLBACK(BaseCallback):
         # # Sometimes, for event callback, it is useful
         # # to have access to the parent object
         # self.parent = None  # type: Optional[BaseCallback]
-        self.currentWorkspace = 0 # 0 means that it is fixed 
+        self.currentWorkspace = 1 # 0 means that it is fixed 
         self.currentIteration = 0
         self.workspaceLen = None
         self.config = config
@@ -40,7 +40,7 @@ class CUSTOMCALLBACK(BaseCallback):
         self.mae = 0
         self.avgJntVel = 0
         self.counterTesting = 1
-        
+        self.datasetFileName = self.config['datasetPath'] + "/" + self.config['body_name'] + "_" + self.config['curriculumFirstWorkspaceId']+".csv"
         
 
     def evaluatePolicy(self, numberOfSteps, model, env):
@@ -64,7 +64,8 @@ class CUSTOMCALLBACK(BaseCallback):
             error = abs(obs['achieved_goal'] - obs['desired_goal'])
             mae = np.linalg.norm(error) + mae
             squaredError += np.sum(error**2)
-            avgJntVel = np.linalg.norm(env.robot.finalAction) + avgJntVel
+            currentJntVel = np.array([env.task.sim.get_joint_velocity(env.task.sim.body_name,joint=i) for i in range(7)])
+            avgJntVel = np.linalg.norm(currentJntVel) + avgJntVel
             d1 = env.robot.goalFrame.M.GetQuaternion()
             c1 = env.sim.get_link_orientation(env.sim.body_name, self.config['ee_link'])
             desiredQuaternion = Quaternion(d1[3], d1[0], d1[1], d1[2])
@@ -109,7 +110,7 @@ class CUSTOMCALLBACK(BaseCallback):
             flag = True
 
         if self.workspaceLen == None:
-            self.workspaceLen = len(self.training_env.envs[0].robot.workspacesdict)/2 - 1
+            self.workspaceLen = self.config['workspaceLen'] 
         
         if flag and self.currentWorkspace < self.workspaceLen and self.config['CurriLearning']:
             print("current iteration in customCallBack.py:", self.currentIteration)
@@ -128,17 +129,29 @@ class CUSTOMCALLBACK(BaseCallback):
             if self.mae < self.config['maeThreshold'] and self.avgJntVel < self.config['avgJntVelThreshold'] :
                 # Change workspace 
                 self.currentWorkspace+=1
-                
+                print("before (robot) training workspace:", self.training_env.envs[0].robot.datasetFileName)
+                print("before (task) training workspace:", self.training_env.envs[0].task.datasetFileName)
+
+                print("before (robot) testing workspace:", self.testingEnv.robot.datasetFileName)
+                print("before (task) testing workspace:", self.testingEnv.task.datasetFileName)
+                self.datasetFileName = self.config['datasetPath'] + "/" + self.config['body_name'] + "_W" +str(self.currentWorkspace) + ".csv"
+                self.dataset = np.genfromtxt(self.datasetFileName, delimiter=',', skip_header=1)
                 for i in range(self.training_env.num_envs):
-                    self.training_env.envs[i].robot.jointLimitLow = self.training_env.envs[i].robot.workspacesdict['W'+str(self.currentWorkspace)+"Low"]
-                    self.training_env.envs[i].robot.jointLimitHigh = self.training_env.envs[i].robot.workspacesdict['W'+str(self.currentWorkspace)+"High"]
-                    self.testingEnv.robot.jointLimitLow = self.training_env.envs[i].robot.workspacesdict['W'+str(self.currentWorkspace)+"Low"]
-                    self.testingEnv.robot.jointLimitHigh = self.training_env.envs[i].robot.workspacesdict['W'+str(self.currentWorkspace)+"High"]
-                #print("currentWorkspace:", self.currentWorkspace)
-                print("training new jointLimitLow:", self.training_env.envs[0].robot.jointLimitLow)
-                print("training new jointLimitHigh:", self.training_env.envs[0].robot.jointLimitHigh)
-                print("testing new jointLimitLow:", self.testingEnv.robot.jointLimitLow)
-                print("testing new jointLimitHigh:", self.testingEnv.robot.jointLimitHigh)
+                    self.training_env.envs[i].robot.datasetFileName = self.datasetFileName
+                    self.training_env.envs[i].task.datasetFileName = self.datasetFileName
+                    self.training_env.envs[i].robot.dataset = self.dataset
+                    self.training_env.envs[i].task.dataset = self.dataset
+
+                    self.testingEnv.robot.datasetFileName = self.datasetFileName
+                    self.testingEnv.task.datasetFileName = self.datasetFileName
+                    self.testingEnv.robot.dataset = self.dataset
+                    self.testingEnv.task.dataset = self.dataset
+
+                print("after (robot) training workspace:", self.training_env.envs[0].robot.datasetFileName)
+                print("after (task) training workspace:", self.training_env.envs[0].task.datasetFileName)
+
+                print("after (robot) testing workspace:", self.testingEnv.robot.datasetFileName)
+                print("after (task) testing workspace:", self.testingEnv.task.datasetFileName)
 
         self.logger.record("rollout/currentWorkspace", self.currentWorkspace)
         self.logger.record("rollout/rmse", self.rmse)
