@@ -291,8 +291,6 @@ class RobotTaskEnv(gym.GoalEnv):
         self.task.quaternionAngleError = self.robot.quaternionAngleError
         self.task.quaternionDistanceError = self.robot.quaternionDistanceError
         reward = self.task.compute_reward(obs["achieved_goal"],self.task.get_goal(), info)
-<<<<<<< HEAD
-=======
         error = abs(obs['achieved_goal'] - obs['desired_goal'])
         #print("error in core.py:", )
         if self.sim.isCollision == True:
@@ -304,7 +302,6 @@ class RobotTaskEnv(gym.GoalEnv):
             #self.reset()
             self.sim.isCollision = False
             done = True
->>>>>>> PoseControl
         assert isinstance(reward, float)  # needed for pytype cheking
         return obs, reward, done, info
 
