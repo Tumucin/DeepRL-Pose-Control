@@ -7,7 +7,7 @@
 - [Usage](#usage)
 - [Training](#training)
   - [Agent1](#agent1)
-  - [Other Agents](#otherAgents)
+  - [Other Agents:Case1](#otherAgentsCase1)
 - [Evaluation](#evaluation)
 ## About
 - This repository contains the official implementation of the research paper titled **"Self-Collision Aware Reaching and Pose Control in Large Workspaces using Reinforcement Learning"**. You can find the paper [here](https://github.com/Tumucin/DeepRL-Pose-Control).
@@ -52,7 +52,7 @@ To use this package, follow these steps to update the necessary directory paths 
 ### TRAINING
 #### Agent1
 Please note that **"Agent1"** serves as a traditional baseline in this context. There is no training component associated with Agent1; it functions as a baseline reference.
-#### Other Agents
+#### Other Agents:Case1
 This example does not account for orientation at the target pose and also does not consider self-collisions.
 The training and evaluation procedures for Agents 2, 3, 4, and 5 are similar. The following command line uses Agent2 as an example. Please note that this command line performs both training and evaluation. Evaluation is conducted with 1000 random initial robot configurations and random target poses.
 To train **"Agent2"**, which functions as a Learning Baseline without the Pseudo-inverse module, follow these steps:
