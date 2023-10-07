@@ -55,5 +55,9 @@ python3 trainTest.py --mode True --expNumber 1 --configName "Agent2_Panda.yaml"
 ```
 Execute the command above to initiate training and testing for Agent2 on the Panda 7-DOF robotic arm: the trained model, log files, and information about failed samples will be saved to the directory specified in the corresponding YAML files. Metric results will be recorded and saved in the metrics$expNumber$.txt file, where expNumber corresponds to the experiment number.
 
+Once the training procedure is completed, you can visualize the trained model in the robot simulation using the following command:
+```setup
 python3 trainTest.py --expNumber 1 --configName "Agent2_Panda.yaml" --render True
+```
+
 
