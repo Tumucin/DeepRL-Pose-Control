@@ -21,7 +21,7 @@ body_name: 'panda'                    # Name of the robot
 baseLinkName: 'panda_link0'           # The name of the base link of a robot
 eeLinkName: 'panda_grasptarget'       # The name of the ee link of a robot
 base_position: [-0.6, 0.0, 0.0]       # Base position of the base link
-total_timesteps: !!float 32768000     # Total timesteps for training
+total_timesteps: !!float 2000     # Total timesteps for training
 mode: False                           # True: Training, False: Testing
 algorithm: "PPO"                      # Name of the algorithm
 policy: "MultiInputPolicy"            # Policy network
@@ -29,7 +29,7 @@ render: False                          # True: Render the sim, False: No Renderi
 enableSelfCollision: False            # Self-Collision
 switching: False                      # Switching modification as described in the paper
 gamma: 0.95                           # Discount Factor
-n_steps: 1000                         # The number of steps to run for each environment per update
+n_steps: 128                         # The number of steps to run for each environment per update
 n_epochs: 10                          # Number of epoch when optimizing the surrogate loss
 batch_size: 2048                      # Mini-batch size
 learning_rate: 0.0003                 # The learning rate

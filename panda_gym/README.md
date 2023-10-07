@@ -67,17 +67,31 @@ The trained model, log files, and information about failed samples will be saved
 python3 trainTest.py --mode True --expNumber 1 --configName "Agent2_Panda.yaml"
 ```
 #### Agent Training (Orientation, Collision)
-- To incorporate both orientation and self-collision considerations during training, set the **"addOrientation"** and **"enableSelfCollision"** variables to True.
+- To incorporate both orientation and self-collision considerations during training, set the **"addOrientation"** and **"enableSelfCollision"** variables in the config yaml files to True.
 ```setup
 # Orientation, collision
 python3 trainTest.py --mode True --expNumber 1 --configName "Agent2_Panda.yaml"
+```
+## Curriculum Learning
+#### Curriculum Learning without Considering Self-Collisions
+Agents 3 and 5 employ curriculum learning during training. We move on to the next region if the mean absolute error in position and the mean norm of the joint velocities at the final state are below thresholds if collisions are not taken into account. The following command line setups the curriculum learning:
+```setup
+python3 trainTest.py --mode True --expNumber 1 --configName "Agent3_Panda.yaml" --maeThreshold 0.05 --avgJntVelThreshold 0.15 --evalFreqOnTraining 3000000 --testSampleOnTraining 500
+```
+In this configuration, the training progress is evaluated every 3 million training steps, utilizing 500 samples for evaluation. If the mean absolute error in position is less than 5 cm and the mean norm of the joint velocities is less than 0.15 rad/s, the training process proceeds to the next region.
+#### Curriculum Learning with Considering Self-Collisions
+In this configuration, episodes are terminated upon collision. It's crucial to understand that the mean absolute error and mean norm of joint velocities metrics are not meaningful in this context.  Since **"maeThreshold"** and **"avgJntVelThreshold"** thresholds can not exceed 10, they are set to 10. However, these thresholds can be adjusted to other values, such as 15 or 20. This adjustment ensures the next curriculum region will be added to the current workspace. Thus, the number of training episodes is fixed when collision are taken into account. 
+```setup
+python3 trainTest.py --mode True --expNumber 1 --configName "Agent3_Panda.yaml" --maeThreshold 10 --avgJntVelThreshold 10 --evalFreqOnTraining 3000000
 ```
 ### Evaluation
 After completing the training procedure, you can evaluate the trained models to obtain metric results using the PyBullet simulator. The evaluation process includes using 1000 random initial robot configurations and random target poses. The results are saved to a .txt file as explained in the [Training](#training) section.
 ```setup
 python3 trainTest.py --expNumber 1 --configName "Agent2_Panda.yaml" --render True
 ```
+#### Switching (Optinal)
+We switch to raw pseudo-inverse control when the Euclidean distance between the end effector and the target position is below a threshold (i.e. only utilize \theta_{pinv}). It is important to note that this is only employed during inference and not during training.
+If you want to implement the switch modification, set the **"switching"** variable in the config yaml files to True. It is important to note that this is only employed during inference and not during training. Additionally, the switching mode can be executed solely within the hybrid model.
 
-## Curriculum Learning
 
 
