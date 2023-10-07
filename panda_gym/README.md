@@ -28,7 +28,7 @@ If you find this study useful, please cite using the following citation:
 ## Installation
 - Clone this repository to your local machine
 ```setup
-git clone 
+git clone https://github.com/Tumucin/DeepRL-Pose-Control.git
 ```
 - Go to panda_gym directory and create the conda environment
 ```setup
