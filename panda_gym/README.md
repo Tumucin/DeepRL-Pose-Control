@@ -1,5 +1,5 @@
 # Self-Collision Aware Reaching and Pose Control in Large Workspaces using Reinforcement Learning
-
+![](https://github.com/Tumucin/DeepRL-Pose-Control/blob/PoseControlConda/panda_gym/robots.gif)
 ## Table of Contents: 
 - [About](#about)
 - [Citation](#citation)
