@@ -13,7 +13,9 @@
   - [Curriculum Learning](#curriculumLearning)
     - [Curriculum Learning without Considering Self-Collisions](#curriculumLearningwithoutConsideringSelf-Collisions)
     - [Curriculum Learning with Considering Self-Collisions](#curriculumLearningwithconsideringSelf-Collisions)
+  - [Reward Function Design](#rewardFunctionDesign)
 - [Evaluation](#evaluation)
+- [Switching](#switching)
 ## About
 - This repository contains the official implementation of the research paper titled **"Self-Collision Aware Reaching and Pose Control in Large Workspaces using Reinforcement Learning"**. You can find the paper [here](https://github.com/Tumucin/DeepRL-Pose-Control).
 - The codebase is developed and tested using Python, along with the following libraries:
