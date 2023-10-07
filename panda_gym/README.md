@@ -44,3 +44,5 @@ bash install.sh
 To use this package, follow these steps to update the necessary directory paths in the code and configuration files:
 - Modify line 27 and line 29 in the **"panda_reach.py"** file, located within the **"DeepRL-Pose-Control/panda_gym/envs/panda_tasks"** directory, to match the folder locations specific to your setup.
 - Navigate to the **"DeepRL-Pose-Control/panda_gym/envs/configFiles"** directory. Within this directory,  update the paths specified in the first six lines of each file to reflect the correct directory locations for your configuration.
+
+### Training
