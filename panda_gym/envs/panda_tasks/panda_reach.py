@@ -24,9 +24,9 @@ class PandaReachEnv(RobotTaskEnv):
         #with open('/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/configFiles/'+lines[0]) as f:
         #    config = yaml.load(f, Loader=SafeLoader)
         
-        with open('/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/currentConfigNumber.txt') as f:
+        with open('/home/tumu/git_workspace/DeepRL-Pose-Control/panda_gym/envs/currentConfigNumber.txt') as f:
             lines = f.readlines()
-        with open('/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/configFiles/'+lines[0]) as f:
+        with open('/home/tumu/git_workspace/DeepRL-Pose-Control/panda_gym/envs/configFiles/'+lines[0]) as f:
             config = yaml.load(f, Loader=SafeLoader)
         sim = PyBullet(render=render, config=config)
         robot = MYROBOT(sim, block_gripper=True, base_position=np.array(config['base_position']), control_type=control_type, config=config)

@@ -1,10 +1,10 @@
 #################### PATHS - LOCAL- ####################
-modelSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/modelhpc'
-logSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/loghpc'
-failedSamplesSavePath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/failedSamples'
-urdfPath: '/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
+modelSavePath: '/home/tumu/git_workspace/DeepRL-Pose-Control/modelhpc'
+logSavePath: '/home/tumu/git_workspace/DeepRL-Pose-Control/loghpc'
+failedSamplesSavePath: '/home/tumu/git_workspace/DeepRL-Pose-Control/failedSamples'
+urdfPath: '/home/tumu/git_workspace/DeepRL-Pose-Control/panda_gym/envs/robots/panda.urdf'
 file_name: "franka_panda/panda.urdf"
-datasetPath: "/home/tumu/anaconda3/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/pandaversion1"
+datasetPath: "/home/tumu/git_workspace/DeepRL-Pose-Control/panda_gym/envs/dataset/pandaversion1"
 
 #################### PATHS - HPC- ####################
 #modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
