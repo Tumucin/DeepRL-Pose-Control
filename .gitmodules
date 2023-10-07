@@ -1,19 +1,9 @@
-[submodule "envs/kdl_parser"]
-	path = envs/kdl_parser
+[submodule "panda_gym/envs/kdl_parser"]
+	path = panda_gym/envs/kdl_parser
 	url = https://github.com/ros/kdl_parser.git
-[submodule "envs/catkin"]
-	path = envs/catkin
+[submodule "panda_gym/envs/catkin"]
+	path = panda_gym/envs/catkin
 	url = https://github.com/ros/catkin.git
-[submodule "envs/catkin_ws/src/trac_ik"]
-	path = envs/catkin_ws/src/trac_ik
-	url = https://clemi@bitbucket.org/clemi/trac_ik.git
-	branch = devel
-[submodule "panda-gym/panda_gym/envs/kdl_parser"]
-	path = panda-gym/panda_gym/envs/kdl_parser
-	url = https://github.com/ros/kdl_parser.git
-[submodule "panda-gym/panda_gym/envs/catkin"]
-	path = panda-gym/panda_gym/envs/catkin
-	url = https://github.com/ros/catkin.git
-[submodule "panda-gym/panda_gym/envs/catkin_ws/src/trac_ik"]
-	path = panda-gym/panda_gym/envs/catkin_ws/src/trac_ik
+[submodule "panda_gym/envs/catkin_ws/src/trac_ik"]
+	path = panda_gym/envs/catkin_ws/src/trac_ik
 	url = https://clemi@bitbucket.org/clemi/trac_ik.git
