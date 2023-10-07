@@ -1,11 +1,11 @@
 # Self-Collision Aware Reaching and Pose Control in Large Workspaces using Reinforcement Learning
 ![](https://github.com/Tumucin/DeepRL-Pose-Control/blob/PoseControlConda/panda_gym/robots.gif)
 ## Table of Contents: 
-- [About](#about)
-- [Citation](#citation)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Training](#training)
+- [ABOUT](#about)
+- [CITATION](#citation)
+- [INSTALLATION](#installation)
+- [USAGE](#usage)
+- [TRAINING](#training)
   - [Agent1](#agent1)
   - [Other Agents:Case1](#otherAgentsCase1)
   - [Other Agents:Case2](#otherAgentsCase2)
@@ -14,10 +14,10 @@
     - [Curriculum Learning without Considering Self-Collisions](#curriculumLearningwithoutConsideringSelf-Collisions)
     - [Curriculum Learning with Considering Self-Collisions](#curriculumLearningwithconsideringSelf-Collisions)
   - [Reward Function Design](#rewardFunctionDesign)
-- [Evaluation](#evaluation)
-- [Switching](#switching)
+- [EVALUATION](#evaluation)
+- [SWITCHING](#switching)
 - [PRE-TRAINED MODELS](#preTrainedModels)
-## About
+## ABOUT
 - This repository contains the official implementation of the research paper titled **"Self-Collision Aware Reaching and Pose Control in Large Workspaces using Reinforcement Learning"**. You can find the paper [here](https://github.com/Tumucin/DeepRL-Pose-Control).
 - The codebase is developed and tested using Python, along with the following libraries:
   - [stable_baselines3](https://github.com/DLR-RM/stable-baselines3)
@@ -25,7 +25,7 @@
   - [panda-gym](https://github.com/qgallouedec/panda-gym)
 
 The development and testing were performed on an Ubuntu 18.04 system.
-## Citation
+## CITATION
 If you find this study useful, please cite using the following citation:
 ```bibtex
  @article{...,
@@ -37,7 +37,7 @@ If you find this study useful, please cite using the following citation:
    pdf = {$pdf$}
  }
 ```
-## Installation
+## INSTALLATION
 - Clone this repository to your local machine
 ```setup
 git clone https://github.com/Tumucin/DeepRL-Pose-Control.git
@@ -51,7 +51,7 @@ conda activate DeepRL-Pose-Control
 ```setup
 bash install.sh
 ```
-## Usage
+## USAGE
 
 To use this package, follow these steps to update the necessary directory paths in the code and configuration files:
 - Modify line 27 and line 29 in the **"panda_reach.py"** file, located within the **"DeepRL-Pose-Control/panda_gym/envs/panda_tasks"** directory, to match the folder locations specific to your setup.
