@@ -108,7 +108,7 @@ After completing the training procedure, you can evaluate the trained models to 
 ```setup
 python3 trainTest.py --expNumber 1 --configName "Agent2_Panda.yaml" --render True
 ```
-#### Switching (Optinal)
+#### Switching
 We switch to raw pseudo-inverse control when the Euclidean distance between the end effector and the target position is below a threshold (i.e. only utilize $`\theta_{pinv}`$). It is important to note that this is only employed during inference and not during training.
 If you want to implement the switch modification, set the **"switching"** variable in the config yaml files to True. It is important to note that this is only employed during inference and not during training. Additionally, the switching mode can be executed solely within the hybrid model.
 
