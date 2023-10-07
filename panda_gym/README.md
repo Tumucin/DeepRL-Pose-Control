@@ -6,6 +6,8 @@
 - [Installation](#installation)
 - [Usage](#usage)
 - [Training](#training)
+  - [Agent1(Traditional Baseline)](#agent1(Traditional Baseline))
+  - [Agent Training (No Orientation, No Collision)](#agent Training (No Orientation, No Collision))
 - [Evaluation](#evaluation)
 ## About
 - This repository contains the official implementation of the research paper titled **"Self-Collision Aware Reaching and Pose Control in Large Workspaces using Reinforcement Learning"**. You can find the paper [here](https://github.com/Tumucin/DeepRL-Pose-Control).
