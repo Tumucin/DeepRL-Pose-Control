@@ -50,14 +50,28 @@ To use this package, follow these steps to update the necessary directory paths 
 ### Training
 #### Agent1(Traditional Baseline)
 Please note that **"Agent1"** serves as a traditional baseline in this context. There is no training component associated with Agent1; it functions as a baseline reference.
-#### Agent Training
+#### Agent Training (No Orientation, No Collision)
+This example does not account for orientation at the target pose and also does not consider self-collisions.
 The training and evaluation procedures for Agents 2, 3, 4, and 5 are similar. The following command line uses Agent2 as an example. Please note that this command line performs both training and evaluation. Evaluation is conducted with 1000 random initial robot configurations and random target poses.
 To train **"Agent2"**, which functions as a Learning Baseline without the Pseudo-inverse module, follow these steps:
 ```setup
+# No Orientation, no collision
 python3 trainTest.py --mode True --expNumber 1 --configName "Agent2_Panda.yaml"
 ```
 The trained model, log files, and information about failed samples will be saved to the directory specified in the corresponding YAML files. Metric results will be recorded and saved in the metrics$expNumber$.txt file, where expNumber corresponds to the experiment number.
 
+#### Agent Training (Orientation, No Collision)
+- For this time, set the **"addOrientation"** variable in the config yaml files to True to consider orientation at the target pose.
+```setup
+# Orientation, no collision
+python3 trainTest.py --mode True --expNumber 1 --configName "Agent2_Panda.yaml"
+```
+#### Agent Training (Orientation, Collision)
+- To incorporate both orientation and self-collision considerations during training, set the **"addOrientation"** and **"enableSelfCollision"** variables to True.
+```setup
+# Orientation, collision
+python3 trainTest.py --mode True --expNumber 1 --configName "Agent2_Panda.yaml"
+```
 ### Evaluation
 After completing the training procedure, you can evaluate the trained models to obtain metric results using the PyBullet simulator. The evaluation process includes using 1000 random initial robot configurations and random target poses. The results are saved to a .txt file as explained in the [Training](#training) section.
 ```setup

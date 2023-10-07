@@ -21,7 +21,7 @@ body_name: 'panda'                    # Name of the robot
 baseLinkName: 'panda_link0'           # The name of the base link of a robot
 eeLinkName: 'panda_grasptarget'       # The name of the ee link of a robot
 base_position: [-0.6, 0.0, 0.0]       # Base position of the base link
-total_timesteps: !!float 2000     # Total timesteps for training
+total_timesteps: !!float 33000000     # Total timesteps for training
 mode: False                           # True: Training, False: Testing
 algorithm: "PPO"                      # Name of the algorithm
 policy: "MultiInputPolicy"            # Policy network
