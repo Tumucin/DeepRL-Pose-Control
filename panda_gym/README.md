@@ -4,7 +4,7 @@
 - [About](#about)
 - [Citation](#citation)
 - [Installation](#installation)
-- [Usage](#usage) 
+- [Usage](#usage)
 ## About
 - This repository contains the official implementation of the research paper titled **"Self-Collision Aware Reaching and Pose Control in Large Workspaces using Reinforcement Learning"**. You can find the paper [here](https://github.com/Tumucin/DeepRL-Pose-Control).
 - The codebase is developed and tested using Python, along with the following libraries:
@@ -48,14 +48,16 @@ To use this package, follow these steps to update the necessary directory paths 
 ### Training
 #### Agent1(Traditional Baseline)
 Please note that **"Agent1"** serves as a traditional baseline in this context. There is no training component associated with Agent1; it functions as a baseline reference.
-#### Agent2(Pure RL-Learning Baseline)
+#### Agent Training
+The training and evaluation procedures for Agents 2, 3, 4, and 5 are similar. The following command line uses Agent2 as an example. Please note that this command line performs both training and evaluation. Evaluation is conducted with 1000 random initial robot configurations and random target poses.
 To train **"Agent2"**, which functions as a Learning Baseline without the Pseudo-inverse module, follow these steps:
 ```setup
 python3 trainTest.py --mode True --expNumber 1 --configName "Agent2_Panda.yaml"
 ```
-Execute the command above to initiate training and testing for Agent2 on the Panda 7-DOF robotic arm: the trained model, log files, and information about failed samples will be saved to the directory specified in the corresponding YAML files. Metric results will be recorded and saved in the metrics$expNumber$.txt file, where expNumber corresponds to the experiment number.
+The trained model, log files, and information about failed samples will be saved to the directory specified in the corresponding YAML files. Metric results will be recorded and saved in the metrics$expNumber$.txt file, where expNumber corresponds to the experiment number.
 
-Once the training procedure is completed, you can visualize the trained model in the robot simulation using the following command:
+### Evaluation
+After completing the training procedure, you can evaluate the trained models to obtain metric results using the PyBullet simulator. The evaluation process includes using 1000 random initial robot configurations and random target poses. The results are saved to a .txt file as explained in the Training section.
 ```setup
 python3 trainTest.py --expNumber 1 --configName "Agent2_Panda.yaml" --render True
 ```
