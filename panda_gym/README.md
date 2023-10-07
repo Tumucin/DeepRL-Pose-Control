@@ -6,7 +6,7 @@
 - [Installation](#installation)
 - [Usage](#usage)
 - [Training](#training)
-  - [Agent1(Traditional Baseline)](#agent1(Traditional Baseline))
+  - [test](#test)
   - [Agent Training (No Orientation, No Collision)](#agent Training (No Orientation, No Collision))
 - [Evaluation](#evaluation)
 ## About
@@ -50,7 +50,7 @@ To use this package, follow these steps to update the necessary directory paths 
 - Navigate to the **"DeepRL-Pose-Control/panda_gym/envs/configFiles"** directory. Within this directory,  update the paths specified in the first six lines of each file to reflect the correct directory locations for your configuration.
 
 ### TRAINING
-#### Agent1(Traditional Baseline)
+#### test
 Please note that **"Agent1"** serves as a traditional baseline in this context. There is no training component associated with Agent1; it functions as a baseline reference.
 #### Agent Training (No Orientation, No Collision)
 This example does not account for orientation at the target pose and also does not consider self-collisions.
