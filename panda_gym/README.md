@@ -59,7 +59,7 @@ python3 trainTest.py --mode True --expNumber 1 --configName "Agent2_Panda.yaml"
 The trained model, log files, and information about failed samples will be saved to the directory specified in the corresponding YAML files. Metric results will be recorded and saved in the metrics$expNumber$.txt file, where expNumber corresponds to the experiment number.
 
 ### Evaluation
-After completing the training procedure, you can evaluate the trained models to obtain metric results using the PyBullet simulator. The evaluation process includes using 1000 random initial robot configurations and random target poses. The results are saved to a .txt file as explained in the Training [Training](#training) section.
+After completing the training procedure, you can evaluate the trained models to obtain metric results using the PyBullet simulator. The evaluation process includes using 1000 random initial robot configurations and random target poses. The results are saved to a .txt file as explained in the [Training](#training) section.
 ```setup
 python3 trainTest.py --expNumber 1 --configName "Agent2_Panda.yaml" --render True
 ```
