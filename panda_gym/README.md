@@ -8,6 +8,11 @@
 - [Training](#training)
   - [Agent1](#agent1)
   - [Other Agents:Case1](#otherAgentsCase1)
+  - [Other Agents:Case2](#otherAgentsCase2)
+  - [Other Agents:Case3](#otherAgentsCase3)
+  - [Curriculum Learning](#curriculumLearning)
+    - [Curriculum Learning without Considering Self-Collisions](#curriculumLearningwithoutConsideringSelf-Collisions)
+    - [Curriculum Learning with Considering Self-Collisions](#curriculumLearningwithconsideringSelf-Collisions)
 - [Evaluation](#evaluation)
 ## About
 - This repository contains the official implementation of the research paper titled **"Self-Collision Aware Reaching and Pose Control in Large Workspaces using Reinforcement Learning"**. You can find the paper [here](https://github.com/Tumucin/DeepRL-Pose-Control).
@@ -62,13 +67,13 @@ python3 trainTest.py --mode True --expNumber 1 --configName "Agent2_Panda.yaml"
 ```
 The trained model, log files, and information about failed samples will be saved to the directory specified in the corresponding YAML files. Metric results will be recorded and saved in the metrics$expNumber$.txt file, where expNumber corresponds to the experiment number.
 
-#### Agent Training (Orientation, No Collision)
+#### Other Agents:Case2
 - For this time, set the **"addOrientation"** variable in the config yaml files to True to consider orientation at the target pose.
 ```setup
 # Orientation, no collision
 python3 trainTest.py --mode True --expNumber 1 --configName "Agent2_Panda.yaml"
 ```
-#### Agent Training (Orientation, Collision)
+#### Other Agents:Case3
 - To incorporate both orientation and self-collision considerations during training, set the **"addOrientation"** and **"enableSelfCollision"** variables in the config yaml files to True.
 ```setup
 # Orientation, collision
