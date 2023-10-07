@@ -26,11 +26,13 @@ If you find this study useful, please cite using the following citation:
  }
 ```
 ## Installation
-
-- Go to panda_gym directory and create the conda environment
-
-
+- Clone this repository to your local machine
 ```setup
-pip install -r requirements.txt
+git clone 
+```
+- Go to panda_gym directory and create the conda environment
+```setup
+conda env create environment.yml
+conda activate DeepRL
 ```
 ## Tutorials
