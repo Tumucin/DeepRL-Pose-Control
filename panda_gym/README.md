@@ -47,3 +47,9 @@ To use this package, follow these steps to update the necessary directory paths 
 
 ### Training
 #### Agent1(Traditional Baseline)
+Please note that **"Agent1"** serves as a traditional baseline in this context. There is no training component associated with Agent1; it functions as a baseline reference.
+#### Agent2(Pure RL-Learning Baseline)
+Agent2 acts as a Learning Baselines as it does not contain Pseudo-inverse module. To train the Agent2 apply the following steps:
+```setup
+bash install.sh
+```
