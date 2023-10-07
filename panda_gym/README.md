@@ -64,4 +64,6 @@ After completing the training procedure, you can evaluate the trained models to 
 python3 trainTest.py --expNumber 1 --configName "Agent2_Panda.yaml" --render True
 ```
 
+## Curriculum Learning
+
 
