@@ -5,6 +5,7 @@ pip3 install -e .
 git submodule init
 git submodule update
 
+mkdir failedSamples
 # Install PyKDL module
 conda install -c conda-forge python-orocos-kdl
 

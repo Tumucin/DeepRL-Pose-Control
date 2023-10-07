@@ -100,7 +100,7 @@ class TRAINTEST():
         #print("successRate 5cm 20 degrees:", successRate520)
         #print("successRate 5cm 10 degrees:", successRate510)
         with open("metrics"+str(self.config['expNumber'])+".txt", 'w') as f:
-            f.write('{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}'.format(rmse, mae, successRate1, successRate5, avgJntVel, 
+            f.write('rmse:{}\nmae:{}\n1cm SR:{}\n5cm SR:{}\nMJV:{}\n{}\n{}\n# of collisions below 5cm:{}\n# of collisions above 5cm:{}\n10cm30deg SR:{}\n10cm20deg SR:{}\n10cm10deg SR:{}\n5cm30deg SR:{}\n5cm30deg SR:{}\n5cm30deg SR:{}'.format(rmse, mae, successRate1, successRate5, avgJntVel, 
                                                         avgQuaternionDistance, avgQuaternionAngle, env.sim.numberOfCollisionsBelow5cm,
                                                         env.sim.numberOfCollisionsAbove5cm,
                                                         successRate1030, successRate1020, successRate1010,
@@ -373,8 +373,8 @@ def main():
     parser.add_argument('--expNumber',type=int, help="Experiement number")
     parser.add_argument('--curriNumber', type=int, help="If you want to use Curriculum learning,then determine the experiement number")
     parser.add_argument('--total_timesteps', type=float)
-    parser.add_argument('--mode', type=bool, help="Traning:True, Testing:False")
-    parser.add_argument('--render', type=bool, help="Rendering")
+    parser.add_argument('--mode', type=bool, default=False,help="Traning:True, Testing:False")
+    parser.add_argument('--render', type=bool, default=False,help="Rendering")
     parser.add_argument('--gamma', type=float, help=" Discount factor")
     parser.add_argument('--n_steps', type= int, help="The number of steps to run for each environment per update")
     parser.add_argument('--n_epochs', type= int, help="The number of epochs for training")
@@ -417,10 +417,10 @@ def main():
         config = yaml.load(f, Loader=SafeLoader)
     
     for arg in args._get_kwargs():
+        print(arg)
         if not arg[1]==None:
             config[arg[0]] = arg[1]
     trainTest = TRAINTEST(config)
-    
     if trainTest.config['algorithm']=="PPO":
         algorithm = PPO
         
