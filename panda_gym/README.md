@@ -46,3 +46,4 @@ To use this package, follow these steps to update the necessary directory paths 
 - Navigate to the **"DeepRL-Pose-Control/panda_gym/envs/configFiles"** directory. Within this directory,  update the paths specified in the first six lines of each file to reflect the correct directory locations for your configuration.
 
 ### Training
+#### Agent1(Traditional Baseline)
