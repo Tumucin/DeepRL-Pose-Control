@@ -47,7 +47,7 @@ To use this package, follow these steps to update the necessary directory paths 
 - Modify line 27 and line 29 in the **"panda_reach.py"** file, located within the **"DeepRL-Pose-Control/panda_gym/envs/panda_tasks"** directory, to match the folder locations specific to your setup.
 - Navigate to the **"DeepRL-Pose-Control/panda_gym/envs/configFiles"** directory. Within this directory,  update the paths specified in the first six lines of each file to reflect the correct directory locations for your configuration.
 
-### Training
+### TRAINING
 #### Agent1(Traditional Baseline)
 Please note that **"Agent1"** serves as a traditional baseline in this context. There is no training component associated with Agent1; it functions as a baseline reference.
 #### Agent Training (No Orientation, No Collision)
@@ -72,14 +72,14 @@ python3 trainTest.py --mode True --expNumber 1 --configName "Agent2_Panda.yaml"
 # Orientation, collision
 python3 trainTest.py --mode True --expNumber 1 --configName "Agent2_Panda.yaml"
 ```
-## Curriculum Learning
-#### Curriculum Learning without Considering Self-Collisions
+#### Curriculum Learning
+##### Curriculum Learning without Considering Self-Collisions
 Agents 3 and 5 employ curriculum learning during training. We move on to the next region if the mean absolute error in position and the mean norm of the joint velocities at the final state are below thresholds if collisions are not taken into account. The following command line setups the curriculum learning:
 ```setup
 python3 trainTest.py --mode True --expNumber 1 --configName "Agent3_Panda.yaml" --maeThreshold 0.05 --avgJntVelThreshold 0.15 --evalFreqOnTraining 3000000 --testSampleOnTraining 500
 ```
 In this configuration, the training progress is evaluated every 3 million training steps, utilizing 500 samples for evaluation. If the mean absolute error in position is less than 5 cm and the mean norm of the joint velocities is less than 0.15 rad/s, the training process proceeds to the next region.
-#### Curriculum Learning with Considering Self-Collisions
+##### Curriculum Learning with Considering Self-Collisions
 In this configuration, episodes are terminated upon collision. It's crucial to understand that the mean absolute error and mean norm of joint velocities metrics are not meaningful in this context.  Since **"maeThreshold"** and **"avgJntVelThreshold"** thresholds can not exceed 10, they are set to 10. However, these thresholds can be adjusted to other values, such as 15 or 20. This adjustment ensures the next curriculum region will be added to the current workspace. Thus, the number of training episodes is fixed when collision are taken into account. 
 ```setup
 python3 trainTest.py --mode True --expNumber 1 --configName "Agent3_Panda.yaml" --maeThreshold 10 --avgJntVelThreshold 10 --evalFreqOnTraining 3000000
