@@ -40,4 +40,4 @@ conda activate DeepRL-Pose-Control
 bash install.sh
 ```
 ## Usage
-When using this package, please ensure you update the relevant directory paths in the panda_reach.py file under the DeepRL-Pose-Control/panda_gym/envs/panda_tasks directory. Specifically, modify line 27 and line 29 in the panda_reach.py file according to the location of your folders.
+When using this package, please ensure you update the relevant directory paths in the 'panda_reach.py' file under the 'DeepRL-Pose-Control/panda_gym/envs/panda_tasks' directory. Specifically, modify line 27 and line 29 in the panda_reach.py file according to the location of your folders.
