@@ -49,7 +49,11 @@ To use this package, follow these steps to update the necessary directory paths 
 #### Agent1(Traditional Baseline)
 Please note that **"Agent1"** serves as a traditional baseline in this context. There is no training component associated with Agent1; it functions as a baseline reference.
 #### Agent2(Pure RL-Learning Baseline)
-Agent2 acts as a Learning Baselines as it does not contain Pseudo-inverse module. To train the Agent2 apply the following steps:
+To train **"Agent2"**, which functions as a Learning Baseline without the Pseudo-inverse module, follow these steps:
 ```setup
-bash install.sh
+python3 trainTest.py --mode True --expNumber 1 --configName "Agent2_Panda.yaml"
 ```
+Execute the command above to initiate training and testing for Agent2 on the Panda 7-DOF robotic arm: the trained model, log files, and information about failed samples will be saved to the directory specified in the corresponding YAML files. Metric results will be recorded and saved in the metrics$expNumber$.txt file, where expNumber corresponds to the experiment number.
+
+python3 trainTest.py --expNumber 1 --configName "Agent2_Panda.yaml" --render True
+
