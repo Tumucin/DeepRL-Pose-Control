@@ -95,7 +95,7 @@ python3 trainTest.py --mode True --expNumber 1 --configName "Agent2_Panda.yaml" 
 Please keep in mind that the provided code assumes that the algorithm will account for self-collisions and orientation at the target pose. As mentioned earlier, ensure to set the **"addOrientation"** and **"enableSelfCollision"** variables in the config YAML files to True accordingly.
 
 ### Evaluation
-After completing the training procedure, you can evaluate the trained models to obtain metric results using the PyBullet simulator. The evaluation process includes using 1000 random initial robot configurations and random target poses. The results are saved to a .txt file as explained in the [Training](#training) section.
+After completing the training procedure, you can evaluate the trained models to obtain metric results using the PyBullet simulator. The evaluation process includes using 1000 random initial robot configurations and random target poses. The trained model, log files, and information about failed samples will be saved to the directory specified in the corresponding YAML files. Metric results will be recorded and saved in the metrics$expNumber$.txt file, where expNumber corresponds to the experiment number as explained in the [Training](#training) section.
 ```setup
 python3 trainTest.py --expNumber 1 --configName "Agent2_Panda.yaml" --render True
 ```
