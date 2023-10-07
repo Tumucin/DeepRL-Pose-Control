@@ -3,7 +3,7 @@
 ## Table of Contents: 
 - [About](#about)
 - [Citation](#citation)
-- [Requirements](#requirements)
+- [Installation](#installation)
 - [Tutorials](#tutorials) 
 ## About
 - This repository contains the official implementation of the research paper titled **"Self-Collision Aware Reaching and Pose Control in Large Workspaces using Reinforcement Learning"**. You can find the paper [here](https://github.com/Tumucin/DeepRL-Pose-Control).
@@ -25,9 +25,10 @@ If you find this study useful, please cite using the following citation:
    pdf = {$pdf$}
  }
 ```
-## Requirements
+## Installation
 
-To install requirements:
+- Go to panda_gym directory and create the conda environment
+
 
 ```setup
 pip install -r requirements.txt
