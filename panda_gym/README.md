@@ -86,8 +86,7 @@ python3 trainTest.py --mode True --expNumber 1 --configName "Agent3_Panda.yaml" 
 ```
 #### Reward Function Design
 It is possible to change the parameters of the reward function. This project uses the following reward functin to train an agent:
-$`r(s, a)= \exp \left(-\lambda_{pos}\|(\delta x_{})\|^2\right)  -\frac{\lambda_{velocity}\|\dot{\theta}\|}{1+\|\delta x_{}\|}  - \lambda_{coll} + \exp \left(-\lambda_{ori}\|\beta_q\|^2\right)
-			\exp \left(-\lambda_{ori}\beta_q^2\right)`$
+$`r(s, a)= \exp \left(-\lambda_{pos}\|(\delta x_{})\|^2\right)  -\frac{\lambda_{velocity}\|\dot{\theta}\|}{1+\|\delta x_{}\|} - \lambda_{coll} + \exp \left(-\lambda_{ori}\beta_q^2\right)`$
 
 ### Evaluation
 After completing the training procedure, you can evaluate the trained models to obtain metric results using the PyBullet simulator. The evaluation process includes using 1000 random initial robot configurations and random target poses. The results are saved to a .txt file as explained in the [Training](#training) section.
