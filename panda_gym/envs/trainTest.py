@@ -1,7 +1,7 @@
 import sys
 import os 
-sys.path.append('/scratch/users/tbal21/.conda/envs/stableBaselines/lib/python3.8/site-packages')
-sys.path.append('/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym')
+#sys.path.append('/scratch/users/tbal21/.conda/envs/stableBaselines/lib/python3.8/site-packages')
+#sys.path.append('/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym')
 import gym
 #import gymnasium as gym
 import panda_gym
@@ -419,7 +419,6 @@ def main():
     for arg in args._get_kwargs():
         if not arg[1]==None:
             config[arg[0]] = arg[1]
-
     trainTest = TRAINTEST(config)
     
     if trainTest.config['algorithm']=="PPO":
