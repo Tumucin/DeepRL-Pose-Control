@@ -4,7 +4,7 @@
 - [About](#about)
 - [Citation](#citation)
 - [Installation](#installation)
-- [Tutorials](#tutorials) 
+- [Usage](#usage) 
 ## About
 - This repository contains the official implementation of the research paper titled **"Self-Collision Aware Reaching and Pose Control in Large Workspaces using Reinforcement Learning"**. You can find the paper [here](https://github.com/Tumucin/DeepRL-Pose-Control).
 - The codebase is developed and tested using Python, along with the following libraries:
@@ -30,7 +30,7 @@ If you find this study useful, please cite using the following citation:
 ```setup
 git clone https://github.com/Tumucin/DeepRL-Pose-Control.git
 ```
-- GNavigate to panda_gym directory and create the conda environment
+- Navigate to panda_gym directory and create the conda environment
 ```setup
 conda env create environment.yml
 conda activate DeepRL-Pose-Control
@@ -39,4 +39,5 @@ conda activate DeepRL-Pose-Control
 ```setup
 bash install.sh
 ```
-## Tutorials
+## Usage
+When using this package, please ensure you update the relevant directory paths in the panda_reach.py file under the DeepRL-Pose-Control/panda_gym/envs/panda_tasks directory. Specifically, modify line 27 and line 29 in the panda_reach.py file according to the location of your folders.
