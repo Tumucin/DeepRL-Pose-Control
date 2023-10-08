@@ -128,6 +128,7 @@ class PyBullet:
                 p.changeVisualShape(contact[1], contact[3], rgbaColor=[1.0, 0.0, 0.0, 1])
                 p.changeVisualShape(contact[2], contact[4], rgbaColor=[1.0, 0.0, 0.0, 1])
                 self.isCollision = True
+                time.sleep(0.5)
         #self.checkRandomSampleAngles(6)
         #if self.isCollision == False:
         #    eePosition = self.get_link_position(self.body_name, self.ee_link)

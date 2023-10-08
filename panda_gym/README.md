@@ -105,7 +105,7 @@ python3 trainTest.py --mode True --expNumber 1 --configName "Agent2_Panda.yaml" 
 Please keep in mind that the provided code assumes that the algorithm will account for self-collisions and orientation at the target pose. As mentioned earlier, ensure to set the **"addOrientation"** and **"enableSelfCollision"** variables in the config YAML files to True accordingly.
 
 ### EVALUATION
-After completing the training procedure, you can evaluate the trained models to obtain metric results using the PyBullet simulator. The evaluation process includes using 1000 random initial robot configurations and random target poses. The trained model, log files, and information about failed samples will be saved to the directory specified in the corresponding YAML files. Metric results will be recorded and saved in the metrics$expNumber$.txt file, where expNumber corresponds to the experiment number as explained in the [Training](#training) section.
+After completing the training procedure, you can evaluate the trained models to obtain metric results using the PyBullet simulator. The evaluation process includes using 1000 random initial robot configurations and random target poses. The trained model, log files, and information about failed samples will be saved to the directory specified in the corresponding YAML files. Metric results will be recorded and saved in the metrics$expNumber$.txt file, where expNumber corresponds to the experiment number as explained in the [TRAINING](#training) section.
 ```setup
 python3 trainTest.py --expNumber 1 --configName "Agent2_Panda.yaml" --render True
 ```
@@ -118,5 +118,16 @@ No Collision             |  Collision
 :-------------------------:|:-------------------------:
 ![noCollision](https://github.com/Tumucin/DeepRL-Pose-Control/blob/PoseControlConda/panda_gym/noCollisionPretrained.png)  |  ![Collision](https://github.com/Tumucin/DeepRL-Pose-Control/blob/PoseControlConda/panda_gym/CollisionPretrained.png)
 
+The figure above illustrates the pre-trained models corresponding to different cases and experiment numbers. These pre-trained models have been automatically downloaded into the repo during the installation process, as described in the [INSTALLATION](#installation) section. All metric results have been documented in the paper. To evaluate the performance of the pre-trained model, simply execute the following command:
+```setup
+# Model number 891 uses hybrid agent (Agent5) without considering self-collisions and orientation
+# Make sure to set the 'addOrientation' and 'enableSelfCollision' flags to False
+python3 trainTest.py --expNumber 891 --configName "Agent5_Panda.yaml" --render True
+```
 
+```setup
+# Model number 1082 uses hybrid agent (Agent5) and considers self-collisions and orientation
+# Make sure to set the 'addOrientation' and 'enableSelfCollision' flags to True
+python3 trainTest.py --expNumber 1082 --configName "Agent5_Jaco7dof.yaml" --render True
+```
 

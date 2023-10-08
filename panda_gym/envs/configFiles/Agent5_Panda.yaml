@@ -25,7 +25,7 @@ total_timesteps: !!float 32768000     # Total timesteps for training
 mode: False                           # True: Training, False: Testing
 algorithm: "PPO"                      # Name of the algorithm
 policy: "MultiInputPolicy"            # Policy network
-render: True                          # True: Render the sim, False: No Rendering
+render: False                          # True: Render the sim, False: No Rendering
 enableSelfCollision: False            # Self-Collision
 switching: True                      # Switching modification as described in the paper
 gamma: 0.95                           # Discount Factor
