@@ -6,14 +6,6 @@ urdfPath: '/home/tumu/git_workspace/DeepRL-Pose-Control/panda_gym/envs/robots/pa
 file_name: "franka_panda/panda.urdf"
 datasetPath: "/home/tumu/git_workspace/DeepRL-Pose-Control/panda_gym/envs/dataset/pandaversion1"
 
-#################### PATHS - HPC- ####################
-#modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
-#logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
-#failedSamplesSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/failedSamples'
-#urdfPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
-#file_name: "franka_panda/panda.urdf"
-#datasetPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/pandaversion1'
-
 expNumber: 229                        # Experiement Number  
 envName: "PandaReach-v2"              # Environment Name    
 ee_link: 11                           # End effector link ID
@@ -37,7 +29,7 @@ n_envs: 100                            # Number of environments
 testSamples: 1000                     # Number of samples for evaluation
 testSampleOnTraining: 500             # Number of samples for evaluation while training (Curriculum Learning)
 evalFreqOnTraining: 3000000           # Number of timesteps per evaluation (Curriculum Learning)
-max_episode_steps: 800                # Episode length
+max_episode_steps: 1000                # Episode length
 verbose: 1                            # Visualize the log of training
 pseudoI: False                         # Use PseudoInverse to calculate q_dot (Note that there are Position Only and FullJacobian methods)
 networkOutput: True                  # Use Network output

@@ -6,14 +6,6 @@ urdfPath: '/home/tumu/git_workspace/DeepRL-Pose-Control/panda_gym/envs/robots/pa
 file_name: "franka_panda/panda.urdf"
 datasetPath: "/home/tumu/git_workspace/DeepRL-Pose-Control/panda_gym/envs/dataset/pandaversion1"
 
-#################### PATHS - HPC- ####################
-#modelSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
-#logSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
-#failedSamplesSavePath: '/scratch/users/tbal21/.conda/envs/stableBaselines/panda-gym/failedSamples'
-#urdfPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/robots/panda.urdf'
-#file_name: "franka_panda/panda.urdf"
-#datasetPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/envs/dataset/pandaversion1'
-
 expNumber: 229                        # Experiement Number  
 envName: "PandaReach-v2"              # Environment Name    
 ee_link: 11                           # End effector link ID
@@ -21,7 +13,7 @@ body_name: 'panda'                    # Name of the robot
 baseLinkName: 'panda_link0'           # The name of the base link of a robot
 eeLinkName: 'panda_grasptarget'       # The name of the ee link of a robot
 base_position: [-0.6, 0.0, 0.0]       # Base position of the base link
-total_timesteps: !!float 2000     # Total timesteps for training
+total_timesteps: !!float 33000000     # Total timesteps for training
 mode: False                           # True: Training, False: Testing
 algorithm: "PPO"                      # Name of the algorithm
 policy: "MultiInputPolicy"            # Policy network
@@ -29,15 +21,15 @@ render: False                          # True: Render the sim, False: No Renderi
 enableSelfCollision: False            # Self-Collision
 switching: False                      # Switching modification as described in the paper
 gamma: 0.95                           # Discount Factor
-n_steps: 128                         # The number of steps to run for each environment per update
+n_steps: 1000                         # The number of steps to run for each environment per update
 n_epochs: 10                          # Number of epoch when optimizing the surrogate loss
 batch_size: 2048                      # Mini-batch size
 learning_rate: 0.0003                 # The learning rate
 n_envs: 100                            # Number of environments
 testSamples: 1000                     # Number of samples for evaluation
 testSampleOnTraining: 500             # Number of samples for evaluation while training (Curriculum Learning)
-evalFreqOnTraining: 2000000           # Number of timesteps per evaluation (Curriculum Learning)
-max_episode_steps: 800                # Episode length
+evalFreqOnTraining: 3000000           # Number of timesteps per evaluation (Curriculum Learning)
+max_episode_steps: 1000                # Episode length
 verbose: 1                            # Visualize the log of training
 pseudoI: False                         # Use PseudoInverse to calculate q_dot (Note that there are Position Only and FullJacobian methods)
 networkOutput: True                  # Use Network output
