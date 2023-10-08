@@ -116,7 +116,7 @@ If you want to implement the switch modification, set the **"switching"** variab
 ### PRE-TRAINED MODELS
 No Collision             |  Collision
 :-------------------------:|:-------------------------:
-![noCollision]([https://...Dark.png](https://github.com/Tumucin/DeepRL-Pose-Control/blob/PoseControlConda/panda_gym/noCollisionPretrained.png))  |  ![Collision]([https://...Ocean.png](https://github.com/Tumucin/DeepRL-Pose-Control/blob/PoseControlConda/panda_gym/CollisionPretrained.png))
+![noCollision](https://github.com/Tumucin/DeepRL-Pose-Control/blob/PoseControlConda/panda_gym/noCollisionPretrained.png)  |  ![Collision](https://github.com/Tumucin/DeepRL-Pose-Control/blob/PoseControlConda/panda_gym/CollisionPretrained.png)
 
 
 
