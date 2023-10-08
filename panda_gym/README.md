@@ -120,13 +120,13 @@ No Collision             |  Collision
 
 The figure above illustrates the pre-trained models corresponding to different cases and experiment numbers. These pre-trained models have been automatically downloaded into the repo during the installation process, as described in the [INSTALLATION](#installation) section. All metric results have been documented in the paper. To evaluate the performance of the pre-trained model, simply execute the following command:
 ```setup
-# Model number 891 uses hybrid agent (Agent5) without considering self-collisions and orientation
+# Model 891 uses hybrid agent (Agent5) without considering self-collisions and orientation
 # Make sure to set the 'addOrientation' and 'enableSelfCollision' flags to False
 python3 trainTest.py --expNumber 891 --configName "Agent5_Panda.yaml" --render True
 ```
 
 ```setup
-# Model number 1082 uses hybrid agent (Agent5) and considers self-collisions and orientation
+# Model 1082 employs the Hybrid Agent (Agent5) while taking into account both self-collisions and orientation considerations
 # Make sure to set the 'addOrientation' and 'enableSelfCollision' flags to True
 python3 trainTest.py --expNumber 1082 --configName "Agent5_Jaco7dof.yaml" --render True
 ```
