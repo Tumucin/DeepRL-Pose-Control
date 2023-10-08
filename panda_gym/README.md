@@ -114,7 +114,7 @@ We switch to raw pseudo-inverse control when the Euclidean distance between the 
 If you want to implement the switch modification, set the **"switching"** variable in the config yaml files to True. It is important to note that this is only employed during inference and not during training. Additionally, the switching mode can be executed solely within the hybrid model.
 
 ### PRE-TRAINED MODELS
-
+![noCollision](https://github.com/Tumucin/DeepRL-Pose-Control/blob/PoseControlConda/panda_gym/noCollisionPretrained.png)
 
 
 
