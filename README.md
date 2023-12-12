@@ -72,7 +72,7 @@ There are several possible combinations to train the agents. We will systematica
 **"CASE 4:"** The agent considers both orientation at the target pose and self-collisions.
 
 ### CASE1
-![Green Text](No)
+**[No Collision, No Orientation]**\
 The training and evaluation procedures for Agents 1, 2, 3, and 4 are similar. The following command line uses Agent1 as an example. Please note that using the training command below performs both training and evaluation. Evaluation is conducted with 1000 random initial robot configurations and random target poses.
 To train **"Agent1"**, which functions as a Learning Baseline without the Pseudo-inverse module, follow these steps:
 ```setup
