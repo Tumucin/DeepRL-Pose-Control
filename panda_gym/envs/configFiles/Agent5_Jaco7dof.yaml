@@ -13,13 +13,13 @@ body_name: 'j2s7s300'                 # Name of the robot
 baseLinkName: 'j2s7s300_link_base'    # The name of the base link of a robot
 eeLinkName: 'j2s7s300_ee_link'        # The name of the ee link of a robot
 base_position: [-0.0, 0.0, 0.0]       # Base position of the base link
-total_timesteps: !!float 18000000     # Total timesteps for training
+total_timesteps: !!float 32768000     # Total timesteps for training
 mode: False                           # True: Training, False: Testing
 algorithm: "PPO"                      # Name of the algorithm
 policy: "MultiInputPolicy"            # Policy network
 render: False                          # True: Render the sim, False: No Rendering
-enableSelfCollision: True            # Self-Collision
-switching: True                      # Switching modification as described in the paper
+enableSelfCollision: False            # Self-Collision
+switching: False                      # Switching modification as described in the paper
 gamma: 0.95                           # Discount Factor
 n_steps: 1000                         # The number of steps to run for each environment per update
 n_epochs: 10                          # Number of epoch when optimizing the surrogate loss
@@ -32,7 +32,7 @@ evalFreqOnTraining: 3000000           # Number of timesteps per evaluation (Curr
 max_episode_steps: 1000                # Episode length
 verbose: 1                            # Visualize the log of training
 pseudoI: True                         # Use PseudoInverse to calculate q_dot (Note that there are Position Only and FullJacobian methods)
-networkOutput: True                  # Use Network output
+networkOutput: False                  # Use Network output
 save_freq: !!float 100e6              # Number of timesteps for saving checkpoints
 sampleJointAnglesGoal: True           # Sample random goals(Position+Orientation). If this is FALSE, then you should determine goal_range value
 goal_range: 0.5                       # Goal range for sampling the goals(desired points)

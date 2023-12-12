@@ -13,13 +13,13 @@ body_name: 'ur5'                 # Name of the robot
 baseLinkName: 'base_link'    # The name of the base link of a robot
 eeLinkName: 'ee_link'        # The name of the ee link of a robot
 base_position: [-0.0, 0.0, 0.0]       # Base position of the base link
-total_timesteps: !!float 33000000     # Total timesteps for training
+total_timesteps: !!float 18000000     # Total timesteps for training
 mode: False                           # True: Training, False: Testing
 algorithm: "PPO"                      # Name of the algorithm
 policy: "MultiInputPolicy"            # Policy network
 render: False                          # True: Render the sim, False: No Rendering
 enableSelfCollision: False            # Self-Collision
-switching: False                      # Switching modification as described in the paper
+switching: True                      # Switching modification as described in the paper
 gamma: 0.95                           # Discount Factor
 n_steps: 1000                         # The number of steps to run for each environment per update
 n_epochs: 10                          # Number of epoch when optimizing the surrogate loss
@@ -31,7 +31,7 @@ testSampleOnTraining: 500             # Number of samples for evaluation while t
 evalFreqOnTraining: 3000000           # Number of timesteps per evaluation (Curriculum Learning)
 max_episode_steps: 1000                # Episode length
 verbose: 1                            # Visualize the log of training
-pseudoI: False                         # Use PseudoInverse to calculate q_dot (Note that there are Position Only and FullJacobian methods)
+pseudoI: True                         # Use PseudoInverse to calculate q_dot (Note that there are Position Only and FullJacobian methods)
 networkOutput: True                  # Use Network output
 save_freq: !!float 100e6              # Number of timesteps for saving checkpoints
 sampleJointAnglesGoal: True           # Sample random goals(Position+Orientation). If this is FALSE, then you should determine goal_range value
@@ -48,7 +48,7 @@ thresholdConstant: 0.0
 alpha: 1.0                            # One of the parameters for reward function k*norm(jntVelocity)/(1+alpha*d)
 activation_fn: 0                      # Activation Function: Tanh: 0, RELU:1
 hiddenUnits: 128                      # The number of neurons in the hidden layers
-CurriLearning: True                  # Use Curriculum Learning or not. If this is FALSE, then you should edit the variables below
+CurriLearning: False                  # Use Curriculum Learning or not. If this is FALSE, then you should edit the variables below
 curriculumFirstWorkspaceId: "W1"
 finalWorkspaceID: "W4"
 workspaceLen: 4

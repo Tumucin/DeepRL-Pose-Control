@@ -48,13 +48,13 @@ thresholdConstant: 0.0
 alpha: 1.0                            # One of the parameters for reward function k*norm(jntVelocity)/(1+alpha*d)
 activation_fn: 0                      # Activation Function: Tanh: 0, RELU:1
 hiddenUnits: 128                      # The number of neurons in the hidden layers
-CurriLearning: False                  # Use Curriculum Learning or not. If this is FALSE, then you should edit the variables below
+CurriLearning: True                  # Use Curriculum Learning or not. If this is FALSE, then you should edit the variables below
 curriculumFirstWorkspaceId: "W1"
 finalWorkspaceID: "W4"
 workspaceLen: 4
 rmseThreshold: 0.05                  # RMSE threshold to go to the next Workspace (Curriculum Learning)
 maeThreshold: 0.05                   # MAE threshold to go to the next Workspace (Curriculum Learning)
-avgJntVelThreshold: 0.15               # AverageJntVel threshold to go to the next Workspace (Curriculum Learning)
+avgJntVelThreshold: 0.5               # AverageJntVel threshold to go to the next Workspace (Curriculum Learning)
 visualizeFailedSamples: False
 net_arch: [{'pi': [128, 128, 128],
             'vf': [128, 128, 128]}]        # Network Architecture
