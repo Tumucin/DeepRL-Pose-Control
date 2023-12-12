@@ -58,19 +58,20 @@ To use this package, follow these steps to update the necessary directory paths 
 - Navigate to the **"DeepRL-Pose-Control/panda_gym/envs/configFiles"** directory. Within this directory,  update the paths specified in the first six lines of each file to reflect the correct directory locations for your configuration.
 
 ## AGENTS
-**"Agent1:"** Direct RL training without the pseudo-inverse component and curriculum scheduling. This agent is referred to as the Learning Baseline.\
-**"Agent2:"** Curriculum training of RL without the pseudo-inverse component.This agent is trained as the combination of **"Agent1:"** + Curriculum Learning. This agent is also referred to as the Learning Baseline.\
-**"Agent3:"** Both the pseudo-inverse and the RL output is used without curriculum scheduling. This agent is referred to as the Hybrid agent that we proposed.\
-**"Agent4:"** Both the pseudo-inverse and the RL output is used with curriculum scheduling. This agent is trained as the combination of **"Agent4:"** + Curriculum Learning. This agent is referred to as the Hybrid agent that we proposed.\
-**"Agent5:"** Raw pseudo-inverse joint velocities, treated as a traditional baseline. It is important to note that this agent is not trained since there is no learning part in it. Referred to as the Traditional Baseline, it serves as a benchmark for comparison.
+- **"Agent1:"** Direct RL training without the pseudo-inverse component and curriculum scheduling. This agent is referred to as the Learning Baseline.\
+- **"Agent2:"** Curriculum training of RL without the pseudo-inverse component.This agent is trained as the combination of **"Agent1:"** + Curriculum Learning. This agent is also referred to as the Learning Baseline.\
+- **"Agent3:"** Both the pseudo-inverse and the RL output is used without curriculum scheduling. This agent is referred to as the Hybrid agent that we proposed.\
+- **"Agent4:"** Both the pseudo-inverse and the RL output is used with curriculum scheduling. This agent is trained as the combination of **"Agent4:"** + Curriculum Learning. This agent is referred to as the Hybrid agent that we proposed.\
+- **"Agent5:"** Raw pseudo-inverse joint velocities, treated as a traditional baseline. It is important to note that this agent is not trained since there is no learning part in it. Referred to as the Traditional Baseline, it serves as a benchmark for comparison.
 
 ## TRAINING
 There are several possible combinations to train the agents. We will systematically examine each combination to gain a better understanding.\
-**"CASE 1:"** The agent does not consider orientation at the target pose and neglects self-collisions. This implies that the episode continues even in the presence of collisions between the links.\
-**"CASE 2:"** The agent considers orientation at the target pose but does not take self-collisions into account.\
-**"CASE 3:"** The agent does not account for orientation at the target pose but actively considers self-collisions. In this case, the episode is terminated if a collision occurs between the links.\
-**"CASE 4:"** The agent considers both orientation at the target pose and self-collisions.
+- **"CASE 1:"** The agent does not consider orientation at the target pose and neglects self-collisions. This implies that the episode continues even in the presence of collisions between the links.\
+- **"CASE 2:"** The agent considers orientation at the target pose but does not take self-collisions into account.\
+- **"CASE 3:"** The agent does not account for orientation at the target pose but actively considers self-collisions. In this case, the episode is terminated if a collision occurs between the links.\
+- **"CASE 4:"** The agent considers both orientation at the target pose and self-collisions.\
 
+The trained model, log files, and information about failed samples will be saved to the directory specified in the corresponding YAML files. Metric results will be recorded and saved in the metrics$expNumber$.txt file, where expNumber corresponds to the experiment number.
 ### CASE1
 **[No Collision, No Orientation]**\
 The training and evaluation procedures for Agents 1, 2, 3, and 4 are similar. The following command line uses Agent1 as an example. Please note that using the training command below performs both training and evaluation. Evaluation is conducted with 1000 random initial robot configurations and random target poses.
@@ -79,7 +80,7 @@ To train **"Agent1"**, which functions as a Learning Baseline without the Pseudo
 # No Orientation, no collision
 python3 trainTest.py --mode True --expNumber 1 --configName "Agent1_Panda.yaml"
 ```
-The trained model, log files, and information about failed samples will be saved to the directory specified in the corresponding YAML files. Metric results will be recorded and saved in the metrics$expNumber$.txt file, where expNumber corresponds to the experiment number.
+
 
 ### Other Agents:Case2
 - For this time, set the **"addOrientation"** variable in the config yaml files to True to consider orientation at the target pose.
