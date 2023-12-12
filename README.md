@@ -8,7 +8,6 @@
 - [AGENTS](#agents)
 - [TRAINING](#training)
   - [CASE1](#case1)
-  - [Other Agents:Case1](#otherAgentsCase1)
   - [Other Agents:Case2](#otherAgentsCase2)
   - [Other Agents:Case3](#otherAgentsCase3)
   - [Curriculum Learning](#curriculumLearning)
@@ -70,16 +69,16 @@ There are several possible combinations to train the agents. We will systematica
 **"CASE 1:"** The agent does not consider orientation at the target pose and neglects self-collisions. This implies that the episode continues even in the presence of collisions between the links.\
 **"CASE 2:"** The agent considers orientation at the target pose but does not take self-collisions into account.\
 **"CASE 3:"** The agent does not account for orientation at the target pose but actively considers self-collisions. In this case, the episode is terminated if a collision occurs between the links.\
-**"CASE 4:"** The agent considers both orientation at the target pose and self-collisions.\
+**"CASE 4:"** The agent considers both orientation at the target pose and self-collisions.
 
 ### CASE1
-Please note that **"Agent1"** serves as a traditional baseline in this context. There is no training component associated with Agent1; it functions as a baseline reference.
-### Other Agents:Case1
-The training and evaluation procedures for Agents 2, 3, 4, and 5 are similar. The following command line uses Agent2 as an example. Please note that this command line performs both training and evaluation. Evaluation is conducted with 1000 random initial robot configurations and random target poses.
-To train **"Agent2"**, which functions as a Learning Baseline without the Pseudo-inverse module, follow these steps:
+<span style="color:green">(No Collision, No Orientation)</span>
+Please note that **"Agent5"** serves as a traditional baseline in this context. There is no training component associated with Agent5; it functions as a baseline reference.
+The training and evaluation procedures for Agents 1, 2, 3, and 4 are similar. The following command line uses Agent1 as an example. Please note that using the training command below performs both training and evaluation. Evaluation is conducted with 1000 random initial robot configurations and random target poses.
+To train **"Agent1"**, which functions as a Learning Baseline without the Pseudo-inverse module, follow these steps:
 ```setup
 # No Orientation, no collision
-python3 trainTest.py --mode True --expNumber 1 --configName "Agent2_Panda.yaml"
+python3 trainTest.py --mode True --expNumber 1 --configName "Agent1_Panda.yaml"
 ```
 The trained model, log files, and information about failed samples will be saved to the directory specified in the corresponding YAML files. Metric results will be recorded and saved in the metrics$expNumber$.txt file, where expNumber corresponds to the experiment number.
 
