@@ -59,11 +59,12 @@ To use this package, follow these steps to update the necessary directory paths 
 - Navigate to the **"DeepRL-Pose-Control/panda_gym/envs/configFiles"** directory. Within this directory,  update the paths specified in the first six lines of each file to reflect the correct directory locations for your configuration.
 
 ## AGENTS
-**"Agent1:"** Direct RL training without the pseudo-inverse component and curriculum scheduling.
-**"Agent2:"** Curriculum training of RL without the pseudo-inverse component. This agent is trained as the combination of **"Agent1:"** + Curriculum Learning.
-**"Agent3:"** Both the pseudo-inverse and the RL output is used without curriculum scheduling.
-**"Agent4:"** Both the pseudo-inverse and the RL output is used with curriculum scheduling. This agent is trained as the combination of **"Agent4:"** + Curriculum Learning.
+**"Agent1:"** Direct RL training without the pseudo-inverse component and curriculum scheduling.\
+**"Agent2:"** Curriculum training of RL without the pseudo-inverse component. This agent is trained as the combination of **"Agent1:"** + Curriculum Learning.\
+**"Agent3:"** Both the pseudo-inverse and the RL output is used without curriculum scheduling.\
+**"Agent4:"** Both the pseudo-inverse and the RL output is used with curriculum scheduling. This agent is trained as the combination of **"Agent4:"** + Curriculum Learning.\
 **"Agent5:"** Raw pseudo-inverse joint velocities, treated as a traditional baseline. It is important to note that this agent is not trained since there is no learning part in it.
+
 ### TRAINING
 #### Agent1
 Please note that **"Agent1"** serves as a traditional baseline in this context. There is no training component associated with Agent1; it functions as a baseline reference.
