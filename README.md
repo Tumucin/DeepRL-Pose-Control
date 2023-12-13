@@ -137,7 +137,7 @@ If you want to implement the switch modification, set the **"switching"** variab
 ## PRE-TRAINED MODELS
 No Collision             |  Collision
 :-------------------------:|:-------------------------:
-![noCollision](https://github.com/Tumucin/DeepRL-Pose-Control/blob/PoseControlConda/panda_gym/noCollisionPretrained.png)  |  ![Collision](https://github.com/Tumucin/DeepRL-Pose-Control/blob/PoseControlConda/panda_gym/CollisionPretrained.png)
+![noCollision](https://github.com/Tumucin/DeepRL-Pose-Control/blob/main/panda_gym/noCollisionPretrained.png)  |  ![Collision](https://github.com/Tumucin/DeepRL-Pose-Control/blob/main/panda_gym/CollisionPretrained.png)
 
 The figure above illustrates the pre-trained models corresponding to different cases and experiment numbers. These pre-trained models have been automatically downloaded into the repo during the installation process, as described in the [INSTALLATION](#installation) section. All metric results have been documented in the paper. To evaluate the performance of the pre-trained model, simply execute the following command:
 ```setup
