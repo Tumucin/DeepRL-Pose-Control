@@ -105,19 +105,19 @@ python3 trainTest.py --mode True --expNumber 1 --configName "Agent1_Panda.yaml"
 ```
 ### Curriculum Learning
 #### Curriculum Learning without Considering Self-Collisions
-Agents 3 and 5 employ curriculum learning during training. We move on to the next region if the mean absolute error in position and the mean norm of the joint velocities at the final state are below thresholds if collisions are not taken into account. The following command line setups the curriculum learning:
+Agents 2 and 4 employ curriculum learning during training. We move on to the next region if the mean absolute error in position and the mean norm of the joint velocities at the final state are below thresholds if collisions are not taken into account. The following command line setups the curriculum learning:
 ```setup
-python3 trainTest.py --mode True --expNumber 1 --configName "Agent3_Panda.yaml" --maeThreshold 0.05 --avgJntVelThreshold 0.15 --evalFreqOnTraining 3000000 --testSampleOnTraining 500
+python3 trainTest.py --mode True --expNumber 1 --configName "Agent2_Panda.yaml" --maeThreshold 0.05 --avgJntVelThreshold 0.15 --evalFreqOnTraining 3000000 --testSampleOnTraining 500
 ```
 In this configuration, the training progress is evaluated every 3 million training steps, utilizing 500 samples for evaluation. If the mean absolute error in position is less than 5 cm and the mean norm of the joint velocities is less than 0.15 rad/s, the training process proceeds to the next region.
 #### Curriculum Learning with Considering Self-Collisions
-In this configuration, episodes are terminated upon collision. It's crucial to understand that the mean absolute error and mean norm of joint velocities metrics are not meaningful in this context.  Since **"maeThreshold"** and **"avgJntVelThreshold"** thresholds can not exceed 10, they are set to 10. However, these thresholds can be adjusted to other values, such as 15 or 20. This adjustment ensures the next curriculum region will be added to the current workspace. Thus, the number of training episodes is fixed when collision are taken into account. 
+In this configuration, episodes are terminated when there is a collision between the links. It's crucial to understand that the mean absolute error and mean norm of joint velocities metrics are not meaningful in this context. From this reason, we move on to the next workspace after a certain training timstep. Thus, the number of evaluation frequency on training is fixed when collision are taken into account. Since **"maeThreshold"** and **"avgJntVelThreshold"** thresholds can not exceed 10, they are set to 10. These thresholds can be adjusted to other values, such as 15 or 20. This adjustment ensures the next curriculum region will be added to the current workspace after 3 millions of training time-step.  
 ```setup
-python3 trainTest.py --mode True --expNumber 1 --configName "Agent3_Panda.yaml" --maeThreshold 10 --avgJntVelThreshold 10 --evalFreqOnTraining 3000000
+python3 trainTest.py --mode True --expNumber 1 --configName "Agent2_Panda.yaml" --maeThreshold 10 --avgJntVelThreshold 10 --evalFreqOnTraining 3000000
 ```
 ### Reward Function Design
 It is possible to change the parameters of the reward function. This project uses the following reward function type to train an agent:
-$`r(s, a)= \exp \left(-\lambda_{pos}\|(\delta x_{})\|^2\right)  -\frac{\lambda_{velocity}\|\dot{\theta}\|}{1+\|\delta x_{}\|} - \lambda_{coll} + \exp \left(-\lambda_{ori}\beta_q^2\right)`$
+$`r(s, a)= \exp \left(-\lambda_{pos}\|(\delta x_{})\|^2\right)  -\frac{\lambda_{velocity}\|\dot{\theta}\|}{1+\|\delta x_{}\|} - \lambda_{coll}c + \exp \left(-\lambda_{ori}\beta_q^2\right)`$
 
 To modify the reward function, you can make adjustments using the following arguments:
 ```setup
