@@ -121,14 +121,14 @@ $`r(s, a)= \exp \left(-\lambda_{pos}\|(\delta x_{})\|^2\right)  -\frac{\lambda_{
 
 To modify the reward function, you can make adjustments using the following arguments:
 ```setup
-python3 trainTest.py --mode True --expNumber 1 --configName "Agent2_Panda.yaml" --lambdaErr 100.0 --velocityConstant 0.1 --orientationConstant 50 --collisionConstant 10.0
+python3 trainTest.py --mode True --expNumber 1 --configName "Agent1_Panda.yaml" --lambdaErr 100.0 --velocityConstant 0.1 --orientationConstant 50 --collisionConstant 10.0
 ```
-Please keep in mind that the provided code assumes that the algorithm will account for self-collisions and orientation at the target pose. As mentioned earlier, ensure to set the **"addOrientation"** and **"enableSelfCollision"** variables in the config YAML files to True accordingly.
+Please keep in mind that the provided code assumes that the algorithm will account for self-collisions and orientation. As mentioned earlier, ensure to set the **"addOrientation"** and **"enableSelfCollision"** variables in the config YAML files to True accordingly.
 
 ## EVALUATION
 After completing the training procedure, you can evaluate the trained models to obtain metric results using the PyBullet simulator. The evaluation process includes using 1000 random initial robot configurations and random target poses. The trained model, log files, and information about failed samples will be saved to the directory specified in the corresponding YAML files. Metric results will be recorded and saved in the metrics$expNumber$.txt file, where expNumber corresponds to the experiment number as explained in the [TRAINING](#training) section.
 ```setup
-python3 trainTest.py --expNumber 1 --configName "Agent2_Panda.yaml" --render True
+python3 trainTest.py --expNumber 1 --configName "Agent1_Panda.yaml" --render True
 ```
 ## SWITCHING
 We switch to raw pseudo-inverse control when the Euclidean distance between the end effector and the target position is below a threshold (i.e. only utilize $`\theta_{pinv}`$). It is important to note that this is only employed during inference and not during training.
