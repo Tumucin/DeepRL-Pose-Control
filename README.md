@@ -132,7 +132,7 @@ python3 trainTest.py --expNumber 1 --configName "Agent1_Panda.yaml" --render Tru
 ```
 ## SWITCHING
 We switch to raw pseudo-inverse control when the Euclidean distance between the end effector and the target position is below a threshold (i.e. only utilize $`\theta_{pinv}`$). It is important to note that this is only employed during inference and not during training.
-If you want to implement the switch modification, set the **"switching"** variable in the config yaml files to True. It is important to note that this is only employed during inference and not during training. Additionally, the switching mode can be executed solely within the hybrid model.
+If you want to implement the switch modification, set the **"switching"** variable in the config yaml files to True. 
 
 ## PRE-TRAINED MODELS
 No Collision             |  Collision
@@ -141,14 +141,14 @@ No Collision             |  Collision
 
 The figure above illustrates the pre-trained models corresponding to different cases and experiment numbers. These pre-trained models have been automatically downloaded into the repo during the installation process, as described in the [INSTALLATION](#installation) section. All metric results have been documented in the paper. To evaluate the performance of the pre-trained model, simply execute the following command:
 ```setup
-# Model 891 uses hybrid agent (Agent5) without considering self-collisions and orientation
+# Model 891 uses hybrid agent (Agent4) without considering self-collisions and orientation
 # Make sure to set the 'addOrientation' and 'enableSelfCollision' flags to False
-python3 trainTest.py --expNumber 891 --configName "Agent5_Panda.yaml" --render True
+python3 trainTest.py --expNumber 891 --configName "Agent4_Panda.yaml" --render True
 ```
 
 ```setup
-# Model 1082 employs the Hybrid Agent (Agent5) while taking into account both self-collisions and orientation considerations
+# Model 1082 employs the Hybrid Agent (Agent4) while taking into account both self-collisions and orientation considerations
 # Make sure to set the 'addOrientation' and 'enableSelfCollision' flags to True
-python3 trainTest.py --expNumber 1082 --configName "Agent5_Jaco7dof.yaml" --render True
+python3 trainTest.py --expNumber 1082 --configName "Agent4_Jaco7dof.yaml" --render True
 ```
 
