@@ -83,21 +83,21 @@ To train **"Agent1"**, which functions as a Learning Baseline without the Pseudo
 python3 trainTest.py --mode True --expNumber 1 --configName "Agent1_Panda.yaml"
 ```
 ### CASE2
-**[No Collision, Orientation]**\
+**[No Collision, Orientation]**
 - For this time, set the **"addOrientation"** variable in the config yaml files to True to consider orientation at the target pose. Additionally, set the **"enableSelfCollision"** variable to False.
 ```setup
 # Orientation, no collision
 python3 trainTest.py --mode True --expNumber 1 --configName "Agent1_Panda.yaml"
 ```
 ### CASE3
-**[Collision, No Orientation]**\
+**[Collision, No Orientation]**
 - For this instance, configure the **"addOrientation"** variable in the config yaml file to False to exclude orientation at the target pose. Additionally, set the **"enableSelfCollision"** variable to True.
 ```setup
 # Orientation, no collision
 python3 trainTest.py --mode True --expNumber 1 --configName "Agent1_Panda.yaml"
 ```
 ### CASE4
-**[Collision, Orientation]**\
+**[Collision, Orientation]**
 - To incorporate both orientation and self-collision considerations during training, set the **"addOrientation"** and **"enableSelfCollision"** variables in the config yaml files to True.
 ```setup
 # Orientation, collision
