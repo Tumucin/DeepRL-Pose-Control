@@ -8,8 +8,9 @@
 - [AGENTS](#agents)
 - [TRAINING](#training)
   - [CASE1](#case1)
-  - [Other Agents:Case2](#otherAgentsCase2)
-  - [Other Agents:Case3](#otherAgentsCase3)
+  - [CASE2](#case2)
+  - [CASE3](#case3)
+  - [CASE4](#case4)
   - [Curriculum Learning](#curriculumLearning)
     - [Curriculum Learning without Considering Self-Collisions](#curriculumLearningwithoutConsideringSelf-Collisions)
     - [Curriculum Learning with Considering Self-Collisions](#curriculumLearningwithconsideringSelf-Collisions)
@@ -81,18 +82,25 @@ To train **"Agent1"**, which functions as a Learning Baseline without the Pseudo
 python3 trainTest.py --mode True --expNumber 1 --configName "Agent1_Panda.yaml"
 ```
 
-
-### Other Agents:Case2
+### CASE2
+**[No Collision, Orientation]**\
 - For this time, set the **"addOrientation"** variable in the config yaml files to True to consider orientation at the target pose.
 ```setup
 # Orientation, no collision
-python3 trainTest.py --mode True --expNumber 1 --configName "Agent2_Panda.yaml"
+python3 trainTest.py --mode True --expNumber 1 --configName "Agent1_Panda.yaml"
 ```
-### Other Agents:Case3
+### CASE3
+**[Collision, No Orientation]**\
+For this instance, configure the **"addOrientation"** variable in the YAML files to False to exclude orientation at the target pose. Additionally, set the **"enableSelfCollision"** variable to True.
+```setup
+# Orientation, no collision
+python3 trainTest.py --mode True --expNumber 1 --configName "Agent1_Panda.yaml"
+```
+### CASE4
 - To incorporate both orientation and self-collision considerations during training, set the **"addOrientation"** and **"enableSelfCollision"** variables in the config yaml files to True.
 ```setup
 # Orientation, collision
-python3 trainTest.py --mode True --expNumber 1 --configName "Agent2_Panda.yaml"
+python3 trainTest.py --mode True --expNumber 1 --configName "Agent1_Panda.yaml"
 ```
 ### Curriculum Learning
 #### Curriculum Learning without Considering Self-Collisions
