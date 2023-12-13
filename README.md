@@ -76,27 +76,28 @@ The trained model, log files, and information about failed samples will be saved
 ### CASE1
 **[No Collision, No Orientation]**\
 The training and evaluation procedures for Agents 1, 2, 3, and 4 are similar. The following command line uses Agent1 as an example. Please note that using the training command below performs both training and evaluation. Evaluation is conducted with 1000 random initial robot configurations and random target poses.
+Please ensure that, for this setup, the values of the variables "addOrientation" and "enableSelfCollision" in the config YAML file are both set to False.
 To train **"Agent1"**, which functions as a Learning Baseline without the Pseudo-inverse module, follow these steps:
 ```setup
 # No Orientation, no collision
 python3 trainTest.py --mode True --expNumber 1 --configName "Agent1_Panda.yaml"
 ```
-
 ### CASE2
 **[No Collision, Orientation]**\
-- For this time, set the **"addOrientation"** variable in the config yaml files to True to consider orientation at the target pose.
+- For this time, set the **"addOrientation"** variable in the config yaml files to True to consider orientation at the target pose. Additionally, set the **"enableSelfCollision"** variable to False.
 ```setup
 # Orientation, no collision
 python3 trainTest.py --mode True --expNumber 1 --configName "Agent1_Panda.yaml"
 ```
 ### CASE3
 **[Collision, No Orientation]**\
-For this instance, configure the **"addOrientation"** variable in the YAML files to False to exclude orientation at the target pose. Additionally, set the **"enableSelfCollision"** variable to True.
+- For this instance, configure the **"addOrientation"** variable in the config yaml file to False to exclude orientation at the target pose. Additionally, set the **"enableSelfCollision"** variable to True.
 ```setup
 # Orientation, no collision
 python3 trainTest.py --mode True --expNumber 1 --configName "Agent1_Panda.yaml"
 ```
 ### CASE4
+**[Collision, Orientation]**\
 - To incorporate both orientation and self-collision considerations during training, set the **"addOrientation"** and **"enableSelfCollision"** variables in the config yaml files to True.
 ```setup
 # Orientation, collision
