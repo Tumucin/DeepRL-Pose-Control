@@ -1,10 +1,17 @@
 #################### PATHS - LOCAL- ####################
-modelSavePath: '/home/tumu/git_workspace/DeepRL-Pose-Control/modelhpc'
-logSavePath: '/home/tumu/git_workspace/DeepRL-Pose-Control/loghpc'
-failedSamplesSavePath: '/home/tumu/git_workspace/DeepRL-Pose-Control/failedSamples'
-urdfPath: '/home/tumu/git_workspace/DeepRL-Pose-Control/panda_gym/envs/robots/panda.urdf'
+#modelSavePath: '/home/tumu/git_workspace/DeepRL-Pose-Control/modelhpc'
+#logSavePath: '/home/tumu/git_workspace/DeepRL-Pose-Control/loghpc'
+#failedSamplesSavePath: '/home/tumu/git_workspace/DeepRL-Pose-Control/failedSamples'
+#urdfPath: '/home/tumu/git_workspace/DeepRL-Pose-Control/panda_gym/envs/robots/panda.urdf'
+#file_name: "franka_panda/panda.urdf"
+#datasetPath: "/home/tumu/git_workspace/DeepRL-Pose-Control/panda_gym/envs/dataset/pandaversion1"
+
+modelSavePath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/modelhpc'
+logSavePath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/loghpc'
+failedSamplesSavePath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/failedSamples'
+urdfPath: '/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/panda_gym/envs/robots/panda.urdf'
 file_name: "franka_panda/panda.urdf"
-datasetPath: "/home/tumu/git_workspace/DeepRL-Pose-Control/panda_gym/envs/dataset/pandaversion1"
+datasetPath: "/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/panda_gym/envs/dataset/pandaversion1"
 
 expNumber: 229                        # Experiement Number  
 envName: "PandaReach-v2"              # Environment Name    
@@ -40,7 +47,7 @@ randomStart: True                     # Sample random starting goals(Position+Or
 neutral_joint_values: [0.00, 0.41, 0.00, -1.85, 0.00, 2.26, 0.79, 0.00, 0.00]
 lambdaErr: 100.0                      # One of the parameters for reward function exp(-k*d*d)
 orientationConstant: 50                # One of the parameters for reward function exp(-k*d*d)
-addOrientation: False                 # Use orientation information as states. If FALSE, do not use
+addOrientation: True                 # Use orientation information as states. If FALSE, do not use
 accelerationConstant: 0.0             # One of the parameters for reward function k*norm(jntAcceleration)
 velocityConstant: 0.1                 # One of the parameters for reward function k*norm(jntVelocity)
 velocityNormThreshold: 0.05

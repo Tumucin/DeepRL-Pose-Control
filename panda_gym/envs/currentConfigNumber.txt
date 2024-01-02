@@ -1,1 +1,1 @@
-Agent5_UR5.yaml
+Agent5_Panda.yaml
