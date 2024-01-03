@@ -403,6 +403,7 @@ def main():
     parser.add_argument('--rmseThreshold', type=float,help="")
     parser.add_argument('--maeThreshold', type=float,help="")
     parser.add_argument('--avgJntVelThreshold', type=float,help="")
+    parser.add_argument('--avgQuaternionAngleThreshold', type=float,help="")
     parser.add_argument('--orientationConstant', type=float, help="")
     parser.add_argument('--ee_link', type=int, help="")
     parser.add_argument('--body_name', type=str, help="")

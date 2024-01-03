@@ -126,7 +126,7 @@ class CUSTOMCALLBACK(BaseCallback):
             print("Average joint velocities CustomCallBack.py:", self.avgJntVel)
             print("Average quaternion distance:", avgQuaternionDistance)
             print("Average quaternion angle:", avgQuaternionAngle)
-            if self.mae < self.config['maeThreshold'] and self.avgJntVel < self.config['avgJntVelThreshold'] :
+            if self.mae < self.config['maeThreshold'] and self.avgJntVel < self.config['avgJntVelThreshold'] and abs(avgQuaternionAngle) < self.config['avgQuaternionAngleThreshold']:
                 # Change workspace 
                 self.currentWorkspace+=1
                 print("before (robot) training workspace:", self.training_env.envs[0].robot.datasetFileName)

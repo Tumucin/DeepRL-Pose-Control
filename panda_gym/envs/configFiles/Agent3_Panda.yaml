@@ -62,6 +62,7 @@ workspaceLen: 4
 rmseThreshold: 0.05                  # RMSE threshold to go to the next Workspace (Curriculum Learning)
 maeThreshold: 0.05                   # MAE threshold to go to the next Workspace (Curriculum Learning)
 avgJntVelThreshold: 0.15               # AverageJntVel threshold to go to the next Workspace (Curriculum Learning)
+avgQuaternionAngleThreshold: 0.1
 visualizeFailedSamples: False
 net_arch: [{'pi': [128, 128, 128],
             'vf': [128, 128, 128]}]        # Network Architecture
