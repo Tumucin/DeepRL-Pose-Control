@@ -25,7 +25,7 @@ class PyBullet:
     """
 
     def __init__(
-        self, render: bool = False, n_substeps: int = 200, background_color: np.ndarray = np.array([255.0, 255.0, 255.0]), config=None
+        self, render: bool = False, n_substeps: int = 250, background_color: np.ndarray = np.array([255.0, 255.0, 255.0]), config=None
     ) -> None:
         self.background_color = background_color.astype(np.float64) / 255
         options = "--background_color_red={} \
