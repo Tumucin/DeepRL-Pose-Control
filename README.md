@@ -55,8 +55,8 @@ bash install.sh
 ## USAGE
 
 To use this package, follow these steps to update the necessary directory paths in the code and configuration files:
-- Modify line 27 and line 29 in the **"panda_reach.py"** file, located within the **"DeepRL-Pose-Control/panda_gym/envs/panda_tasks"** directory, to match the folder locations specific to your setup.
-- Navigate to the **"DeepRL-Pose-Control/panda_gym/envs/configFiles"** directory. Within this directory,  update the paths specified in the first six lines of each file to reflect the correct directory locations for your configuration.
+- Modify line 22 and line 24 in the **"panda_reach.py"** file, located within the **"DeepRL-Pose-Control/panda_gym/envs/panda_tasks"** directory, to match the folder locations specific to your setup.
+- Navigate to the **"DeepRL-Pose-Control/panda_gym/envs/configFiles"** directory. Within this directory,  update the paths specified in the first six lines of each config file (ex:Agen5_Panda.yaml) to reflect the correct directory locations for your configuration.
 
 ## AGENTS
 - **"Agent1:"** Direct RL training without the pseudo-inverse component and curriculum scheduling. This agent is referred to as the Learning Baseline.
@@ -65,6 +65,13 @@ To use this package, follow these steps to update the necessary directory paths 
 - **"Agent4:"** Both the pseudo-inverse and the RL output is used with curriculum scheduling. This agent is trained as the combination of **"Agent4:"** + Curriculum Learning. This agent is referred to as the Hybrid agent that we proposed.
 - **"Agent5:"** Raw pseudo-inverse joint velocities, treated as a traditional baseline. It is important to note that this agent is not trained since there is no learning part in it. Referred to as the Traditional Baseline, it serves as a benchmark for comparison.
 
+## QUICK EVALUATION 
+To verify that the PyBullet simulator runs correctly, you should first execute the following command for Agent5.
+Note that the code expects you to provide a pre-trained model for Agent5. However, Agent5 does not actually use this pre-trained model. Since Agent5 lacks a learning component, it functions as a traditional baseline utilizing the pseudo-inverse method.
+
+```
+python3 trainTest.py --expNumber 1 --configName "Agent5_Panda.yaml" --render True
+```
 ## TRAINING
 There are several possible combinations to train the agents. We will systematically examine each combination to gain a better understanding.
 - **"CASE 1:"** The agent does not consider orientation at the target pose and neglects self-collisions. This implies that the episode continues even in the presence of collisions between the links.

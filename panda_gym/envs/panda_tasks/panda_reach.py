@@ -19,9 +19,9 @@ class PandaReachEnv(RobotTaskEnv):
     def __init__(self, render: bool = False, reward_type: str = "sparse", control_type: str = "joints") -> None:
         control_type = "joints"
         reward_type = "dense"
-        with open('/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/panda_gym/envs/currentConfigNumber.txt') as f:
+        with open('/home/tumu/Documents/git_workspaces/DeepRL-Pose-Control/panda_gym/envs/currentConfigNumber.txt') as f:
             lines = f.readlines()
-        with open('/kuacc/users/tbal21/.conda/envs/stableBaselines/panda-gym/panda_gym/panda_gym/envs/configFiles/'+lines[0]) as f:
+        with open('/home/tumu/Documents/git_workspaces/DeepRL-Pose-Control/panda_gym/envs/configFiles/'+lines[0]) as f:
             config = yaml.load(f, Loader=SafeLoader)
         
         #with open('/home/tumu/git_workspace/DeepRL-Pose-Control/panda_gym/envs/currentConfigNumber.txt') as f:
