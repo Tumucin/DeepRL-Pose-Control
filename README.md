@@ -42,14 +42,10 @@ If you find this study useful, please cite using the following citation:
 - Clone this repository to your local machine
 ```setup
 git clone https://github.com/Tumucin/DeepRL-Pose-Control.git
-```
-- Navigate to panda_gym directory and create the conda environment
-```setup
+cd DeepRL-Pose-Control/panda_gym
 conda env create environment.yml
 conda activate DeepRL-Pose-Control
-```
-- Navigate to the parent directory of this project. Run the installation script to install the required packages and pre-trained models.
-```setup
+cd ..
 bash install.sh
 ```
 ## USAGE
