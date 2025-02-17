@@ -25,7 +25,7 @@ class PyBullet:
     """
 
     def __init__(
-        self, render: bool = False, n_substeps: int = 250, background_color: np.ndarray = np.array([255.0, 255.0, 255.0]), config=None
+        self, render: bool = False, n_substeps: int = 200, background_color: np.ndarray = np.array([255.0, 255.0, 255.0]), config=None
     ) -> None:
         self.background_color = background_color.astype(np.float64) / 255
         options = "--background_color_red={} \
@@ -39,7 +39,7 @@ class PyBullet:
         self.physics_client.configureDebugVisualizer(p.COV_ENABLE_MOUSE_PICKING, 0)
 
         self.n_substeps = n_substeps
-        self.timestep = 1.0 / 2000
+        self.timestep = 1.0 / 1000
         #self.timestep = 10.0/1000.0
         self.physics_client.setTimeStep(self.timestep)
         self.physics_client.resetSimulation()
